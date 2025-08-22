@@ -1,0 +1,6 @@
+{
+  "version": "0.1.0",
+  "saves_directory": "saves",
+  "logs_directory": "logs",
+  "mod_packs": "mods"
+}
