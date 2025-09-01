@@ -1,5 +1,5 @@
 import pygame as pg
-
+import math
 
 # pg.init()
 ARIAL_25 = pg.font.SysFont('arial', 25)
@@ -245,7 +245,10 @@ class Menu:
             #     self.option_surfaces = ARIAL_50.render(self.text, True, (255, 255, 255))
 
         def moweButton(self, cord):
-            self.buttonCord = cord
+            if len(cord) == 4:
+                self.buttonCord = cord
+            elif len(cord) == 2:
+                self.buttonCord = cord + self.buttonCord[2:]
 
         def setPng(self, png):
             if png == None:
@@ -387,7 +390,6 @@ class Menu:
                 pass
 
 
-
     def __init__(self):
         self._buttons = []
         self.button_triggers = {}
@@ -511,8 +513,6 @@ class Menu:
             pass
 
 
-
-
     def butAct(self):
         return self._buttonAcktive
 
@@ -573,8 +573,64 @@ class Menu:
 
         self.naj = None
 
+
     def normal(mouse, sdv):
         return (mouse[0] - sdv[0], mouse[1] - sdv[1])
+
+
+class MiniMenu:
+    def __init__(self):
+        self.battons_menu = Menu()
+        self.battons = []
+        self.radius = 70
+        self.bat_size = 40
+        self.last_close = False
+        self.buttonAcktive = False
+        self.center = [-100, -100]
+        c45 = math.acos(math.pi/4)
+        self.bat_cord = [[0, -1], [c45, -c45], [1, 0], [c45, c45], [0, 1], [-c45, c45], [-1, 0], [-c45, -c45]]
+        for i in range(8):
+            self.bat_cord[i] = [self.radius * self.bat_cord[i][0], self.radius * self.bat_cord[i][1]]
+        self.style = ColorT((125, 125, 125))
+        self.style.append("buttonFonAc", {"rgb": (100, 100, 100)})
+        # self.bat_cord = [[1, 0], [-c45, c45], [0, 1], [c45, c45], [1, 0], [-]]
+        # self.bat_cord = [[-60, -60], [60, -60], [60, 60], [-60, 60]]
+
+    def draw(self, surf, mousePos):
+        if self.buttonAcktive or self.last_close:
+            # print(12345634567)
+            pg.draw.circle(surf, (60, 60, 60), self.center, self.radius)
+            self.battons_menu.draw(surf, mousePos)
+            if (self.center[0] - mousePos[0]) ** 2 + (self.center[1] - mousePos[1]) ** 2 >= (self.radius + 15) ** 2:
+                self.close()
+            if self.last_close:
+                self.center = [-1000, -1000]
+                for iBat in self.battons:
+                    iBat.moweButton(self.center)
+                self.last_close = False
+
+    def add_options(self, option, callback):
+        self.battons.append(self.battons_menu.append_option(option, lambda x: self.bat_select(callback, x), [-1000, -1000, self.bat_size, self.bat_size], self.style, form="rect", descr=None))
+
+    def open(self, mouse_pos):
+        self.buttonAcktive = True
+        self.center = mouse_pos
+        for i in range(len(self.battons)):
+            self.battons[i].moweButton([
+                self.center[0] + self.bat_cord[i][0] - self.bat_size//2,
+                self.center[1] + self.bat_cord[i][1] - self.bat_size//2,
+            ])
+
+    def close(self):
+        self.buttonAcktive = False
+        self.last_close = True
+
+    def mouse_clic(self, but, up):
+        self.battons_menu.select(but, up)
+
+    def bat_select(self, callback, bat):
+        callback(bat)
+        self.close()
 
 
 class Bars:
