@@ -1,0 +1,8 @@
+{
+  "base_style": [
+    [90, 90, 90], {"buttonFonAc": {"rgb": [110, 110, 110]}}
+  ],
+  "style_back": [
+    [140, 0, 0], {"buttonFonAc": {"rgb": [200, 10, 10]}}
+  ]
+}
