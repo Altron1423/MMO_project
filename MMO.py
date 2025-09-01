@@ -19,6 +19,7 @@ class Game:
             self.core = json.load(f)
         self.version = list(map(int, self.core["version"].split(".")))
         self.seves = world.Saves(self)
+        self.function_rans = {"sistem": {"exit": [self.exit, None]}, "mods": {}}
 
     def run(self):
         while self.WORK:
@@ -36,6 +37,22 @@ class Game:
     def detect_saves(self):
         a = self.seves.detect_saves([0,1,0])
         print(a)
+
+    def give_function(self, data, passw=None):
+        m = self.function_rans
+        for i in data:
+            if i in m:
+                m = m[i]
+            else:
+                return {"result": False, "error": [0, f"{i} from {data} undefined"]}
+        if type(m) == dict:
+            return {"result": False, "error": [1, f"{data} is unfull address"]}
+        elif m[1] == passw:
+            return {"result": True, "function": m[0]}
+        else:
+            return {"result": False, "error": [3, f"uncorrect passw"]}
+
+
 
 
 

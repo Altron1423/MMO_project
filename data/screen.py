@@ -1,4 +1,4 @@
-import graphics.battons as battons
+import graphics.buttons as buttons
 import pygame as pg
 import json
 
@@ -11,7 +11,7 @@ class MainScreen:
         self.centrovka = True
         self.screenOSN = pg.display.set_mode(self.screenSize, pg.RESIZABLE)
         self.screen = pg.Surface(self.screenSize)
-        self.menu = battons.Menu()
+        self.menu = buttons.Menu()
         self.window_manager = WindowManager(self)
         self.mousePos = (-1, -1)
 
@@ -141,16 +141,29 @@ class MainScreen:
 class WindowManager:
     def __init__(self, main_screen):
         self.main_screen = main_screen
-        self.styles = [battons.ColorT((200, 200, 200))]
-        self.styles[0].append("buttonFonAc", {"rgb": (100, 100, 100)})
+        firs_style = buttons.ColorT((40, 250, 250))
+        firs_style.append("buttonFonAc", {"rgb": (250, 250, 40)})
+        self.styles = {"error_style": firs_style}
         self.windows = []
         self.windows_keys = {}
         self.load_windows()
         self.mainWindow = self.windows[0]
 
     def load_windows(self):
+        with open(r"data\styles_config.json", "r", encoding="utf-8") as f:
+            styles_config = json.load(f)
+
+        for i_style in styles_config:
+            style_struct = styles_config[i_style]
+            style = buttons.ColorT(style_struct[0])
+            for i in style_struct[1]:
+                style.append(i, style_struct[1][i])
+            self.styles[i_style] = style
+
+
         with open(r"data\buttons_config.json", "r", encoding="utf-8") as f:
             buttons_config = json.load(f)
+
         for window in buttons_config:
             self.windows.append(Window(self, window, buttons_config[window]))
             self.windows_keys[window] = len(self.windows) - 1
@@ -170,10 +183,26 @@ class WindowManager:
         data = data.split(":")
         if data[0] == "move_window":
             return lambda x: self.set_main_window(data[1])
+        elif data[0] == "run_function":
+            return lambda x: self.run_function(data[1])
 
     def set_main_window(self, window):
         # print(window)
         self.mainWindow = self.windows[self.windows_keys[window]]
+
+    def run_function(self, data):
+        data = data.split("/")
+        result = self.main_screen.GAME.give_function(data)
+        if result["result"]:
+            result["function"]()
+        else:
+            print(result["error"])
+
+    def get_style(self, style_name):
+        if style_name in self.styles:
+            return self.styles[style_name]
+        print(f"ERROR:   WindowManager::get_style - unknown style: {style_name}")
+        return self.styles["error_style"]
 
 
 class Window:
@@ -181,7 +210,7 @@ class Window:
         self.manager = manager
         self.name = name
         self.mowing = False
-        self.menu = battons.Menu()
+        self.menu = buttons.Menu()
         self.menu_load(config)
 
     def menu_load(self, config):
@@ -191,5 +220,6 @@ class Window:
             if i_button[0] == "button":
                 # print("  ", i_button, i_button[2])
                 f = self.manager.genegate_function(i_button[2])
-                self.menu.append_option(i_button[1], f, i_button[3], self.manager.styles[i_button[4]])
+
+                self.menu.append_option(i_button[1], f, i_button[3], self.manager.get_style(i_button[4]))
 
