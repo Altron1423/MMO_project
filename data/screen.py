@@ -27,40 +27,6 @@ class MainScreen:
                 # self.menu.keyPress(event.key, event.type)
             elif event.type == pg.MOUSEBUTTONDOWN or event.type == pg.MOUSEBUTTONUP:
                 self.window_manager.select(event.button, event.type)
-                # self.menu.select(but=event.button, up=event.type)
-                # self.invman.select(but=event.button, up=event.type)
-                # if self.shop.open:
-                #     self.shop.menu[self.shop.selectMenu].select(but=event.button, up=event.type)
-                # else:
-                #     self.menu.select(but=event.button, up=event.type)
-                #     if self.capsyls[self.selectCaps] != None:
-                #         self.capsyls[self.selectCaps].menu.select(but=event.button, up=event.type)
-                #         pass
-            # elif event.type == pg.MOUSEBUTTONDOWN:
-            #     # print(event.button)
-            #     self.menu.select(but=event.button, up=event.type)
-            #     if self.shop.open:
-            #         self.shop.menu[self.shop.selectMenu].select()
-            #     else:
-            #         self.menu.select()
-            #         if self.capsyls[self.selectCaps] != None:
-            #             self.capsyls[self.selectCaps].menu.select()
-            #     if event.button == 1:
-            #         if self.shop.open:
-            #             self.shop.menu[self.shop.selectMenu].select()
-            #         else:
-            #             self.menu.select()
-            #             if self.capsyls[self.selectCaps] != None:
-            #                 self.capsyls[self.selectCaps].menu.select()
-            # elif event.type == pg.MOUSEBUTTONUP:
-            #     self.menu.select(but=event.button, up=event.type)
-            #     if event.button == 1:
-            #         if self.shop.open:
-            #             self.shop.menu[self.shop.selectMenu].unselect()
-            #         else:
-            #             self.menu.unselect()
-            #             if self.capsyls[self.selectCaps] != None:
-            #                 self.capsyls[self.selectCaps].menu.unselect()
             elif event.type == pg.VIDEORESIZE:
                 self.screenSize = event.size
                 k1 = self.screenSize[0] / self.WIDTH
@@ -85,49 +51,6 @@ class MainScreen:
             dy = 0
 
         self.mousePos2 = ((self.mousePos[0] - dx) // self.K_Mushtub, (self.mousePos[1] - dy) // self.K_Mushtub)
-        # for icaps in range(len(self.capsyls)):
-        #     if self.capsyls[icaps] != None:
-        #         self.capsyls[icaps].update()
-        #         if self.capsyls[icaps].inProgres:
-        #             col = (255, 255, 0)
-        #         elif self.capsyls[icaps].inCompl:
-        #             col = (0, 255, 0)
-        #         else:
-        #             col = (255, 0, 0)
-        #         # if self.selectCaps == 10 - self.capsyls.count(None):
-        #         #     print("+")
-        #     else:
-        #         col = (125, 125, 125)
-        #     pg.draw.circle(self.screen, col,
-        #                    (self.WIDTH * 1 / 3 + 50 * (icaps % 5), self.HEIGHT * 3.2 / 4 + 50 * (icaps // 5)), 20)
-        # # print(self.capsyls[self.selectCaps], self.selectCaps)
-        # if self.capsyls[self.selectCaps] != None:
-        #     self.capsyls[self.selectCaps].draw(self.screen)
-        #     pass
-        # self.invman.draw(self.screen, self.mousePos2)
-
-        # pg.draw.circle(self.screen, (0, 0, 255),
-        #                (self.WIDTH * 1 / 3 + 50 * (self.selectCaps % 5), self.HEIGHT * 3.2 / 4 + 50 * (self.selectCaps // 5)),
-        #                10)
-        # for i in range(len(self.hrlabs)):
-        #     lab = self.hrlabs[i]
-        #     if lab == None:
-        #         break
-        #     lab.update()
-
-        # if self.shop.open:
-        #     self.shop.draw(self.screen)
-        # else:
-        #     self.menu.draw(self.screen, self.mousePos2)
-
-        # screen2 = pg.transform.scale(screenDop, (250, radRadar))
-        # pg.draw.circle(screenDop, (0, 255, 0), (80, 80), 30)
-        # screenDop.set_alpha(100)
-        # pg.draw.circle(screenDop, (0, 255, 0), (150, 80), 30)
-        # screen.blit(screenDop, (350, 450))
-
-        # pg.draw.rect(screen, (83, 83, 83), (0, 0, WIDTH_WD, HEIGHT_WD), 5)
-
         screen2 = pg.transform.scale(self.screen, (self.WIDTH * self.K_Mushtub, self.HEIGHT * self.K_Mushtub))
         self.screenOSN.blit(screen2, (dx, dy))
         if pg.mouse.get_focused():
