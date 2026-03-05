@@ -2,11 +2,13 @@ import data.base as base
 from platform import system
 from socket import socket, AF_INET, SOCK_DGRAM, SOCK_STREAM, IPPROTO_TCP, TCP_NODELAY
 from subprocess import check_output
-# import socket as Socket
 import os
-
 import scapy.all as sc
 
+
+# import decon
+
+# interface = decon.getting_interface(decon.getting_ip_of_this_device())
 # print(local_ipv4())
 class Adress_cheker:
     def __init__(self):
@@ -28,6 +30,7 @@ class Adress_cheker:
         # print(ip_mac_network)
         self.print_ip_mac(self.ip_mac_network)
         return self.ip_mac_network
+
 
     def local_ipv4(self):
         st = socket(AF_INET, SOCK_DGRAM)
@@ -64,6 +67,9 @@ class Adress_cheker:
     def print_ip_mac(self, mac_ip_list):
         print(f"\nMachine in Network:\n\nIP\t\t\t\t\tMAC-address\n{'-' * 41}")
         for client in mac_ip_list:
+            # if self.local_ip != client['ip']:
+            #     decon.disconnect_user(client["mac"],
+            #             client["mac"], interface['name'])
             print(f'{client["ip"]}\t\t{client["mac"]}')
 
 
@@ -71,7 +77,7 @@ class Server(base.GameElement):
 
     def __init__(self):
         self.ad_cheker = Adress_cheker()
-        self.LOCALHOST = self.ad_cheker.local_ipv4()
+        self.LOCALHOST = self.ad_cheker.local_ip
 
     def start(self):
         # self.LOCALHOST = socket.gethostbyname(socket.gethostname())
@@ -103,7 +109,9 @@ class Server(base.GameElement):
 
 if __name__ == "__main__":
     server = Server()
-    server.adress_check()
+    data = server.adress_check()
+    # print(data)
+
 
 
 

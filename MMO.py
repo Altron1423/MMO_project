@@ -1,62 +1,82 @@
 import pygame as pg
-# import data.base as base
+
 pg.init()
-import data.screen as screen
-import server
+from src.modules.app import App
 import json
-import data.world as world
 
 
-class Game:
+class Game(App):
+    ...
+
     def __init__(self):
-        self.server = server.Server()
-        self.clock = pg.time.Clock()
-        self.TPS = 20
-        self.tick = 0
-        self.main_screen = screen.MainScreen(self)
-        self.WORK = True
-        with open(f"data/core.json", "r", encoding="utf-8") as f:
-            self.core = json.load(f)
-        self.version = list(map(int, self.core["version"].split(".")))
-        self.seves = world.Saves(self)
-        self.function_rans = {"sistem": {"exit": [self.exit, None]}, "mods": {}}
+        super().__init__()
+        # self.load_pet_feed()
 
-    def run(self):
-        while self.WORK:
-            self.tick += 1
-            self.clock.tick(self.TPS)
-            self.main_screen.draw()
+        config = {
+            "open_single_player": [self.open_single_player, None],
+        }
+        self.add_functions({"window": config})
 
-    def exit(self):
-        self.WORK = False
+    def load_pet_feed(self):
+        with self.path.joinpath("db.json").open("r", encoding="utf-8") as file:
+            self.pets = json.load(file)["pets"]
 
-    def start_server(self):
-        self.server.start()
-        self.world = world.Worlds()
+        mb = self.main_screen.window_manager.get_window("pet_feed")
+        config = []
+        x, y, dx, dy, sx, sy = mb.cord_new_but
+        for i, ipet in enumerate(self.pets):
+            pet = self.pets[ipet]
+            config.append([
+                "button_png",
+                f"{pet['name']}, {pet['age']}",
+                "run_function:app/open_pet_info",
+                [
+                    x + (dx + sx) * (i % 2),
+                    y + (dy + sy) * (i // 2),
+                    sx, sy
+                ],
+                "pet_feed",
+                {
+                    "pet_name": ipet
+                },
+                [
+                    pet['image'][0],
+                    "img_female" if pet['parameters']['gender'] == "Девочка" else "img_male"
+                ]
+            ])
+            # log(config[-1])
+        mb._menu_load({"buttons": config})
 
-    def detect_saves(self):
-        a = self.seves.detect_saves([0,1,0])
-        print(a)
+    def open_single_player(self, bat):
+        wm = self.main_screen.window_manager
+        wm.set_main_window("single_saves")
 
-    def give_function(self, data, passw=None):
-        m = self.function_rans
-        for i in data:
-            if i in m:
-                m = m[i]
-            else:
-                return {"result": False, "error": [0, f"{i} from {data} undefined"]}
-        if type(m) == dict:
-            return {"result": False, "error": [1, f"{data} is unfull address"]}
-        elif m[1] == passw:
-            return {"result": True, "function": m[0]}
-        else:
-            return {"result": False, "error": [3, f"uncorrect passw"]}
+    def gen_params(self, params):
+        st_param = ["Пол:", "Порода:", "Рост:", "Вес:", "Окрас:"]
+        for key, value in params.items():
+            st_param.append(value)
 
+        return st_param
 
+    def open_pet_info(self, data):
+        self.select_pet = self.pets[data.get_parameters("pet_name")]
+        pet = self.select_pet
+        wm = self.main_screen.window_manager
+        bm = wm.get_window("head_info").button_manager
+        bm._buttons[0].set_png(pet["image"][1])
+        bm._buttons[0].set_text(f"{pet['name']}, {pet['age']}")
 
+        bm = wm.get_window("detailed_information").button_manager
+        bm._buttons[0].set_text(pet["descr"])
+        bm._buttons[1].set_text(self.gen_params(pet["parameters"]))
+        bm._buttons[2].set_text(pet["tags"])
+        bm._buttons[3].set_text(["Куратор собаки:"] + pet["tutor"])
+
+        wm.close_window("find_line")
+        wm.open_window("head_info")
+        wm.set_main_window("detailed_information")
 
 
 if __name__ == "__main__":
     game = Game()
     game.run()
-

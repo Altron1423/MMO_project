@@ -1,0 +1,357 @@
+{
+  "type": "ManyPolygonizer",
+  "many_polygonizers": {
+    "interface": {
+      "polygons": [
+        {
+          "type": 1,
+          "position": [0, 0],
+          "percent_size": [1, 1],
+          "styleName": "base_back_ground"
+        },
+        {
+          "type": 1,
+          "percent_position": [0, 0],
+          "percent_size": [1, 1],
+          "styleName": "base_block"
+        },
+        {
+          "type": 3,
+          "position": [0, 0],
+          "percent_size": [1, 1],
+          "pngName": "test_name1"
+        },
+        {
+          "type": 2,
+          "position": [20, 0]
+        },
+        {
+          "type": 1,
+          "position": [0, 0],
+          "percent_size": [1, 1],
+          "styleName": "base_border",
+          "border": 5
+        }
+      ],
+      "size": [10, 10]
+    } ,
+    "main_polygonizers": {
+      "polygons": [
+        {
+          "type": 1,
+          "position": [0, 0],
+          "percent_size": [1, 1],
+          "styleName": "base_back_ground"
+        },
+        {
+          "type": 1,
+          "percent_position": [0, 0.7],
+          "percent_size": [1, 0.3],
+          "styleName": "base_block"
+        },
+        {
+          "type": 3,
+          "position": [0, 0],
+          "percent_size": [1, 0.7],
+          "pngName": "test_name1"
+        },
+        {
+          "type": 2,
+          "position": [20, 0]
+        },
+        {
+          "type": 1,
+          "position": [0, 0],
+          "percent_size": [1, 1],
+          "styleName": "base_border",
+          "border": 5
+        }
+      ],
+      "size": [10, 10]
+    },
+    "speed_move": {
+      "polygons": [
+        {
+          "type": 1,
+          "position": [0, 0],
+          "percent_size": [1, 1],
+          "styleName": "speed_move"
+        },
+        {
+          "type": 3,
+          "percent_position": [0.35, 0.1],
+          "size": [50, 50],
+          "pngName": "test_name1"
+        },
+        {
+          "type": 2,
+          "styleName": "speed_move",
+          "percent_position": [0.1, 0.6]
+        }
+      ],
+      "size": [10, 10]
+    },
+    "find_line": {
+      "polygons": [
+        {
+          "type": 1,
+          "position": [0, 0],
+          "percent_size": [1, 1],
+          "styleName": "find_line"
+        },
+        {
+          "type": 3,
+          "percent_position": [0.15, 0.15],
+          "percent_size": [0.7, 0.7],
+          "pngName": null
+        },
+        {
+          "type": 2,
+          "styleName": "find_line",
+          "percent_position": [null, 0.15]
+        },
+        {
+          "type": 2,
+          "styleName": "find_line2",
+          "percent_position": [null, 0.44]
+        }
+      ],
+      "size": [10, 10]
+    },
+    "pet_feed": {
+      "polygons": [
+        {
+          "type": 3,
+          "percent_size": [1.0, 1.0],
+          "pngName": null
+        },
+        {
+          "type": 1,
+          "percent_position": [0, 0.7],
+          "percent_size": [1, 0.31],
+          "styleName": "pet_feed"
+        },
+        {
+          "type": 3,
+          "size": [50, 50],
+          "percent_position": [0.75, 0.75],
+          "pngName": "img_female"
+        },
+        {
+          "type": 2,
+          "styleName": "pet_feed",
+          "percent_position": [0.1, 0.8]
+        }
+      ],
+      "size": [10, 10]
+    },
+    "head_info": {
+      "polygons": [
+        {
+          "type": 3,
+          "percent_size": [1.0, 1.0],
+          "pngName": null
+        },
+        {
+          "type": 2,
+          "styleName": "head_info",
+          "percent_position": [0.1, 0.8]
+        }
+      ],
+      "size": [10, 10]
+    },
+    "description": {
+      "polygons": [
+        {
+          "type": 1,
+          "percent_size": [1.0, 1.0],
+          "styleName": "description"
+        },
+        {
+          "type": 2,
+          "styleName": "description",
+          "percent_position": [0.02, 0.02],
+          "percent_size": [0.96, 0.96]
+        }
+      ],
+      "size": [10, 10]
+    },
+    "pet_contact": {
+      "polygons": [
+        {
+          "type": 1,
+          "percent_size": [1.0, 1.0],
+          "styleName": "description"
+        },
+        {
+          "type": 2,
+          "styleName": "bold_description",
+          "percent_position": [0.02, 0.04],
+          "percent_size": [0.6, 0.1]
+        },
+        {
+          "type": 2,
+          "styleName": "description",
+          "percent_position": [0.03, 0.35],
+          "percent_size": [0.96, 0.96]
+        },
+        {
+          "type": 2,
+          "styleName": "description",
+          "percent_position": [0.02, 0.68],
+          "percent_size": [0.96, 0.96]
+        }
+      ],
+      "size": [10, 10]
+    },
+    "get_pet": {
+      "polygons": [
+        {
+          "type": 1,
+          "percent_size": [1.0, 1.0],
+          "styleName": "get_pet"
+        },
+        {
+          "type": 2,
+          "styleName": "get_pet",
+          "percent_position": [0.02, 0.04],
+          "percent_size": [0.6, 0.1]
+        },
+        {
+          "type": 3,
+          "percent_size": [1.0, 1.0],
+          "pngName": null
+        }
+      ],
+      "size": [10, 10]
+    },
+    "parameters": {
+      "polygons": [
+        {
+          "type": 1,
+          "percent_size": [1.0, 1.0],
+          "styleName": "description"
+        },
+        {
+          "type": 2,
+          "styleName": "description",
+          "percent_position": [0.05, 0.15],
+          "percent_size": [0.45, 0.11]
+        },
+        {
+          "type": 2,
+          "styleName": "description",
+          "percent_position": [0.05, 0.30],
+          "percent_size": [0.45, 0.11]
+        },
+        {
+          "type": 2,
+          "styleName": "description",
+          "percent_position": [0.05, 0.45],
+          "percent_size": [0.45, 0.11]
+        },
+        {
+          "type": 2,
+          "styleName": "description",
+          "percent_position": [0.05, 0.60],
+          "percent_size": [0.45, 0.11]
+        },
+        {
+          "type": 2,
+          "styleName": "description",
+          "percent_position": [0.05, 0.75],
+          "percent_size": [0.45, 0.11]
+        },
+        {
+          "type": 2,
+          "styleName": "description",
+          "percent_position": [0.5, 0.15],
+          "percent_size": [0.45, 0.11]
+        },
+        {
+          "type": 2,
+          "styleName": "description",
+          "percent_position": [0.5, 0.30],
+          "percent_size": [0.45, 0.11]
+        },
+        {
+          "type": 2,
+          "styleName": "description",
+          "percent_position": [0.5, 0.45],
+          "percent_size": [0.45, 0.11]
+        },
+        {
+          "type": 2,
+          "styleName": "description",
+          "percent_position": [0.5, 0.60],
+          "percent_size": [0.45, 0.11]
+        },
+        {
+          "type": 2,
+          "styleName": "description",
+          "percent_position": [0.5, 0.75],
+          "percent_size": [0.45, 0.11]
+        }
+      ],
+      "size": [10, 10]
+    },
+    "tags": {
+      "polygons": [
+        {
+          "type": 1,
+          "percent_size": [1.0, 1.0],
+          "styleName": "description"
+        },
+        {
+          "type": 1,
+          "styleName": "tags",
+          "percent_position": [0.05, 0.125],
+          "percent_size": [0.9, 0.15]
+        },
+        {
+          "type": 1,
+          "styleName": "tags",
+          "percent_position": [0.05, 0.325],
+          "percent_size": [0.9, 0.15]
+        },
+        {
+          "type": 1,
+          "styleName": "tags",
+          "percent_position": [0.05, 0.525],
+          "percent_size": [0.9, 0.15]
+        },
+        {
+          "type": 1,
+          "styleName": "tags",
+          "percent_position": [0.05, 0.725],
+          "percent_size": [0.9, 0.15]
+        },
+        {
+          "type": 2,
+          "styleName": "tags",
+          "percent_position": [0.15, 0.125],
+          "percent_size": [0.9, 0.15]
+        },
+        {
+          "type": 2,
+          "styleName": "tags",
+          "percent_position": [0.15, 0.325],
+          "percent_size": [0.9, 0.15]
+        },
+        {
+          "type": 2,
+          "styleName": "tags",
+          "percent_position": [0.15, 0.525],
+          "percent_size": [0.9, 0.15]
+        },
+        {
+          "type": 2,
+          "styleName": "tags",
+          "percent_position": [0.15, 0.725],
+          "percent_size": [0.9, 0.15]
+        }
+      ],
+      "size": [10, 10]
+    }
+  }
+}

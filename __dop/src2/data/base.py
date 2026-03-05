@@ -300,7 +300,7 @@ class GameElement:
 
 if __name__ == "__main__":
     pass
-    generate_path(r"C:\Users\Altron\PycharmProjects\MMO_project\saves\test_world\main.json")
+    generate_path(r"/src/saves/test_world/main.json")
 
 
 

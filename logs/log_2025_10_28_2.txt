@@ -1,0 +1,30 @@
+Log file for MiGame
+
+[S] 2025-10-28 12:17:22.448137 | >> Create log file to D:\JetBrains\project\PycharmProjects\BarkBuddy\src\logs\log_2025_10_28_2.txt
+[S] 2025-10-28 12:17:22.448428 | >> Loger init complete
+
+[S] 2025-10-28 12:17:22.452912 | >> Game init started
+[S] 2025-10-28 12:17:22.453352 | >> Game version: [0, 1, 0]
+[S] 2025-10-28 12:17:22.453586 | >> Set Game parameters complete
+[S] 2025-10-28 12:17:22.453823 | >> Set MainScreen parameters complete
+[S] 2025-10-28 12:17:22.489309 | >> Window 'pet_feed' init complete whis 0
+[S] 2025-10-28 12:17:22.497177 | >> Window 'detailed_information' init complete whis 4
+[S] 2025-10-28 12:17:22.500944 | >> Window 'settings' init complete whis 1
+[S] 2025-10-28 12:17:22.506896 | >> Window 'speed_move' init complete whis 3
+[S] 2025-10-28 12:17:22.512041 | >> Window 'find_line' init complete whis 2
+[S] 2025-10-28 12:17:22.519668 | >> Window 'head_info' init complete whis 2
+[S] 2025-10-28 12:17:22.520061 | >> Load 6 windows
+[S] 2025-10-28 12:17:22.520364 | >> WindowManager init complete
+[S] 2025-10-28 12:17:22.520610 | >> MainScreen init complete
+[S] 2025-10-28 12:17:22.520855 | >> Function giver generate complete
+[S] 2025-10-28 12:17:22.521084 | >> Game init complete
+
+
+[S] 2025-10-28 12:17:22.550778 | >> Game start
+[L] 2025-10-28 12:17:26.885924 | 158, \data\screen.py | >> Move to 'detailed_information' window
+[L] 2025-10-28 12:17:28.384448 | 158, \data\screen.py | >> Move to 'pet_feed' window
+[L] 2025-10-28 12:17:29.246594 | 158, \data\screen.py | >> Move to 'detailed_information' window
+[L] 2025-10-28 12:17:31.057493 | 158, \data\screen.py | >> Move to 'pet_feed' window
+[L] 2025-10-28 12:17:31.971865 | 158, \data\screen.py | >> Move to 'detailed_information' window
+[L] 2025-10-28 12:17:33.377770 | 158, \data\screen.py | >> Move to 'pet_feed' window
+[L] 2025-10-28 12:17:35.221458 |  34, \app.py         | >> Game exit

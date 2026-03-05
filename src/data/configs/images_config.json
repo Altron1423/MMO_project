@@ -1,0 +1,6 @@
+{
+  "type": "image",
+  "images": {
+    "test_name1": "src\\data\\images\\paw.png"
+  }
+}

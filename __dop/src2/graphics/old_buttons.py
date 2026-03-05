@@ -1,7 +1,11 @@
+import time
+
 import pygame as pg
 import math
 
-# pg.init()
+if __name__ == "__main__":
+    pg.init()
+
 ARIAL_25 = pg.font.SysFont('arial', 25)
 KeysTransf = {
     pg.K_q: "q", pg.K_w: "w", pg.K_e: "e", pg.K_r: "r", pg.K_t: "t", pg.K_y: "y",
@@ -195,7 +199,7 @@ class Menu:
                     option_rect.center = optionFon_rect.center
                 else:
                     option_rect = self.textCord
-                # cordTxt = self.style.dop("txtCord")
+                # cordTxt = self.style.__dop("txtCord")
                 # if cordTxt != None:
                 #     print(cordTxt)
                 #     cordTxt = cordTxt["cord"]
@@ -746,3 +750,385 @@ def blit_text(surface, text, font, color=pg.Color('black')):
         x = 10
         y += word_height  # Start on new row.
     return surface
+
+
+
+
+
+class Styler_test:
+    def __init__(self):
+        self.color = (255, 0, 0)
+        self.color_select = (0, 255, 0)
+        self.color_clicked = (0, 0, 255)
+        self.color_off = (0, 0, 0)
+        self.font_color = (255, 255, 255)
+
+        self.font_name = 'Comic Sans MS'
+        self.font_size = 30
+        self.font = pg.font.SysFont(self.font_name, self.font_size)
+
+    def set_color(self, param, color):
+        """
+        0: color
+        1: color_select
+        2: color_clicked
+        3: color_off
+        4: font_color
+        :param param:
+        :param color:
+        :return:
+        """
+        if param == 0:
+            self.color = color
+        elif param == 1:
+            self.color_select = color
+        elif param == 2:
+            self.color_clicked = color
+        elif param == 3:
+            self.color_off = color
+        elif param == 4:
+            self.font_color = color
+
+    def set_font(self, name: str | None = None, size: int | None = None):
+        if name is not None:
+            self.font_name = name
+        if size is not None:
+            self.font_size = size
+        if name is not None or size is not None:
+            self.font = pg.font.SysFont(self.font_name, self.font_size)
+
+    def text_render(self, text):
+        if text:
+            return self.font.render(text, True, self.font_color)
+        return None
+
+class TriggerGen_test:
+    def __init__(self):
+        self.triggers = {}
+        self.last = None
+
+    def LMD(self, function):
+        self.triggers[(1, True)] = function
+        return self
+
+    def LMU(self, function):
+        self.triggers[(1, False)] = function
+        return self
+
+    def RMD(self, function):
+        self.triggers[(3, True)] = function
+        return self
+
+    def RMU(self, function):
+        self.triggers[(3, False)] = function
+        return self
+
+    def MWD(self, function):
+        self.triggers[(4, True)] = function
+        return self
+
+    def MWU(self, function):
+        self.triggers[(5, False)] = function
+        return self
+
+    def HoldD(self, function):
+        self.triggers[('hold', True)] = function
+        return self
+
+    def HoldU(self, function):
+        self.triggers[('hold', False)] = function
+        return self
+
+    def key_down(self, key, function):
+        self.triggers[(key, True)] = function
+        return self
+
+    def key_up(self, key, function):
+        self.triggers[(key, False)] = function
+        return self
+
+    def __iadd__(self, other):
+        if type(other) == dict:
+            for k, f in other.items():
+                self.triggers[k] = f
+        elif isinstance(other, self.__class__):
+            for k, f in other.triggers.items():
+                self.triggers[k] = f
+        return self
+
+    def __getitem__(self, key):
+        if key in self.triggers:
+            self.last = key
+            return self.triggers[key]
+        return None
+
+class ButtonManager_test:
+    class Button:
+        def __init__(self, manager, button_id):
+            self.manager = manager
+            self.id = button_id
+            self.style: Styler_test = manager.baseStyle
+            self.surface_size = None
+
+            self.percent_use = [False, False, False, False]
+            self.position = (-1000, -1000)
+            self.size = (10, 10)
+            self.percent_position = [-1.0, -1.0]
+            self.percent_size = [1.0, 1.0]
+
+            self.form = "rect"
+
+            self.text = ""
+            self.option_surfaces = None
+            self.type = None
+            self.triggers = None
+
+            self.visible = True
+            self.on = True
+            self.hold = False
+            self.holding = False
+            self.active = False
+            self.active_time = False
+            self.active_delta = 0.1
+
+
+        def _recalculation_positions(self):
+            if self.surface_size:
+                if self.percent_use[0]:
+                    self.position[0] = int(self.surface_size[0] * self.percent_position[0])
+                if self.percent_use[1]:
+                    self.position[1] = int(self.surface_size[1] * self.percent_position[1])
+
+        def _recalculation_size(self):
+            if self.surface_size:
+                if self.percent_use[2]:
+                    self.size[0] = int(self.surface_size[0] * self.percent_size[0])
+                if self.percent_use[3]:
+                    self.size[1] = int(self.surface_size[1] * self.percent_size[1])
+
+        def set_surface_size(self, surface_size):
+            self.surface_size = surface_size
+            self._recalculation_size()
+            self._recalculation_positions()
+
+        def set_percent_position(self, percent_position_x:float | None = None, percent_position_y:float | None = None):
+            if percent_position_x:
+                self.percent_position[0] = percent_position_x
+                self.percent_use[0] = True
+            if percent_position_y:
+                self.percent_position[1] = percent_position_y
+                self.percent_use[1] = True
+            self._recalculation_positions()
+
+        def set_percent_size(self, percent_size_x:float | None = None, percent_size_y:float | None = None):
+            if percent_size_x:
+                self.percent_size[0] = percent_size_x
+                self.percent_use[2] = True
+            if percent_size_y:
+                self.percent_size[1] = percent_size_y
+                self.percent_use[3] = True
+            self._recalculation_size()
+
+
+        def set_style(self, style:Styler_test):
+            self.style = style
+
+        def set_text(self, text:str):
+            self.text = text
+            self.option_surfaces = self.style.text_render(self.text)
+
+        def set_type(self, type_but:str):
+            self.type = type_but
+
+        def set_triggers(self, triggers):
+            self.triggers = triggers
+
+        def set_holding(self, holding):
+            self.holding = holding
+
+        def move_to(self, position):
+            self.position = position
+
+        def move_on(self, d_position):
+            position = (
+                self.position[0] + d_position[0],
+                self.position[1] + d_position[1]
+            )
+            self.move_to(position)
+
+        def resize(self, new_size):
+            self.size = new_size
+
+        def test_active(self, mouse_position):
+            active = False
+            mouse_position_on_button = (
+                mouse_position[0] - self.position[0],
+                mouse_position[1] - self.position[1]
+            )
+            if self.on:
+                if self.form == "rect":
+                    active = (
+                        0 <= mouse_position_on_button[0] <= self.size[0] and
+                        0 <= mouse_position_on_button[1] <= self.size[1]
+                    )
+                elif self.form == "circle":
+                    center_coordinate = [
+                        mouse_position_on_button[0] + self.size[0] // 2,
+                        mouse_position_on_button[1] + self.size[1] // 2
+                    ]
+                    active = center_coordinate[0] ** 2 + center_coordinate[1] ** 2 <= (self.size[0] // 2) ** 2
+
+                if active and self.hold:
+                    self.active = True
+                    self.active_time = time.time() + self.active_delta
+                    # if self.active_time - time.time() > self.active_delta:
+                    #     self.active_time = time.time() + self.active_delta
+
+            return active
+
+        def select(self, trigger):
+            if trigger[1] != self.hold:
+                function = self.triggers[trigger]
+                if function is not None:
+                    function(self)
+            self.hold = trigger[1]
+
+        def un_hold(self):
+            # function = self.triggers[('hold', False)]
+            # if function is not None:
+            #     function(self)
+            self.hold = False
+
+        def draw(self, surface, activ):
+            if self.visible:
+                if self.active:
+                    color = self.style.color_clicked
+                    if self.active_time <= time.time():
+                        self.active = False
+                elif activ:
+                    color = self.style.color_select
+                else:
+                    color = self.style.color
+
+                option_rect = (*self.position, *self.size)
+                pg.draw.rect(surface, color, option_rect)
+
+                optSurf = self.option_surfaces
+
+                surface.blit(optSurf, option_rect)
+
+            if self.on:
+                if self.holding and self.hold and self.active:
+                    function = self.triggers[('hold', True)]
+                    if function is not None:
+                        function(self)
+
+
+
+    def __init__(self, mouse):
+        self._buttons = []
+        self.baseStyle = Styler_test()
+        self.mouse = mouse
+        self.last_style = None
+        self.address = "main"
+        self.surface = None
+        self.active_button = None
+
+    def set_surface(self, surface):
+        self.surface = surface
+        for button in self._buttons:
+            button.set_surface_size(surface.get_size())
+
+    def set_address(self, new_address):
+        self.address = new_address
+
+    def set_style(self, style:Styler_test):
+        self.last_style = style
+
+    def _create_button(self):
+        button = self.Button(self, len(self._buttons))
+        if self.last_style is not None:
+            button.set_style(self.last_style)
+        if self.surface is not None:
+            button.set_surface_size(self.surface.get_size())
+        self._buttons.append(
+            button
+        )
+        return button
+
+    def add_button(self, text, position, triggers):
+        button = self._create_button()
+        button.set_type("button")
+        button.set_text(text)
+        button.move_to(position[:2])
+        button.resize(position[2:])
+        button.set_triggers(triggers)
+        return button
+
+    def add_text(self, text, position):
+        button = self._create_button()
+        button.set_type("txt")
+        button.set_text(text)
+        button.move_to(position[:2])
+        button.resize(position[2:])
+        return button
+
+    def add_png(self, text, position):
+        button = self._create_button()
+        button.set_type("png")
+        button.set_text(text)
+        button.move_to(position[:2])
+        button.resize(position[2:])
+        return button
+
+    def add_png_but(self, text, position, triggers):
+        button = self._create_button()
+        button.set_type("png_but")
+        button.set_text(text)
+        button.move_to(position[:2])
+        button.resize(position[2:])
+        button.set_triggers(triggers)
+        return button
+
+
+    def get_button(self, index):
+        if index is not None:
+            return self._buttons[index]
+        return None
+
+    def select(self, event):
+        but = event.button
+        up = event.type == pg.MOUSEBUTTONDOWN
+        button: ButtonManager_test.Button = self.get_button(self.active_button)
+        if button is not None:
+            button.select((but, up))
+
+    def testing_activ(self, mouse_pos):
+        last = None
+        for i, butt in enumerate(self._buttons):
+            if butt.test_active(mouse_pos):
+                last = i
+        return last
+
+
+    def draw(self):
+        if self.surface is not None:
+            mouse_pos = self.mouse.get_position(self.address)
+            self.active_button = self.testing_activ(mouse_pos)
+            self.mouse.add_button(self.get_button(self.active_button))
+            for i, butt in enumerate(self._buttons):
+                butt.draw(self.surface, self.active_button==i)
+
+
+if __name__ == "__main__":
+    BM = ButtonManager_test()
+    t = ButtonManager_test.TriggerGen_test().LMD(lambda: print("LMD"))
+    t2 = ButtonManager_test.TriggerGen_test().LMU(lambda: print("LMU"))
+    print(t.__dict__)
+    print(t2.__dict__)
+    # t3 = t + t2
+    t += t2
+    # print(t.__dict__)
+
+    print(t[(0, True)])
+    # t.__get__(12,345)

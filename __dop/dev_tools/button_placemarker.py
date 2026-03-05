@@ -1,7 +1,8 @@
 import pygame as pg
 pg.init()
-import graphics.buttons as buttons
+import __dop.src2.graphics.buttons as buttons
 import json
+from pathlib import Path
 
 
 
@@ -127,14 +128,17 @@ class Main:
         for i in range(len(self.buttons_config[self.window])):
             self.buttons_config[self.window][i][3] = self.key_batton[i][3]
         print(self.buttons_config)
+        with self.path.open("w", encoding="utf-8") as file:
+            json.dump(self.buttons_config, file)
         # pass
 
     def load(self):
         self.but = None
         self.menu = buttons.Menu()
-        # self.path_style = input("Enter the path to styles_config: ")
-        self.path_style = r"C:\Users\Altron\PycharmProjects\MMO_project\data\styles_config.json"
-        with open(self.path_style, "r", encoding="utf-8") as f:
+        # self.path_style = Path(input("Enter the path to styles_config: "))
+        self.path_style = Path.cwd().parent.joinpath("src/data/styles_config.json")
+        print(self.path_style)
+        with self.path_style.open("r", encoding="utf-8") as f:
             styles_config = json.load(f)
 
         for i_style in styles_config:
@@ -144,16 +148,16 @@ class Main:
                 style.append(i, style_struct[1][i])
             self.styles[i_style] = style
 
-        # self.path = input("Enter the path button_config: ")
-        self.path = r"C:\Users\Altron\PycharmProjects\MMO_project\data\buttons_config.json"
+        # self.path = Path(input("Enter the path button_config: "))
+        self.path = Path.cwd().parent.joinpath("src/data/buttons_config.json")
         self.count_batton = 0
         self.key_batton = {}
-        with open(self.path, "r", encoding="utf-8") as f:
+        with self.path.open("r", encoding="utf-8") as f:
             self.buttons_config = json.load(f)
         print("Select Window:\n  ", end="")
         print(*self.buttons_config.keys(), sep="\n  ")
-        # self.window = input()
-        self.window = "main_menu"
+        self.window = input()
+        # self.window = "main_menu"
         while self.window not in self.buttons_config.keys():
             self.window = input("Incorrect enter again")
 

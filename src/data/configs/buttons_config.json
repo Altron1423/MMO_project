@@ -1,0 +1,52 @@
+{
+  "type": "buttons",
+  "windows": {
+    "main_menu": {
+      "data": {
+        "window_position": [0, 0],
+        "window_background": [230, 230, 230],
+        "cord_new_but": [0.03, 0.01, 0.04, 0.02, 0.45, 0.3],
+        "default_polygonizer": "pet_feed"
+      },
+      "buttons": [
+        ["button", "Одиночная игра", "run_function:window/open_single_player", [200, 250, 400, 75], "interface", null],
+        ["button", "Многопользовательская игра", "move_window:online_servers", [200, 330, 400, 75], "interface", null],
+        ["button", "Настройки", "move_window:settings", [200, 410, 195, 75], "interface", null],
+        ["button", "Выход", "run_function:sistem/exit", [405, 410, 195, 75], "interface", null]
+      ]
+    },
+    "single_saves": {
+      "data": {
+        "window_position": [0, 0],
+        "window_background": [230, 230, 230],
+        "cord_new_but": [0.03, 0.01, 0.04, 0.02, 0.45, 0.3],
+        "default_polygonizer": "pet_feed"
+      },
+      "buttons": [
+        ["button_png", "Назад", "move_window:main_menu", [40, 40, 100, 60], "interface", null, null]
+      ]
+    },
+    "online_servers": {
+      "data": {
+        "window_position": [0, 0],
+        "window_background": [230, 230, 230],
+        "cord_new_but": [0.03, 0.01, 0.04, 0.02, 0.45, 0.3],
+        "default_polygonizer": "pet_feed"
+      },
+      "buttons": [
+        ["button_png", "Назад", "move_window:main_menu", [40, 40, 100, 60], "interface", null, null]
+      ]
+    },
+    "settings": {
+      "data": {
+        "window_position": [0, 0],
+        "window_background": [230, 230, 230],
+        "cord_new_but": [0,0, 0,0, 0,0],
+        "default_polygonizer": "base_polygonizer"
+      },
+      "buttons": [
+        ["button_png", "Назад", "move_window:main_menu", [40, 40, 100, 60], "interface", null, null]
+      ]
+    }
+  }
+}

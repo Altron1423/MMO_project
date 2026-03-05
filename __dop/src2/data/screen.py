@@ -1,23 +1,36 @@
-import graphics.buttons as buttons
+import __dop.src2.graphics.old_buttons as buttons
 import pygame as pg
 import json
+
+from __dop.src2.data.Loger import status, log
+from __dop.src2.data.Mouse import Mouse
+
 
 class MainScreen:
     def __init__(self, game):
         self.GAME = game
+        self._set_start_parameters()
+        self.screenOSN = pg.display.set_mode(self.screenSize, pg.RESIZABLE)
+        self.screen_main = pg.Surface(self.screenSize)
+        self.menu = buttons.Menu()
+        self.window_manager = WindowManager(self)
+        self.mouse = Mouse(pg.mouse)
+
+        status("MainScreen init complete")
+
+    def _set_start_parameters(self):
         self.screenSize = self.WIDTH, self.HEIGHT = 800, 900
         self.centr = self.H_WIDTH, self.H_HEIGHT = self.WIDTH // 2, self.HEIGHT // 2
         self.K_Mushtub = 1
-        self.centrovka = True
-        self.screenOSN = pg.display.set_mode(self.screenSize, pg.RESIZABLE)
-        self.screen = pg.Surface(self.screenSize)
-        self.menu = buttons.Menu()
-        self.window_manager = WindowManager(self)
-        self.mousePos = (-1, -1)
+        self.shift_main_screen = (0, 0)
+        self.Msize = self.screenSize
+
+        status("Set MainScreen parameters complete")
 
     def draw(self):
-        self.screen.fill((200, 200, 200))
+        self.screen_main.fill((200, 200, 200))
         self.screenOSN.fill((0, 0, 0))
+
         for event in pg.event.get():
             # print(event.type, pg.MOUSEBUTTONUP, pg.MOUSEBUTTONDOWN)
             if event.type == pg.QUIT:
@@ -28,37 +41,49 @@ class MainScreen:
             elif event.type == pg.MOUSEBUTTONDOWN or event.type == pg.MOUSEBUTTONUP:
                 self.window_manager.select(event.button, event.type)
             elif event.type == pg.VIDEORESIZE:
-                self.screenSize = event.size
-                k1 = self.screenSize[0] / self.WIDTH
-                k2 = self.screenSize[1] / self.HEIGHT
-                if k1 < k2:
-                    self.K_Mushtub = k1
-                    self.centrovka = True
-                else:
-                    self.K_Mushtub = k2
-                    self.centrovka = False
-
+                self.resize_main_screen(event.size)
 
         self.window_manager.draw()
         # self.menu.draw(self.screen, self.mousePos)
+        self.window_blit()
 
+    def resize_main_screen(self, new_size):
+        self.screenSize = new_size
+        k1 = self.screenSize[0] / self.WIDTH
+        k2 = self.screenSize[1] / self.HEIGHT
+        if k1 < k2:
+            self.K_Mushtub = k1
 
-        if self.centrovka:
-            dx = 0
-            dy = (self.screenSize[1] - self.HEIGHT * self.K_Mushtub) // 2
+            self.shift_main_screen = (
+                0,
+                (self.screenSize[1] - self.HEIGHT * k1) // 2
+            )
         else:
-            dx = (self.screenSize[0] - self.WIDTH * self.K_Mushtub) // 2
-            dy = 0
+            self.K_Mushtub = k2
 
-        self.mousePos2 = ((self.mousePos[0] - dx) // self.K_Mushtub, (self.mousePos[1] - dy) // self.K_Mushtub)
-        screen2 = pg.transform.scale(self.screen, (self.WIDTH * self.K_Mushtub, self.HEIGHT * self.K_Mushtub))
-        self.screenOSN.blit(screen2, (dx, dy))
-        if pg.mouse.get_focused():
-            self.mousePos = pg.mouse.get_pos()
-        else:
-            self.mousePos = (-1, -1)
+            self.shift_main_screen = (
+                (self.screenSize[0] - self.WIDTH * k2) // 2,
+                0
+            )
+
+        self.Msize = (self.WIDTH * self.K_Mushtub, self.HEIGHT * self.K_Mushtub)
+        self.mouse.update_screen_data(*self.shift_main_screen, self.K_Mushtub)
+
+
+    def window_blit(self):
+
+        self.mouse.update()
+
+        screen2 = pg.transform.scale(self.screen_main, self.Msize)
+        self.screenOSN.blit(screen2, self.shift_main_screen)
 
         pg.display.update()
+
+    def append_single_saves(self, buttons:list):
+        self.window_manager._append_buttons(buttons, "single_saves")
+
+    def append_online_saves(self, buttons:list):
+        self.window_manager._append_buttons(buttons, "online_saves")
 
 
 class WindowManager:
@@ -72,8 +97,11 @@ class WindowManager:
         self.load_windows()
         self.mainWindow = self.windows[0]
 
+        status("WindowManager init complete")
+
     def load_windows(self):
-        with open(r"data\styles_config.json", "r", encoding="utf-8") as f:
+        path = self.main_screen.GAME.path
+        with path.joinpath("data/styles_config.json").open("r", encoding="utf-8") as f:
             styles_config = json.load(f)
 
         for i_style in styles_config:
@@ -84,15 +112,18 @@ class WindowManager:
             self.styles[i_style] = style
 
 
-        with open(r"data\buttons_config.json", "r", encoding="utf-8") as f:
+        with path.joinpath("data/buttons_config.json").open("r", encoding="utf-8") as f:
             buttons_config = json.load(f)
 
         for window in buttons_config:
             self.windows.append(Window(self, window, buttons_config[window]))
             self.windows_keys[window] = len(self.windows) - 1
 
+        status(f"Load {len(self.windows)} windows")
+
     def draw(self):
-        self.mainWindow.menu.draw(self.main_screen.screen, self.main_screen.mousePos)
+        # log(self.main_screen.mouse.get_position())
+        self.mainWindow.menu.draw(self.main_screen.screen_main, self.main_screen.mouse.get_position())
 
     def keyPress(self, key, type):
         self.mainWindow.menu.keyPress(key, type)
@@ -112,6 +143,7 @@ class WindowManager:
     def set_main_window(self, window):
         # print(window)
         self.mainWindow = self.windows[self.windows_keys[window]]
+        log(f"Move to '{window}' window")
 
     def run_function(self, data):
         data = data.split("/")
@@ -127,6 +159,11 @@ class WindowManager:
         print(f"ERROR:   WindowManager::get_style - unknown style: {style_name}")
         return self.styles["error_style"]
 
+    def _append_buttons(self, buttons, screen:str):
+        window = self.windows[self.windows_keys[screen]]
+        for i in range(len(buttons)):
+            window.add_button(buttons[i])
+
 
 class Window:
     def __init__(self, manager:WindowManager, name, config):
@@ -134,15 +171,46 @@ class Window:
         self.name = name
         self.mowing = False
         self.menu = buttons.Menu()
+        self.cord_new_but = [0] * 6
+        self.default_style = None
         self.menu_load(config)
+
+        self.gen_but = []
+
+        status(f"Window '{name}' init complete")
 
     def menu_load(self, config):
         # game = self.manager.game
         # print(config)
-        for i_button in config:
+        self.cord_new_but = config["data"]["cord_new_but"]
+        self.default_style = self.manager.get_style(config["data"]["default_style"])
+        for i_button in config["buttons"]:
             if i_button[0] == "button":
                 # print("  ", i_button, i_button[2])
                 f = self.manager.genegate_function(i_button[2])
 
                 self.menu.append_option(i_button[1], f, i_button[3], self.manager.get_style(i_button[4]))
 
+
+    def move_new_button(self):
+        n = len(self.gen_but)
+
+        # x0, y0 = 100, 170
+        #
+        # dx, dy = 0, 70
+        #
+        # sx, sy = 100, 50
+        x0, y0, dx, dy, sx, sy = self.cord_new_but
+
+        if dx == None:
+            dx = -sx
+        if dy == None:
+            dy = -sy
+
+        return x0 + (dx + sx) * n, y0 + (dy + sy) * n, sx, sy
+
+    def add_button(self, data):
+        l = lambda but: print(f"select {but.description}")
+        self.gen_but.append(
+            self.menu.append_option(data[0], l, self.move_new_button(), self.default_style, descr=data[0])
+        )

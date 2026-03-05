@@ -22,13 +22,13 @@ class Saves:
 
     def __init__(self, game):
         self.game = game
-        self.saves_path = os.getcwd().replace(r"\data", r"\saves", 1)
+        self.saves_path = self.game.path.joinpath(r"\saves")
         self.saves = []
 
     def detect_saves(self, version):
         self.saves = []
         for i in os.listdir(self.saves_path):
-            save = self.Save(f"{self.saves_path}\\{i}")
+            save = self.Save(self.saves_path.joinpath(i))
             if save.version <= version:
                 self.saves.append(save)
         return self.saves
