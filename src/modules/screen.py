@@ -133,35 +133,9 @@ class Window(Resizer):
         data = {"shift": self.position, "scale": 1, "scaling": False}
         self.button_manager.mouse.add_address(self.name, data)
 
-        last_polygons = ""
+
         for i_button in config["buttons"]:
-            if i_button[2] != last_polygons:
-                polygons = ManyPolygonizerLoader.get_polygonizer(i_button[4])
-                self.button_manager.set_polygonizer(polygons)
-
-            if i_button[0] == "button":
-                button = self.button_manager.add_button(i_button[1], i_button[3], None)
-                trigger = self.manager.generate_function(i_button[2], button)
-                button.set_triggers(trigger)
-            elif i_button[0] == "button_png":
-                button = self.button_manager.add_png_but(i_button[3], None, i_button[6])
-                trigger = self.manager.generate_function(i_button[2], button)
-                button.set_triggers(trigger)
-                button.set_text(i_button[1])
-            elif i_button[0] == "png":
-                button = self.button_manager.add_png(i_button[3], i_button[6])
-                button.set_text(i_button[1])
-            elif i_button[0] == "txt":
-                button = self.button_manager.add_text(i_button[1], i_button[3])
-            else:
-                continue
-
-            loger.log(i_button)
-
-            if i_button[5] is not None:
-                for key, value in i_button[5].items():
-                    button.set_parameters(key, value)
-
+            self.add_button(i_button)
 
     def move_new_button(self):
         n = len(self.gen_but)
@@ -180,11 +154,40 @@ class Window(Resizer):
 
         return x0 + (dx + sx) * n, y0 + (dy + sy) * n, sx, sy
 
-    def add_button(self, data):
-        l = lambda but: print(f"select {but.description}")
-        self.gen_but.append(
-            self.button_manager.append_option(data[0], l, self.move_new_button(), self.default_style, descr=data[0])
-        )
+    def add_button(self, button_data, last_polygons=[""]) -> None:
+        if button_data[2] != last_polygons[0]:
+            polygons = ManyPolygonizerLoader.get_polygonizer(button_data[4])
+            self.button_manager.set_polygonizer(polygons)
+            # last_polygons[0] = button_data[2]
+
+        if button_data[0] == "button":
+            button = self.button_manager.add_button(button_data[1], button_data[3], None)
+            trigger = self.manager.generate_function(button_data[2], button)
+            button.set_triggers(trigger)
+        elif button_data[0] == "button_png":
+            button = self.button_manager.add_png_but(button_data[3], None, button_data[6])
+            trigger = self.manager.generate_function(button_data[2], button)
+            button.set_triggers(trigger)
+            button.set_text(button_data[1])
+        elif button_data[0] == "png":
+            button = self.button_manager.add_png(button_data[3], button_data[6])
+            button.set_text(button_data[1])
+        elif button_data[0] == "txt":
+            button = self.button_manager.add_text(button_data[1], button_data[3])
+        else:
+            return
+
+        loger.log(button_data)
+
+        if button_data[5] is not None:
+            for key, value in button_data[5].items():
+                button.set_parameters(key, value)
+
+        loger.log(button)
+
+        if button_data[5] is not None:
+            for key, value in button_data[5].items():
+                button.set_parameters(key, value)
 
     def draw(self, screen):
         if self.background is not None:
@@ -192,6 +195,8 @@ class Window(Resizer):
         self.button_manager.draw()
         screen.blit(self.surface, self.position)
 
+    def cleen_buttons(self):
+        self.button_manager.cleen_buttons()
 
 class WindowManager:
     main_screen: MainScreen
@@ -290,7 +295,14 @@ class WindowManager:
     def open_window(self, window):
         self.visible.append(self.windows[self.windows_keys[window]])
 
-    def _append_buttons(self, buttons, screen:str):
+    def _append_buttons(self, buttons: list[str], screen:str):
         window = self.windows[self.windows_keys[screen]]
-        for i in range(len(buttons)):
-            window.add_button(buttons[i])
+        for i_button in range(len(buttons)):
+            window.add_button([
+                "button", buttons[i_button], "run_function:window/open_single_player",
+                [100, 25 + i_button * 100, 400, 75], "interface", None, None
+            ])
+
+    def set_button_single(self, save_names: list[str]):
+        self.windows[self.windows_keys["single_saves"]].cleen_buttons()
+        self._append_buttons(save_names, "single_saves")

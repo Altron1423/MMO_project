@@ -15,10 +15,22 @@
         ["button", "Выход", "run_function:sistem/exit", [405, 410, 195, 75], "interface", null]
       ]
     },
-    "single_saves": {
+    "game_select": {
       "data": {
         "window_position": [0, 0],
         "window_background": [230, 230, 230],
+        "cord_new_but": [0.03, 0.01, 0.04, 0.02, 0.45, 0.3],
+        "default_polygonizer": "pet_feed"
+      },
+      "buttons": [
+        ["button_png", "Назад", "run_function:window/open_game_menu", [20, 20, 100, 60], "interface", null, null]
+      ]
+    },
+    "single_saves": {
+      "data": {
+        "window_percent_position": [0, 0.15],
+        "window_background": [190, 190, 190],
+        "window_percent_size": [1.0, 0.7],
         "cord_new_but": [0.03, 0.01, 0.04, 0.02, 0.45, 0.3],
         "default_polygonizer": "pet_feed"
       },

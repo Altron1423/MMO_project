@@ -1,7 +1,7 @@
 from src.modules.math import Vector3
 from MapPlate import MapPlate
 
-class MapChunk:
+class MapChunks:
     CountPlate:int = 16
     map: list[list[MapPlate]]
 

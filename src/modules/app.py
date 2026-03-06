@@ -6,7 +6,6 @@ from src.modules.Core import CORE
 import src.modules.loaders
 from src.modules.Loger import loger
 import src.modules.screen as screen
-import json
 
 
 class App:

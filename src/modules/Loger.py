@@ -108,7 +108,7 @@ class Loger:
     def status(self, *args, time=True, data=False, sep=" ", end="\n"):
         self._log_data(*args, tp=2, time=time, data=data, sep=sep, end=end)
 
-    def log_error(self, *args, time=True, data=False, sep=" ", end="\n"):
+    def error(self, *args, time=True, data=False, sep=" ", end="\n"):
         self._log_data(*args, tp=3, time=time, data=data, sep=sep, end=end)
 
     def pass_line(self, n=1):

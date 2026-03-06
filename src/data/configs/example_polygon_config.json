@@ -10,9 +10,20 @@
           "styleName": "base_back_ground"
         },
         {
+          "type": 1,
+          "percent_position": [0, 0],
+          "percent_size": [1, 1],
+          "styleName": "base_block"
+        },
+        {
+          "type": 3,
+          "position": [0, 0],
+          "percent_size": [1, 1],
+          "pngName": "test_name1"
+        },
+        {
           "type": 2,
-          "position": [20, 0],
-          "styleName": "base_border"
+          "position": [20, 0]
         },
         {
           "type": 1,

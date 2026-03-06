@@ -1,5 +1,7 @@
 import json
 
+from src.modules.save.MapChunk import MapChunks
+
 
 class Dimension:
     SIZE_X: int
@@ -7,7 +9,7 @@ class Dimension:
     SIZE_Z: int
     CountChunkX: int
     CountChunkZ: int
-    map: list[list]
+    map: list[list[MapChunks]]
 
 
 

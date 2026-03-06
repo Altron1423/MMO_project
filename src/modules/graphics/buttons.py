@@ -441,6 +441,9 @@ class ButtonManager:
             return self._buttons[index]
         return None
 
+    def cleen_buttons(self):
+        self._buttons = []
+
     def select(self, event):
         but = event.button
         up = event.type == pg.MOUSEBUTTONDOWN

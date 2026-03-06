@@ -12,7 +12,7 @@ class Core:
 
     def __init__(self):
         path = Path.cwd()
-        self.path = path.joinpath("configs/core.json")
+        self.path = path.joinpath("src/data/configs/core.json")
         with self.path.open("r") as f:
             core = json.load(f)
         for i in core:
