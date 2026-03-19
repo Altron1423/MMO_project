@@ -1,12 +1,12 @@
 import pygame as pg
 import json
 
-from src.modules.Core import CORE
+from libs.Core import CORE
 
 pg.init()
 
-from src.modules.save.SaveManager import SavesManager
-from src.modules.app import App
+from libs.save import SavesManager
+from libs.app import App
 # from src.modules.Loger import loger
 # loger.loging = False
 
@@ -22,7 +22,14 @@ class Game(App):
             "open_single_player": [self.open_single_player, None],
             "open_game_menu": [self.open_game_menu, None],
         }
-        self.add_functions({"window": config})
+        test = {
+            "test_function": [lambda bat: print(bat), None],
+        }
+        self.add_functions({
+            "window": config,
+            "test": test
+        })
+
         self.save_manager.set_path_save(self.path.joinpath(CORE.saves_directory))
 
     def load_pet_feed(self):
@@ -53,12 +60,13 @@ class Game(App):
                 ]
             ])
             # log(config[-1])
-        mb._menu_load({"buttons": config})
+        mb._menu_load({"interface_elements": config})
 
     def open_single_player(self, bat):
         wm = self.main_screen.window_manager
         self.save_manager.load_from_dir()
-        wm.set_button_single(self.save_manager.get_saves_name())
+        self.main_screen.append_single_saves(self.save_manager.get_saves_name())
+        # wm.set_button_single(self.save_manager.get_saves_name())
         wm.set_main_window("game_select")
         wm.open_window("single_saves")
 
@@ -67,30 +75,30 @@ class Game(App):
         wm.set_main_window("main_menu")
         wm.close_window("single_saves")
 
-    def gen_params(self, params):
-        st_param = ["Пол:", "Порода:", "Рост:", "Вес:", "Окрас:"]
-        for key, value in params.items():
-            st_param.append(value)
-
-        return st_param
-
-    def open_pet_info(self, data):
-        self.select_pet = self.pets[data.get_parameters("pet_name")]
-        pet = self.select_pet
-        wm = self.main_screen.window_manager
-        bm = wm.get_window("head_info").button_manager
-        bm._buttons[0].set_png(pet["image"][1])
-        bm._buttons[0].set_text(f"{pet['name']}, {pet['age']}")
-
-        bm = wm.get_window("detailed_information").button_manager
-        bm._buttons[0].set_text(pet["descr"])
-        bm._buttons[1].set_text(self.gen_params(pet["parameters"]))
-        bm._buttons[2].set_text(pet["tags"])
-        bm._buttons[3].set_text(["Куратор собаки:"] + pet["tutor"])
-
-        wm.close_window("find_line")
-        wm.open_window("head_info")
-        wm.set_main_window("detailed_information")
+    # def gen_params(self, params):
+    #     st_param = ["Пол:", "Порода:", "Рост:", "Вес:", "Окрас:"]
+    #     for key, value in params.items():
+    #         st_param.append(value)
+    #
+    #     return st_param
+    #
+    # def open_pet_info(self, data):
+    #     self.select_pet = self.pets[data.get_parameters("pet_name")]
+    #     pet = self.select_pet
+    #     wm = self.main_screen.window_manager
+    #     bm = wm.get_window("head_info").button_manager
+    #     bm._buttons[0].set_png(pet["image"][1])
+    #     bm._buttons[0].set_text(f"{pet['name']}, {pet['age']}")
+    #
+    #     bm = wm.get_window("detailed_information").button_manager
+    #     bm._buttons[0].set_text(pet["descr"])
+    #     bm._buttons[1].set_text(self.gen_params(pet["parameters"]))
+    #     bm._buttons[2].set_text(pet["tags"])
+    #     bm._buttons[3].set_text(["Куратор собаки:"] + pet["tutor"])
+    #
+    #     wm.close_window("find_line")
+    #     wm.open_window("head_info")
+    #     wm.set_main_window("detailed_information")
 
 
 if __name__ == "__main__":

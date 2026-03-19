@@ -1,5 +1,5 @@
 {
-  "type": "buttons",
+  "type": "interface_elements",
   "windows": {
     "main_menu": {
       "data": {

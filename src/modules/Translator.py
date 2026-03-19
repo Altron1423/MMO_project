@@ -1,6 +1,6 @@
 import asyncio
 from pathlib import Path
-from Loger import log, log_step
+from libs.Loger import log, log_step
 from googletrans import Translator as GTr
 from time import sleep
 # from translator import translator as TR
