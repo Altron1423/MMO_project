@@ -19,8 +19,9 @@ class PresentationSaveDTO:
 class DataSaveDTO:
     name: str
     version: list[int]
-    last_open: datetime
     description: str
+    last_open: datetime
+    created: bool
 
 @dataclass
 class CreateSaveWF_DTO:
@@ -29,3 +30,4 @@ class CreateSaveWF_DTO:
     last_open: datetime
     description: str
     path_to_save: Path
+    created: bool

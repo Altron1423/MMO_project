@@ -1,0 +1,10 @@
+{
+  "type": "map_plate",
+  "data": {
+    "name": "test_plate2",
+    "type": "plate",
+    "changeable": false,
+    "color": [223, 223, 223],
+    "texture": null
+  }
+}

@@ -1,9 +1,10 @@
-from Vector2 import Vector2
+from .Vector2 import Vector2
 
 class Vector3:
     x: int
     y: int
     z: int
+    _vector_type_ = "Vector3"
 
     def __init__(self, *position):
         self.set(*position)

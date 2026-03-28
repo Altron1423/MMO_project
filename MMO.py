@@ -6,17 +6,14 @@ from libs.Core import CORE
 pg.init()
 
 from libs.save import SavesManager
-from libs.app import App
-# from src.modules.Loger import loger
-# loger.loging = False
+from libs.application import Application
 
 
-class Game(App):
+class App(Application):
     save_manager:SavesManager = SavesManager()
 
     def __init__(self):
         super().__init__()
-        # self.load_pet_feed()
 
         config = {
             "open_single_player": [self.open_single_player, None],
@@ -66,7 +63,6 @@ class Game(App):
         wm = self.main_screen.window_manager
         self.save_manager.load_from_dir()
         self.main_screen.append_single_saves(self.save_manager.get_saves_name())
-        # wm.set_button_single(self.save_manager.get_saves_name())
         wm.set_main_window("game_select")
         wm.open_window("single_saves")
 
@@ -102,5 +98,5 @@ class Game(App):
 
 
 if __name__ == "__main__":
-    game = Game()
+    game = App()
     game.run()

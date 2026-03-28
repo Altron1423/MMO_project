@@ -1,15 +1,14 @@
 from pathlib import Path
 from datetime import datetime
 
-from src.modules.dtos.save import (
+from libs.dtos.save import (
     CreateSavesDTO,
     PresentationSaveDTO,
     CreateSaveWF_DTO
 )
-from libs.file_works.saves import SavesWF
 from libs.Loger import loger
-from libs.save.SaveFull import SaveFull
-from libs.save.SaveLight import SaveLight
+from libs.save.save_full import SaveFull
+from libs.save.save_light import SaveLight
 
 class SavesManager:
     path_saves: Path
@@ -31,15 +30,15 @@ class SavesManager:
             cls.__load_light_save(iPath)
 
     @classmethod
-    def get_saves_name(cls) -> list[SaveLight]:
-        saves_names = []
+    def get_saves_name(cls) -> list[str]:
+        save_names = []
         for save in cls.saves:
-            saves_names.append(save.name)
-        return saves_names
+            save_names.append(save.name)
+        return save_names
 
     @classmethod
     def get_preview_save(cls, name_save: str) -> PresentationSaveDTO | None:
-        save_element = cls._get_saves(name_save)
+        save_element = cls.__get_saves(name_save)
 
         if not save_element:
             return None
@@ -53,6 +52,8 @@ class SavesManager:
 
     @classmethod
     def create_saves(cls, save: CreateSavesDTO) -> bool:
+        from libs.file_works import SavesWF
+
         if save.name in cls.get_saves_name():
             return False
 
@@ -60,7 +61,7 @@ class SavesManager:
             name=save.name,
             version=save.version,
             last_open=datetime.now(),
-            description="",
+            description="This is test world.",
             path_to_save=cls.path_saves
         ))
 
@@ -69,6 +70,12 @@ class SavesManager:
     @classmethod
     def load_full_save(cls, save_name: str) -> SaveFull:
         return cls.__load_full_save(save_name)
+
+    @classmethod
+    def del_save(cls, save_name: str):
+        save = cls.__get_saves(save_name)
+        save.delete()
+        cls.saves.remove(save)
 
     @classmethod
     def __get_saves(cls, name: str) -> SaveLight | None:
@@ -84,7 +91,6 @@ class SavesManager:
             save = SaveLight(path)
             save.fast_load()
             cls.saves.append(save)
-            loger.log(save.__dict__)
         except Exception as e:
             loger.status("load save failed")
             loger.error(e)
@@ -101,11 +107,13 @@ class SavesManager:
 
 if __name__ == "__main__":
     saves = SavesManager()
-    saves.set_path_save(Path.cwd().joinpath(r"/saves"))
+    saves.set_path_save(Path.cwd().joinpath("/saves"))
     saves.load_from_dir()
-    print(saves.get_saves_name())
+    saves_names = saves.get_saves_name()
+    print(saves_names)
     print(saves.get_preview_save('test_world'))
 
+    # saves.del_save(saves_names[-1])
     saves.create_saves(CreateSavesDTO(
         name="test_world3",
         version=[0,1,0],

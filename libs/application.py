@@ -7,7 +7,7 @@ from libs.Loger import loger
 import src.modules.screen as screen
 
 
-class App:
+class Application:
     def __init__(self):
         loger.status("App init started")
 

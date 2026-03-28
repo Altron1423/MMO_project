@@ -16,7 +16,6 @@ class MainScreen:
         self.screenOSN = pg.display.set_mode(self.screenSize, pg.RESIZABLE)
         self.screen_main = pg.Surface(self.screenSize)
         self.mouse = Mouse(pg.mouse)
-        # self.menu = interface_elements.ButtonManager()
         self.window_manager:WindowManager = WindowManager(self)
 
         loger.status("MainScreen init complete")
@@ -35,19 +34,16 @@ class MainScreen:
         self.screenOSN.fill((0, 0, 0))
 
         for event in pg.event.get():
-            # print(event.type, pg.MOUSEBUTTONUP, pg.MOUSEBUTTONDOWN)
             if event.type == pg.QUIT:
                 self.Application.exit(None)
             elif event.type == pg.KEYDOWN or event.type == pg.KEYUP:
                 self.window_manager.keyPress(event.key, event.type)
-                # self.menu.keyPress(event.key, event.type)
             elif event.type == pg.MOUSEBUTTONDOWN or event.type == pg.MOUSEBUTTONUP:
                 self.window_manager.select(event)
             elif event.type == pg.VIDEORESIZE:
                 self.resize_main_screen(event.size)
 
         self.window_manager.draw()
-        # self.menu.draw(self.screen, self.mousePos)
         self.window_blit()
 
     def resize_main_screen(self, new_size):
@@ -213,7 +209,7 @@ class WindowManager:
         loger.status("WindowManager init complete")
 
     def load_windows(self):
-        path = self.main_screen.Application.path.joinpath("src/data/configs")
+        path = self.main_screen.Application.path_map.joinpath("src/data/configs")
 
         loger.log(path)
 

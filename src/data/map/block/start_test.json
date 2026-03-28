@@ -1,0 +1,12 @@
+{
+  "type": "map_block",
+  "data": {
+    "name": "start_test_block",
+    "size": "<Size:4,3>",
+    "form": [
+      ["start_test_chunk", "start_test_chunk", "start_test_chunk", "start_test_chunk"],
+      ["start_test_chunk", null,               null,               "start_test_chunk"],
+      ["start_test_chunk", "start_test_chunk", "start_test_chunk", "start_test_chunk"]
+    ]
+  }
+}

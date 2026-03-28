@@ -3,11 +3,13 @@ from pathlib import Path
 from libs.Loger import loger
 import json
 
+from libs.loaders.loader import Loader
+
 if __name__ == '__main__':
     import pygame as pg
     pg.init()
 
-class ManyPolygonizerLoader:
+class ManyPolygonizerLoader(Loader):
     def __init__(self):
         self.many_polygonizers = {}
 

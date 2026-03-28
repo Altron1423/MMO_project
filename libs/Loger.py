@@ -4,7 +4,7 @@ from datetime import date as Date, datetime
 from inspect import currentframe, getframeinfo
 
 
-def get_linenumber():
+def get_line_number():
     cf = currentframe().f_back.f_back.f_back.f_back
     filename = getframeinfo(cf).filename
     return cf.f_lineno, filename
@@ -75,7 +75,7 @@ class Loger:
             log_time = ""
 
         if data:
-            number_str, nf = get_linenumber()
+            number_str, nf = get_line_number()
             if "src" in nf:
                 name_file = nf.split('src')[1]
             elif "libs" in nf:
@@ -113,7 +113,7 @@ class Loger:
     def status(self, *args, time=True, data=False, sep=" ", end="\n"):
         self._log_data(*args, tp=2, time=time, data=data, sep=sep, end=end)
 
-    def error(self, *args, time=True, data=False, sep=" ", end="\n"):
+    def error(self, *args, time=True, data=True, sep=" ", end="\n"):
         self._log_data(*args, tp=3, time=time, data=data, sep=sep, end=end)
 
     def pass_line(self, n=1):

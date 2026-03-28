@@ -2,11 +2,13 @@ from libs.graphics.styler import Styler
 from pathlib import Path
 import json
 
+from libs.loaders.loader import Loader
+
 if __name__ == '__main__':
     import pygame as pg
     pg.init()
 
-class StylerLoader:
+class StylerLoader(Loader):
     def __init__(self):
         self.styles = {}
 

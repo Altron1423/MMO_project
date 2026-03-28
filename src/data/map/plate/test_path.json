@@ -1,0 +1,10 @@
+{
+  "type": "map_plate",
+  "data": {
+    "name": "test_path",
+    "type": "path",
+    "changeable": true,
+    "color": [0, 223, 0],
+    "texture": null
+  }
+}

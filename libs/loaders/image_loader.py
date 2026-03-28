@@ -2,13 +2,15 @@ from pathlib import Path
 import pygame as pg
 import json
 
+from libs.loaders.loader import Loader
 
-class ImageLoader:
+
+class ImageLoader(Loader):
 
     def __init__(self):
         self.images = {}
 
-    def load_images(self, path):
+    def load_images(self, path: Path):
         with Path(path).open("r", encoding="utf-8") as file:
             json_data = json.load(file)
             if json_data["type"] == "image":
