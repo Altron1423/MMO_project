@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import libs.graphics.interface_elements.buttons_element as buttons
 from libs.graphics.ButtonManager import ButtonManager
 from libs.graphics.polygons import Resizer
@@ -33,15 +35,15 @@ class MainScreen:
         self.screen_main.fill((200, 200, 200))
         self.screenOSN.fill((0, 0, 0))
 
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                self.Application.exit(None)
-            elif event.type == pg.KEYDOWN or event.type == pg.KEYUP:
-                self.window_manager.keyPress(event.key, event.type)
-            elif event.type == pg.MOUSEBUTTONDOWN or event.type == pg.MOUSEBUTTONUP:
-                self.window_manager.select(event)
-            elif event.type == pg.VIDEORESIZE:
-                self.resize_main_screen(event.size)
+        # for event in pg.event.get():
+        #     if event.type == pg.QUIT:
+        #         self.Application.exit(None)
+        #     elif event.type == pg.KEYDOWN or event.type == pg.KEYUP:
+        #         self.window_manager.keyPress(event.key, event.type)
+        #     elif event.type == pg.MOUSEBUTTONDOWN or event.type == pg.MOUSEBUTTONUP:
+        #         self.window_manager.select(event)
+        #     elif event.type == pg.VIDEORESIZE:
+        #         self.resize_main_screen(event.size)
 
         self.window_manager.draw()
         self.window_blit()
@@ -209,7 +211,8 @@ class WindowManager:
         loger.status("WindowManager init complete")
 
     def load_windows(self):
-        path = self.main_screen.Application.path_map.joinpath("src/data/configs")
+        # path = self.main_screen.Application.path_map.joinpath("src/data/configs")
+        path = Path.cwd().joinpath("src/data/configs")
 
         loger.log(path)
 
@@ -292,7 +295,7 @@ class WindowManager:
         window = self.get_window(screen)
         for i_button in range(len(buttons)):
             window.add_button([
-                "button", buttons[i_button], "run_function:test/test_function",
+                "button", buttons[i_button], "run_function:window/save_select",
                 [100, 25 + i_button * 100, 400, 75], "interface", None, None
             ])
 

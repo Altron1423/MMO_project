@@ -1,13 +1,23 @@
+from typing import Callable
+
 import pygame as pg
 
-# pg.init()
 from pathlib import Path
 from libs.Core import CORE
 from libs.Loger import loger
 import src.modules.screen as screen
+from libs.ticker import Ticker
 
 
 class Application:
+    clock: pg.time.Clock
+    TPS: int
+    tick: Ticker
+    path: Path
+    WORK: bool
+    main_screen: screen.MainScreen
+    function_runs: dict[str, dict[str, list[Callable[..., None] | None]]]
+
     def __init__(self):
         loger.status("App init started")
 
@@ -23,24 +33,43 @@ class Application:
 
     def run(self):
         loger.status("App start")
-        while self.WORK:
-            self.tick += 1
-            self.clock.tick(self.TPS)
-            self.main_screen.draw()
+        try:
+            while self.WORK:
+                self.tick.tick()
+                self.clock.tick(self.TPS)
 
-    def exit(self, x):
+                for event in pg.event.get():
+                    if event.type == pg.QUIT:
+                        self.exit(None)
+                    elif event.type == pg.KEYDOWN or event.type == pg.KEYUP:
+                        self.main_screen.window_manager.keyPress(event.key, event.type)
+                        self.key_press(event.key, event.type == pg.KEYDOWN)
+                    elif event.type == pg.MOUSEBUTTONDOWN or event.type == pg.MOUSEBUTTONUP:
+                        self.main_screen.window_manager.select(event)
+                    elif event.type == pg.VIDEORESIZE:
+                        self.main_screen.resize_main_screen(event.size)
+
+                self.main_screen.draw()
+                self.run_more()
+        except KeyboardInterrupt:
+            self.exit()
+
+    def key_press(self, key: str, key_down: bool):
+        ...
+
+    def run_more(self):
+        ...
+
+    def exit(self, _=None):
         self.WORK = False
         loger.log("App exit")
 
     def _set_start_parameters(self):
         self.clock = pg.time.Clock()
         self.TPS = 20
-        self.tick = 0
+        self.tick = Ticker()
         self.path = Path.cwd()
         self.WORK = True
-        self.pets = {}
-        self.select_pet = None
-
 
         loger.status(f"App version: {CORE.version}")
         loger.status("Set App parameters complete")
@@ -49,7 +78,7 @@ class Application:
         sist = {
             "exit": [self.exit, None]
         }
-        self.function_rans = {"sistem": sist, "mods": {}}
+        self.function_runs = {"sistem": sist, "mods": {}}
 
         loger.status("Function giver generate complete")
 
@@ -61,13 +90,13 @@ class Application:
         """
         for key, functions in dict_functions.items():
             if key != "sistem":
-                if key not in self.function_rans:
-                    self.function_rans[key] = {}
+                if key not in self.function_runs:
+                    self.function_runs[key] = {}
                 for name, function in functions.items():
-                    self.function_rans[key][name] = function
+                    self.function_runs[key][name] = function
 
     def give_function(self, data, passw=None):
-        m: dict | list = self.function_rans
+        m: dict | list = self.function_runs
         for i in data:
             if i in m:
                 m = m[i]

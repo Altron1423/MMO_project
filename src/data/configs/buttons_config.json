@@ -23,7 +23,9 @@
         "default_polygonizer": "pet_feed"
       },
       "buttons": [
-        ["button_png", "Назад", "run_function:window/open_game_menu", [20, 20, 100, 60], "interface", null, null]
+        ["button_png", "Назад", "run_function:window/open_game_menu", [20, 20, 100, 60], "interface", null, null],
+        ["button_png", "Создать", "move_window:main_menu", [40, 800, 100, 60], "interface", null, null],
+        ["button_png", "Играть", "run_function:game/start_game", [400, 800, 100, 60], "interface", null, null]
       ]
     },
     "single_saves": {
