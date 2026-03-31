@@ -1,4 +1,11 @@
 from .save import *
+from .connects import (
+    AddressConnectDTO, GameDataToServerDTO, GameDataToClientDTO,
+    ConnectServerDTO, ConnectClientDTO
+)
+
+from .entity import AttributeEntityDTO
+
 from .dimension import DimensionSaveDTO
 from .map_block import MapBlockSaveDTO
 from .map_chunk import MapChunkSaveDTO

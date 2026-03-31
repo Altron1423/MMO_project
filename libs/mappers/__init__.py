@@ -1,5 +1,5 @@
-# from save import *
 from .save import SaveMapper
+from .connects import ConnectServerMapper, ConnectClientMapper, GameDataToServerMapper, GameDataToClientMapper
 
 from .dimension import DimensionSaveMapper
 from .map_block import MapBlockSaveMapper

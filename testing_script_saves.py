@@ -1,12 +1,12 @@
 from pathlib import Path
 
 from libs.Loger import loger
-from libs import SavesManager, GameMain
+from libs import SavesManager, GameServer
 
 
 if __name__ == '__main__':
 
-    game = GameMain()
+    game = GameServer()
     save_manager = SavesManager
     path = Path().cwd().joinpath("saves")
     save_manager.set_path_save(path)
