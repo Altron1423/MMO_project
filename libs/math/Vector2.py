@@ -26,24 +26,26 @@ class Vector2:
             raise TypeError("Vector2 only accepts strings")
 
     def __mul__(self, other):
-        pos = Vector2()
+        v = Vector2()
 
         if isinstance(other, int):
-            pos.set(self.x * other, self.z * other)
+            v.set(self.x * other, self.z * other)
+        elif isinstance(other, float):
+            v.set(int(self.x * other), int(self.z * other))
         elif isinstance(other, Vector2):
-            pos.set(self.x * other.x, self.z * other.z)
+            v.set(self.x * other.x, self.z * other.z)
 
-        return pos
+        return v
 
     def __add__(self, other):
-        pos = Vector2()
+        v = Vector2()
 
         if isinstance(other, int):
-            pos.set(self.x + other, self.z + other)
+            v.set(self.x + other, self.z + other)
         elif isinstance(other, Vector2):
-            pos.set(self.x + other.x, self.z + other.z)
+            v.set(self.x + other.x, self.z + other.z)
 
-        return pos
+        return v
 
     def __str__(self):
         return f"<{self._vector_type_}:{self.x},{self.z}>"

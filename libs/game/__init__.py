@@ -1,2 +1,7 @@
 from .exception import *
-from .game_main import *
+
+from .sub_classes import *
+from .entitys import *
+
+from .game_server import GameServer
+from .game_client import GameClient
