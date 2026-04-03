@@ -1,6 +1,7 @@
 import pygame as pg
 
 from libs.graphics.Bars import Bars
+from libs.math import Size2, Position2
 from libs.window.Mouse import Mouse
 from libs.graphics.TriggerGen import TriggerGen
 from libs.graphics.interface_elements.buttons_element import Button
@@ -16,13 +17,14 @@ class ButtonManager:
     last_polygonizer: ManyPolygonizer | None
     address: str
     surface: pg.Surface | None
+    surface_size: Size2
     active_button: int | None
     dynamic_position_X: Bars
     dynamic_position_Y: Bars
 
     def __init__(self, mouse):
         self._buttons = []
-        self.polygonizer = ManyPolygonizer([100, 100])
+        self.polygonizer = ManyPolygonizer(Size2(100, 100))
         self.mouse = mouse
         self.last_polygonizer = None
         self.address = "main"
@@ -34,8 +36,9 @@ class ButtonManager:
 
     def set_surface(self, surface):
         self.surface = surface
+        self.surface_size = Size2(surface.get_size())
         for button in self._buttons:
-            button.set_surface_size(surface.get_size())
+            button.set_surface_size(self.surface_size)
 
     def set_address(self, new_address):
         self.address = new_address
@@ -53,18 +56,16 @@ class ButtonManager:
     def add_button(self, text, position, triggers):
         button = self._create_button("button")
         button.set_text(text)
-        button._set_p_s(position)
-        # button.move_to(position[:2])
-        # button.resize(position[2:])
+        button.set_button_position_size(position)
         button.set_triggers(triggers)
         return button
 
     def add_text(self, text, position):
-        button = self._create_button()
+        button: Button | PngElement | TextElement = self._create_button()
         button.set_type("txt")
         # log(text)
         button.set_text(text)
-        button._set_p_s(position)
+        button.set_button_position_size(position)
         # button.move_to(position[:2])
         # button.resize(position[2:])
         return button
@@ -79,7 +80,7 @@ class ButtonManager:
         #     button.resize(position[2:])
         if len(position) == 2:
             position = [*position, *png.get_size()]
-        button._set_p_s(position)
+        button.set_button_position_size(position)
         button.set_png(png)
 
 
@@ -95,7 +96,7 @@ class ButtonManager:
         if len(position) == 2:
             position = [*position, *png.get_size()]
 
-        button._set_p_s(position)
+        button.set_button_position_size(position)
         button.set_png(png)
         button.set_triggers(triggers)
 
@@ -104,7 +105,7 @@ class ButtonManager:
     def add_mower(self, position, moveX: None|Bars = None, moveY: None|Bars = None):
         button = self._create_button()
         button.set_type("mower")
-        button._set_p_s(position)
+        button.set_button_position_size(position)
         trigers = TriggerGen()
 
         if moveX is not None:
@@ -123,6 +124,9 @@ class ButtonManager:
 
         button.set_triggers(trigers)
         button.set_mover(mvX, mvY)
+
+    def key_press(self, key: int, key_type:int):
+        ...
 
 
     def get_button(self, index):
@@ -143,10 +147,10 @@ class ButtonManager:
     def draw(self):
         if self.surface is not None:
             mouse_pos = self.mouse.get_position(self.address)
-            if 0 <= mouse_pos[0] <= self.surface.get_size()[0] and 0 <= mouse_pos[1] <= self.surface.get_size()[1]:
+            if mouse_pos in self.surface_size:
                 pass
             else:
-                mouse_pos = [-1000, 1000]
+                mouse_pos = Position2(-1000, 1000)
             self.active_button = self._testing_activ(mouse_pos)
             self.mouse.add_button(self.get_button(self.active_button))
             for i, butt in enumerate(self._buttons):
@@ -171,7 +175,8 @@ class ButtonManager:
             button = TextElement(self, len(self._buttons))
         elif type_button == "png_but":
             button = PngElement(self, len(self._buttons))
-
+        else:
+            raise ValueError
 
         self._buttons.append(
             button
@@ -183,7 +188,7 @@ class ButtonManager:
             button.set_polygonizer(self.polygonizer)
 
         if self.surface is not None:
-            button.set_surface_size(self.surface.get_size())
+            button.set_surface_size(self.surface_size)
 
 
         return button

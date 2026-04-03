@@ -2,5 +2,6 @@
   "version": "0.1.0",
   "saves_directory": "saves",
   "logs_directory": "logs",
-  "mod_packs_directory": "mods"
+  "mod_packs_directory": "mods",
+  "start_size": "<Size:1080,720>"
 }

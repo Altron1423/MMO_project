@@ -49,6 +49,15 @@ class MapChunk:
     ) -> MapPlate:
         if position in self.size:
             return self.map[position.z][position.x]
+        raise f"{position} not in {self.size}"
+
+    def get_height(
+            self,
+            position: Position2,
+    ) -> int:
+        if position in self.size:
+            return self.height_map[position.z][position.x]
+        raise f"{position} not in {self.size}"
 
     def __str__(self) -> str:
         return f"<{self.name}({self.id})>"

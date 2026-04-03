@@ -3,63 +3,69 @@
   "windows": {
     "main_menu": {
       "data": {
-        "window_position": [0, 0],
         "window_background": [230, 230, 230],
         "cord_new_but": [0.03, 0.01, 0.04, 0.02, 0.45, 0.3],
         "default_polygonizer": "pet_feed"
       },
       "buttons": [
-        ["button", "Одиночная игра", "run_function:window/open_single_player", [200, 250, 400, 75], "interface", null],
-        ["button", "Многопользовательская игра", "move_window:online_servers", [200, 330, 400, 75], "interface", null],
-        ["button", "Настройки", "move_window:settings", [200, 410, 195, 75], "interface", null],
-        ["button", "Выход", "run_function:sistem/exit", [405, 410, 195, 75], "interface", null]
+        ["button", "Одиночная игра", "run_function:window/open_single_player",["<Recalc:<Vector2:0.5,0.5>/<Vector2:-200,-122>>", "<Recalc:<Vector2:0,0>/<Vector2:400,75>>"], "interface", null],
+        ["button", "Многопользовательская игра", "move_window:online_servers", ["<Recalc:<Vector2:0.5,0.5>/<Vector2:-200,-37>>", "<Recalc:<Vector2:0,0>/<Vector2:400,75>>"], "interface", null],
+        ["button", "Настройки", "move_window:settings", ["<Recalc:<Vector2:0.5,0.5>/<Vector2:-200,48>>", "<Recalc:<Vector2:0,0>/<Vector2:195,75>>"], "interface", null],
+        ["button", "Выход", "run_function:sistem/exit", ["<Recalc:<Vector2:0.5,0.5>/<Vector2:5,48>>", "<Recalc:<Vector2:0,0>/<Vector2:195,75>>"], "interface", null]
       ]
     },
     "game_select": {
       "data": {
-        "window_position": [0, 0],
         "window_background": [230, 230, 230],
         "cord_new_but": [0.03, 0.01, 0.04, 0.02, 0.45, 0.3],
         "default_polygonizer": "pet_feed"
       },
       "buttons": [
-        ["button_png", "Назад", "run_function:window/open_game_menu", [20, 20, 100, 60], "interface", null, null],
-        ["button_png", "Создать", "move_window:main_menu", [40, 800, 100, 60], "interface", null, null],
-        ["button_png", "Играть", "run_function:game/start_game", [400, 800, 100, 60], "interface", null, null]
+        ["button", "Назад", "run_function:window/open_game_menu", ["<Recalc:<Vector2:0,0>/<Vector2:20,20>>", "<Recalc:<Vector2:0,0>/<Vector2:100,60>>"], "interface", null, null],
+        ["button", "Создать", "move_window:main_menu", ["<Recalc:<Vector2:0,1>/<Vector2:40,-80>>", "<Recalc:<Vector2:0,0>/<Vector2:100,60>>"], "interface", null, null],
+        ["button", "Играть", "run_function:game/start_game", ["<Recalc:<Vector2:1,1>/<Vector2:-240,-80>>", "<Recalc:<Vector2:0,0>/<Vector2:100,60>>"], "interface", null, null]
       ]
     },
     "single_saves": {
       "data": {
-        "window_percent_position": [0, 0.15],
+        "window_position": "<Recalc:<Vector2:0,0.15>/<Vector2:0,0>>",
         "window_background": [190, 190, 190],
-        "window_percent_size": [1.0, 0.7],
+        "window_size": "<Recalc:<Vector2:1,0.7>/<Vector2:0,0>>",
         "cord_new_but": [0.03, 0.01, 0.04, 0.02, 0.45, 0.3],
         "default_polygonizer": "pet_feed"
       },
       "buttons": [
-        ["button_png", "Назад", "move_window:main_menu", [40, 40, 100, 60], "interface", null, null]
+        ["button", "Назад", "move_window:main_menu", ["<Recalc:<Vector2:0,0>/<Vector2:40,40>>", "<Recalc:<Vector2:0,0>/<Vector2:100,60>>"], "interface", null, null]
       ]
     },
     "online_servers": {
       "data": {
-        "window_position": [0, 0],
         "window_background": [230, 230, 230],
         "cord_new_but": [0.03, 0.01, 0.04, 0.02, 0.45, 0.3],
         "default_polygonizer": "pet_feed"
       },
       "buttons": [
-        ["button_png", "Назад", "move_window:main_menu", [40, 40, 100, 60], "interface", null, null]
+        ["button", "Назад", "move_window:main_menu", ["<Recalc:<Vector2:0,0>/<Vector2:40,40>>", "<Recalc:<Vector2:0,0>/<Vector2:100,60>>"], "interface", null, null]
       ]
     },
     "settings": {
       "data": {
-        "window_position": [0, 0],
         "window_background": [230, 230, 230],
         "cord_new_but": [0,0, 0,0, 0,0],
         "default_polygonizer": "base_polygonizer"
       },
       "buttons": [
-        ["button_png", "Назад", "move_window:main_menu", [40, 40, 100, 60], "interface", null, null]
+        ["button", "Назад", "move_window:main_menu", ["<Recalc:<Vector2:0,0>/<Vector2:40,40>>", "<Recalc:<Vector2:0,0>/<Vector2:100,60>>"], "interface", null, null]
+      ]
+    },
+    "main_game_screen": {
+      "data": {
+        "window_background": [230, 230, 230],
+        "cord_new_but": [0,0, 0,0, 0,0],
+        "default_polygonizer": "base_polygonizer"
+      },
+      "buttons": [
+        ["button", "Выйти", "run_function:game/leave_game", ["<Recalc:<Vector2:0,0>/<Vector2:40,40>>", "<Recalc:<Vector2:0,0>/<Vector2:100,60>>"], "interface", null, null]
       ]
     }
   }

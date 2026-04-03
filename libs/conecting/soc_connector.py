@@ -49,7 +49,7 @@ class SocConnector:
     game_version: Version
     LOCALHOST: str
     main_socket: socket | None = None
-    server_port: int = 10001
+    server_port: int = 10000
     testing_server_message: str = "WAY_IC"
     true_server_testing: str = "YIS"
     drop_connect: str = "COM_DROP"

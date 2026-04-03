@@ -1,3 +1,5 @@
+from typing import Any, Callable
+
 import pygame as pg
 
 KeysTransf = {
@@ -11,47 +13,49 @@ KeysTransf = {
 }
 
 class TriggerGen:
+    triggers: dict[tuple[str, bool] | tuple[int, bool], Callable[["Button"], Any]]
+
     def __init__(self):
         self.triggers = {}
         self.last = None
 
-    def LMD(self, function):
+    def LMD(self, function: Callable[["Button"], Any]):
         self.triggers[(1, True)] = function
         return self
 
-    def LMU(self, function):
+    def LMU(self, function: Callable[["Button"], Any]):
         self.triggers[(1, False)] = function
         return self
 
-    def RMD(self, function):
+    def RMD(self, function: Callable[["Button"], Any]):
         self.triggers[(3, True)] = function
         return self
 
-    def RMU(self, function):
+    def RMU(self, function: Callable[["Button"], Any]):
         self.triggers[(3, False)] = function
         return self
 
-    def MWD(self, function):
+    def MWD(self, function: Callable[["Button"], Any]):
         self.triggers[(4, False)] = function
         return self
 
-    def MWU(self, function):
+    def MWU(self, function: Callable[["Button"], Any]):
         self.triggers[(5, False)] = function
         return self
 
-    def HoldD(self, function):
+    def HoldD(self, function: Callable[["Button"], Any]):
         self.triggers[('hold', True)] = function
         return self
 
-    def HoldU(self, function):
+    def HoldU(self, function: Callable[["Button"], Any]):
         self.triggers[('hold', False)] = function
         return self
 
-    def key_down(self, key, function):
+    def key_down(self, key, function: Callable[["Button"], Any]):
         self.triggers[(key, True)] = function
         return self
 
-    def key_up(self, key, function):
+    def key_up(self, key, function: Callable[["Button"], Any]):
         self.triggers[(key, False)] = function
         return self
 
@@ -64,7 +68,7 @@ class TriggerGen:
                 self.triggers[k] = f
         return self
 
-    def __getitem__(self, key):
+    def __getitem__(self, key) -> Callable[["Button"], Any] | None:
         if key in self.triggers:
             self.last = key
             return self.triggers[key]

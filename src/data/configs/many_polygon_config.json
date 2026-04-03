@@ -5,19 +5,20 @@
       "polygons": [
         {
           "type": 1,
-          "position": [0, 0],
-          "percent_size": [1, 1],
+          "position": "<Recalc:<Vector2:0,0>/<Vector2:0,0>>",
+          "size": "<Recalc:<Vector2:1,1>/<Vector2:0,0>>",
           "styleName": "base_back_ground"
         },
         {
           "type": 2,
-          "position": [20, 0],
+          "position": "<Recalc:<Vector2:0,0>/<Vector2:0,0>>",
+          "size": "<Recalc:<Vector2:1,1>/<Vector2:0,0>>",
           "styleName": "base_border"
         },
         {
           "type": 1,
-          "position": [0, 0],
-          "percent_size": [1, 1],
+          "position": "<Recalc:<Vector2:0,0>/<Vector2:0,0>>",
+          "size": "<Recalc:<Vector2:1,1>/<Vector2:0,0>>",
           "styleName": "base_border",
           "border": 5
         }

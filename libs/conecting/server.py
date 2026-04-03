@@ -1,7 +1,7 @@
-from typing import Any, Generator
+from typing import Any, Generator, Callable
 import json
 
-from libs import loger, Version, GameDataToClientMapper
+from libs import loger, GameDataToClientMapper
 
 from libs.dtos import (
     ConnectServerDTO, ConnectClientDTO,
@@ -21,10 +21,15 @@ from socket import (
 
 
 class ServerConnector(SocConnector):
+    access_external_connections: bool = False
+    local_user: User
+    users: list[User]
+
     external_connections: list[socket]
     current_users: list[tuple[str | socket, User]]
-    users: list[User]
-    local_user: User
+
+    connect_player: Callable[[str], Any]
+
     local_send_to_server_message: bytes
     local_send_to_client_message: bytes
 
@@ -53,7 +58,7 @@ class ServerConnector(SocConnector):
         if self.main_socket is None:
             return
 
-        if tick % 40:
+        if tick % 40 and self.access_external_connections:
             try:
                 new_socket, addr = self.main_socket.accept()
                 # loger.log(f'New connect {addr=}, {new_socket=}')
@@ -78,7 +83,6 @@ class ServerConnector(SocConnector):
                         connect,
                         {self.true_server_testing: ConnectServerMapper.dto_to_dict(dto)},
                     )
-                    # loger.log("Was test")
                 elif data == self.drop_connect:
                     self.__drop_connect__(connect)
                     loger.log(f"drop connect")
@@ -98,6 +102,7 @@ class ServerConnector(SocConnector):
                         if correct:
                             self.current_users.append((connect, user))
                             self.external_connections.remove(connect)
+                            self.connect_player(user.name)
                             self.__send_to__(connect, self.true_join_game)
                         else:
                             self.__send_to__(connect, self.false_join_game)
@@ -133,6 +138,10 @@ class ServerConnector(SocConnector):
             for data in user.get_data_from_server:
                 game_data = GameDataToClientMapper.dto_to_dict(data)
                 self.__send_to__(connect, {self.game_status_message: game_data})
+
+    def open_connection(self, connect_player: Callable[[str], Any]):
+        self.access_external_connections = True
+        self.connect_player = connect_player
 
 
     def get_user_action(self) -> Generator[tuple[GameDataToServerDTO, str], Any, None]:

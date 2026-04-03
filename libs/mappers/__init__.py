@@ -1,4 +1,7 @@
 from .save import SaveMapper
+
+from .entity import AttributeLayerEntityMapper
+from .player import ClientPlayerMapper
 from .connects import ConnectServerMapper, ConnectClientMapper, GameDataToServerMapper, GameDataToClientMapper
 
 from .dimension import DimensionSaveMapper

@@ -9,5 +9,7 @@ class SaveCreateTest:
         dim = dimension_loader.get_new("start_test_dim")
         save.dimensions.append(dim)
         dim_gen = DimensionGeneratorTest(dim)
-        dim_gen.gen1()
+        data = dim_gen.gen1()
+        if data is not None:
+            save.spawn_position, save.spawn_map_block = data
         save.created = True

@@ -1,9 +1,14 @@
 from libs.Loger import loger
-from libs.save.dimension import Dimension
-from libs.save.save_light import SaveLight
+from libs.math import Position2
+from libs.save import (
+    SaveLight, Dimension, MapBlock
+)
 
 
 class SaveFull(SaveLight):
+    spawn_map_block: MapBlock
+    spawn_position: Position2
+
     dimensions: list[Dimension]
 
 

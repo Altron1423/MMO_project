@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from libs import Version
+from libs.dtos.player import ClientPlayerDTO
 from libs.math import Position2, Vector2
 
 
@@ -32,5 +33,6 @@ class GameDataToServerDTO:
 @dataclass
 class GameDataToClientDTO:
     map_block: str
+    player: ClientPlayerDTO
     chunk_position: Position2
     position: Position2

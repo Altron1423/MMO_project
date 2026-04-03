@@ -1,4 +1,4 @@
-from libs import loger, map_block_loader
+from libs import loger, map_block_loader, MapBlock
 from libs.generators import MapBlockGenerator
 from libs.loaders.map_loader import MapLoader, map_loader
 from libs.math import Position2
@@ -12,11 +12,14 @@ class DimensionGeneratorTest:
     def __init__(self, dimension: Dimension):
         self.dimension = dimension
 
-    def gen1(self):
+    def gen1(self) -> tuple[Position2, MapBlock] | None:
         loger.log("gen1")
         st_block = map_block_loader.get_new("start_test_block")
-        MapBlockGenerator.gen1(st_block)
+        spawn_position = MapBlockGenerator.gen1(st_block)
         self.dimension.add_map_block(
             st_block,
             Position2(2, 3)
         )
+        if spawn_position:
+            return spawn_position, st_block
+        return None

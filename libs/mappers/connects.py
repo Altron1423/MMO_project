@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from libs import Version
+from libs.mappers import ClientPlayerMapper
 from libs.dtos import (
     ConnectServerDTO, ConnectClientDTO,
     GameDataToServerDTO, GameDataToClientDTO
@@ -72,6 +73,7 @@ class GameDataToClientMapper:
     def dto_to_dict(dto: GameDataToClientDTO) -> dict[str, str]:
         return {
             "map_block": dto.map_block,
+            "player": ClientPlayerMapper.dto_to_dict(dto.player),
             "chunk_position": str(dto.chunk_position),
             "position": str(dto.position),
         }
@@ -80,6 +82,7 @@ class GameDataToClientMapper:
     def dict_to_dto(data: dict) -> GameDataToClientDTO:
         return GameDataToClientDTO(
             map_block=data["map_block"],
+            player=ClientPlayerMapper.dict_to_dto(data["player"]),
             chunk_position=Position2(data["chunk_position"]),
             position=Position2(data["position"]),
         )

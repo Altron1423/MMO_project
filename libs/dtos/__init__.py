@@ -4,7 +4,8 @@ from .connects import (
     ConnectServerDTO, ConnectClientDTO
 )
 
-from .entity import AttributeEntityDTO
+from .entity import AttributeLayerEntityDTO
+from .player import PlayerLoadDTO, ClientPlayerDTO
 
 from .dimension import DimensionSaveDTO
 from .map_block import MapBlockSaveDTO

@@ -1,2 +1,3 @@
 from .attributer import Attributer
-from .bar import Bar
+from .progress_bar import ProgressBar
+from .inventory import Inventory

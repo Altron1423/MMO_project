@@ -6,6 +6,7 @@ class MapBlock:
     id: int = 1
 
     size: Size2
+    size_coordinate: Size2
     position: Position2
     name: str
     form: list[
@@ -16,6 +17,7 @@ class MapBlock:
 
     def __init__(self, size: Size2, name: str):
         self.size = size
+        self.size_coordinate = size * 50 * 16
         self.name = name
         self.position = Position2()
         self.id = 0
@@ -27,6 +29,15 @@ class MapBlock:
         for z in range(self.size.z):
             for x in range(self.size.x):
                 self.form[z][x] = form[z][x]
+
+    @property
+    def Size(self):
+        return self.size
+
+    @Size.setter
+    def Size(self, size: Size2):
+        self.size = size
+        self.size_coordinate = size * 50
 
     def set_chunk_on(
             self,
@@ -46,6 +57,7 @@ class MapBlock:
     ) -> MapChunk:
         if position in self.size:
             return self.form[position.z][position.x]
+        raise f"{position} not in {self.size}"
 
     def __str__(self) -> str:
         return f"<{self.name}({self.id})>"

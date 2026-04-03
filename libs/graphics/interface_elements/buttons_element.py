@@ -3,10 +3,10 @@ import time
 import pygame as pg
 
 from libs.graphics.TriggerGen import TriggerGen
-from libs.graphics.polygons import Resizer, ManyPolygonizer, Polygon
+from libs.graphics.polygons import Resizer, ManyPolygonizer, Polygon, Recalc
 from libs.graphics.Bars import Bars
+from libs.math import Position2, Size2
 
-# from src.data.Loger import log, log_step
 
 if __name__ == "__main__":
     pg.init()
@@ -22,6 +22,7 @@ class Button(Resizer):
     triggers: TriggerGen | None
 
     text_polygon: Polygon | None
+    png_polygon: Polygon | None
 
     visible: bool
     on: bool
@@ -38,16 +39,17 @@ class Button(Resizer):
     mouse_position_on_button: list[int] | None
 
     def __init__(self, manager, button_id):
-        super().__init__([-1000, -1000], [10, 10])
+        self.polygons = ManyPolygonizer(Size2())
+        super().__init__(Recalc.default_very_faraway(), Recalc.default())
 
         self.manager = manager
         self.id = button_id
-        self.polygons = ManyPolygonizer(self.size)
 
         self.function_active = None
 
         # self.type = "button"
         self.triggers = None
+        self.png_polygon = None
 
         self.visible = True
         self.on = True
@@ -103,9 +105,9 @@ class Button(Resizer):
     def set_dynamic_position(self):
         ...
 
-    def set_percent_size(self, percent_size_x: float | None = None, percent_size_y: float | None = None):
-        super().set_percent_size(percent_size_x, percent_size_y)
-        self.polygons.set_surface_size(self.size)
+    # def set_percent_size(self, percent_size_x: float | None = None, percent_size_y: float | None = None):
+    #     super().set_percent_size(percent_size_x, percent_size_y)
+    #     self.polygons.set_surface_size(self.size)
 
     def resize(self, size):
         super().resize(size)
@@ -115,40 +117,16 @@ class Button(Resizer):
         super().set_surface_size(surface_size)
         self.polygons.set_surface_size(self.size)
 
-    def _set_p_s(self, p_s):
-        if type(p_s[0]) == float:
-            self.set_percent_position(p_s[0])
-        else:
-            self.move_to([p_s[0], None])
+    def set_button_position_size(self, position_size: list[str]):
+        self.set_recalc_position(Recalc.load_from_str(position_size[0]))
+        self.set_recalc_size(Recalc.load_from_str(position_size[1]))
 
-        if type(p_s[1]) == float:
-            self.set_percent_position(percent_position_y=p_s[1])
-        else:
-            self.move_to([None, p_s[1]])
+    def _active_rect(self, mouse_position: Position2):
+        return mouse_position in self.size
 
-        if type(p_s[2]) == float:
-            self.set_percent_size(p_s[2])
-        else:
-            self.resize([p_s[2], None])
-
-        if type(p_s[3]) == float:
-            self.set_percent_size(percent_size_y=p_s[3])
-        else:
-            self.resize([None, p_s[3]])
-
-
-    def _active_rect(self, mouse_position):
-        return (
-                        0 <= mouse_position[0] <= self.size[0] and
-                        0 <= mouse_position[1] <= self.size[1]
-                )
-
-    def test_active(self, mouse_position: list[int]) -> bool:
+    def test_active(self, mouse_position: Position2) -> bool:
         active = False
-        mouse_position_on_button = [
-            mouse_position[0] - self.position[0],
-            mouse_position[1] - self.position[1]
-        ]
+        mouse_position_on_button = mouse_position - self.position
         if self.on:
             if self.function_active is not None:
                 active = self.function_active(mouse_position_on_button)
@@ -170,8 +148,6 @@ class Button(Resizer):
             if active and self.hold:
                 self.active = True
                 self.active_time = time.time() + self.active_delta
-                # if self.active_time - time.time() > self.active_delta:
-                #     self.active_time = time.time() + self.active_delta
 
         return active
 
@@ -193,10 +169,10 @@ class Button(Resizer):
         self.polygons += polygons
 
     def draw(self, surface, activ):
+        # loger.log(self.surface_size)
+
+        pg.draw.rect(surface, (0,255,0), (*self.position.tuple, *self.size.tuple))
         if self.visible:
-            # if self.type == "txt":
-            #     status = 4
-            # el
             if not self.on:
                 status = 1
             elif self.active:
@@ -211,8 +187,8 @@ class Button(Resizer):
             # option_rect = (*self.position, *self.size)
             # pg.draw.rect(surface, (100, 100, 100), option_rect)
             self.polygons.reset_status(status)
-            # self.polygons._redraw()
-            surface.blit(self.polygons.get_surf(), self.position)
+            self.polygons._redraw()
+            surface.blit(self.polygons.get_surf(), self.position.tuple)
 
 
         if self.on:
@@ -220,4 +196,3 @@ class Button(Resizer):
                 function = self.triggers[('hold', True)]
                 if function is not None:
                     function(self)
-

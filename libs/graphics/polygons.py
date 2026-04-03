@@ -1,103 +1,138 @@
-from libs.Loger import loger
-from libs.graphics.styler import Styler
 import pygame as pg
 
+from libs.Loger import loger
+from libs.graphics.styler import Styler
+
+from libs.math import Size2, Position2, Vector2
+
+
+class Recalc:
+    k: Vector2
+    b: Vector2
+    _type_: str = "Recalc"
+
+    def __init__(self, k: Vector2 = None, b: Vector2 = None):
+        if k is None:
+            k = Vector2()
+        if b is None:
+            b = Position2()
+        self.k = k
+        self.b = b
+
+    @classmethod
+    def load_from_str(cls, raw_data: str) -> "Recalc":
+        if raw_data[0] == '<' and raw_data[-1] == '>':
+            data = raw_data[1:-1]
+            tp, data = data.split(':', maxsplit=1)
+            if tp != cls._type_:
+                raise TypeError(f"{raw_data} string not {cls._type_}")
+            return cls(*[Vector2(vec) for vec in data.split('/')])
+        else:
+            raise TypeError(f"{raw_data} only accepts strings for {cls._type_}")
+
+
+    def value(self, size: Size2):
+        # print(size, self.k, self.b)
+        return size * self.k + self.b
+
+    def __add__(self, other):
+        if isinstance(other, (Position2, Size2)):
+            self.b += other
+        elif isinstance(other, Vector2):
+            self.k += other
+
+    def __str__(self) -> str:
+        return f"<{self._type_}:{self.k}/{self.b}>"
+
+    @staticmethod
+    def default() -> "Recalc":
+        return Recalc(Vector2(), Vector2(10, 10))
+
+    @staticmethod
+    def default_very_faraway() -> "Recalc":
+        return Recalc(Vector2(10, 10), Vector2(-1000, -1000))
 
 class Resizer:
-    percent_use: list[bool]
-    position: list[int]
-    size: list[int]
-    percent_position: list[float]
-    percent_size: list[float]
-    surface_size: list[int] | None
+    position: Position2
+    size: Size2
+    recalc_position: Recalc
+    recalc_size: Recalc
+    surface_size: Size2 | None
 
-    def __init__(self, position, size):
-        self.percent_use = [False, False, False, False]
-        self.position = [*position].copy()
-        self.size = [*size].copy()
-        self.percent_position = [-1.0, -1.0]
-        self.percent_size = [1.0, 1.0]
+    def __init__(self, recalc_position: Recalc, recalc_size: Recalc):
+        # self.position = Position2()
+        # self.size = Size2()
+
         self.surface_size = None
+        self.set_recalc_position(recalc_position)
+        self.set_recalc_size(recalc_size)
 
     def _recalculation_positions(self):
-        if self.surface_size:
-            if self.percent_use[0]:
-                self.position[0] = int(self.surface_size[0] * self.percent_position[0])
-            if self.percent_use[1]:
-                self.position[1] = int(self.surface_size[1] * self.percent_position[1])
+        if self.surface_size is not None:
+            self.position = self.recalc_position.value(self.surface_size)
 
     def _recalculation_size(self):
-        if self.surface_size:
-            if self.percent_use[2]:
-                self.size[0] = int(self.surface_size[0] * self.percent_size[0])
-            if self.percent_use[3]:
-                self.size[1] = int(self.surface_size[1] * self.percent_size[1])
+        if self.surface_size is not None:
+            self.size = self.recalc_size.value(self.surface_size)
 
-        # if str(type(self)) == "<class 'src.graphics.polygons.DoterPolygon'>":
-        #     loger.log(self, self.size)
-
-    def set_surface_size(self, surface_size):
+    def set_surface_size(self, surface_size: Size2):
         self.surface_size = surface_size
+        # loger.log(f"self.surface_size = {self.surface_size}")
         self._recalculation_size()
         self._recalculation_positions()
 
-    def set_percent_position(self, percent_position_x: float | None = None, percent_position_y: float | None = None):
-        if percent_position_x:
-            self.percent_position[0] = percent_position_x
-            self.percent_use[0] = True
-        if percent_position_y:
-            self.percent_position[1] = percent_position_y
-            self.percent_use[1] = True
+    def set_recalc_position(self, recalc_position: Recalc):
+        self.recalc_position = recalc_position
         self._recalculation_positions()
 
-    def set_percent_size(self, percent_size_x: float | None = None, percent_size_y: float | None = None):
-        if percent_size_x:
-            self.percent_size[0] = percent_size_x
-            self.percent_use[2] = True
-        if percent_size_y:
-            self.percent_size[1] = percent_size_y
-            self.percent_use[3] = True
-        self._recalculation_size()
+    def set_recalc_size(self, recalc_size: Recalc):
+        if isinstance(recalc_size, Recalc):
+            self.recalc_size = recalc_size
+        else:
+            raise TypeError(f"{recalc_size} not {Recalc._type_}")
+        self._recalculation_positions()
 
 
-    def move_to(self, position):
-        position[0] = position[0] if position[0] else self.position[0]
-        position[1] = position[1] if position[1] else self.position[1]
-        self.position = position
+    def move_to(self, position: Position2):
+        self.recalc_position = Recalc(Vector2(), position)
 
-    def move_on(self, d_position):
-        position = (
-            self.position[0] + d_position[0],
-            self.position[1] + d_position[1]
-        )
-        self.move_to(position)
+    def move_on(self, d_position: Position2):
+        self.recalc_position += d_position
 
-    def resize(self, new_size):
-        new_size[0] = new_size[0] if new_size[0] else self.size[0]
-        new_size[1] = new_size[1] if new_size[1] else self.size[1]
-        self.size = new_size
+    def resize(self, new_size: Recalc):
+        self.recalc_size = new_size
 
 
 class Polygon(Resizer):
     id = 0
 
-    def __init__(self, position, size):
+    type: int | None = None
+    _png: pg.Surface | None = None
+    _pngTr: pg.Surface | None = None
+    _pngRect: pg.Rect | None = None
+
+    _text: str | None = None
+    option_surfaces: pg.Surface | None = None
+
+
+
+    def __init__(self, position: Recalc, size: Recalc):
         super().__init__(position, size)
         self.styler = Styler()
         self._set_id()
         self.type = None
 
-        self.png = None
-        self.pngTr = None
-        self.pngRect = None
+        self._png = None
+        self._pngTr = None
+        self._pngRect = None
 
-        self.text = None
+        self._text = None
         self.option_surfaces = None
 
         self.border = False
 
     def draw(self, surface, status):
-        option_rect = (*self.position, *self.size)
+        option_rect = (*self.position.tuple, *self.size.tuple)
         if self.type is None:
             pass
         elif self.type == 1:
@@ -105,31 +140,31 @@ class Polygon(Resizer):
             if len(color) == 3:
                 pg.draw.rect(surface, color, option_rect, self.border)
             else:
-                sr = pg.Surface(self.size)
+                sr = pg.Surface(self.size.tuple)
                 sr.fill(color[:3])
                 sr.set_alpha(color[3])
                 surface.blit(sr, self.position)
 
         elif self.type == 2:
-            if self.text is not None:
+            if self._text is not None:
                 surface.blit(self.option_surfaces, option_rect)
 
         elif self.type == 3:
-            if self.png is not None:
-                surface.blit(self.pngTr, option_rect)
+            if self._png is not None:
+                surface.blit(self._pngTr, option_rect)
 
     def set_style(self, style):
         self.styler = style
-        self.option_surfaces = self.styler.text_render(self.text)
+        self.option_surfaces = self.styler.text_render(self._text)
 
 
     def set_text(self, text:str):
-        self.text = text
+        self._text = text
         # self.option_surfaces = self.styler.text_render(self.text)
         self.blit_text()
 
     def set_png(self, png):
-        self.png = png
+        self._png = png
         self._resize_png()
 
     def resize(self, new_size):
@@ -137,8 +172,8 @@ class Polygon(Resizer):
         self._resize_png()
         self.blit_text()
 
-    def set_percent_size(self, percent_size_x: float | None = None, percent_size_y: float | None = None):
-        super().set_percent_size(percent_size_x, percent_size_y)
+    def set_recalc_size(self, recalc: Recalc):
+        super().set_recalc_size(recalc)
         self._resize_png()
         self.blit_text()
 
@@ -166,12 +201,13 @@ class Polygon(Resizer):
         return color
 
     def _resize_png(self):
-        if self.png is not None:
-            self.pngTr = pg.transform.scale(self.png, self.size)
-            self.pngRect = self.png.get_rect(topleft=self.position)
+        if self._png is not None:
+            print(self._png, self.size.tuple)
+            self._pngTr = pg.transform.scale(self._png, self.size.tuple)
+            self._pngRect = self._png.get_rect(topleft=self.position)
         else:
-            self.pngTr = None
-            self.pngRect = None
+            self._pngTr = None
+            self._pngRect = None
 
     def _set_id(self):
         if not isinstance(self, DoterPolygon):
@@ -181,12 +217,13 @@ class Polygon(Resizer):
     def blit_text(self):
         if self.surface_size is None:
             return
-        surface = pg.Surface(self.surface_size, pg.SRCALPHA, 32)
-        if self.text is not None:
-            words = [word.split(' ') for word in self.text.splitlines()]
+        surface = pg.Surface(self.surface_size.tuple, pg.SRCALPHA, 32)
+        if self._text is not None:
+            words = [word.split(' ') for word in self._text.splitlines()]
             space = self.styler.font.size(' ')[0]
-            max_width, max_height = self.surface_size[0] - 10, self.surface_size[1] - 10
+            max_width, max_height = self.surface_size.x - 10, self.surface_size.z - 10
             x = y = 0
+            word_width = word_height = 0
             for line in words:
                 for word in line:
                     if word != "":
@@ -205,21 +242,33 @@ class Polygon(Resizer):
 
 
     @classmethod
-    def rect(cls, position=[0,0], size=[0,0]):
-        polygon = cls(position, size)
+    def rect(cls, recalc_position:Recalc=None, recalc_size:Recalc=None):
+        if recalc_position is None:
+            recalc_position = Recalc()
+        if recalc_size is None:
+            recalc_size = Recalc()
+        polygon = cls(recalc_position, recalc_size)
         polygon.type = 1
         return polygon
 
     @classmethod
-    def text(cls, text, position=[0,0], size=[0,0]):
-        polygon = cls(position, size)
+    def text(cls, text, recalc_position:Recalc=None, recalc_size:Recalc=None):
+        if recalc_position is None:
+            recalc_position = Recalc()
+        if recalc_size is None:
+            recalc_size = Recalc()
+        polygon = cls(recalc_position, recalc_size)
         polygon.type = 2
         polygon.set_text(text)
         return polygon
 
     @classmethod
-    def png(cls, png, position=[0,0], size=[0,0]):
-        polygon = cls(position, size)
+    def png(cls, png, recalc_position:Recalc=None, recalc_size:Recalc=None):
+        if recalc_position is None:
+            recalc_position = Recalc()
+        if recalc_size is None:
+            recalc_size = Recalc()
+        polygon = cls(recalc_position, recalc_size)
         polygon.type = 3
         polygon.set_png(png)
         return polygon
@@ -243,15 +292,13 @@ class Polygon(Resizer):
             polygon = Polygon.png(image)
         else:
             loger.log(f"ERROR TYPE {data['type']=}")
+            raise
 
         if data.get("position") is not None:
-            polygon.move_to(data["position"])
+            polygon.set_recalc_position(Recalc.load_from_str(data["position"]))
         if data.get("size") is not None:
-            polygon.resize(data["size"])
-        if data.get("percent_position") is not None:
-            polygon.set_percent_position(*data["percent_position"])
-        if data.get("percent_size") is not None:
-            polygon.set_percent_size(*data["percent_size"])
+            polygon.set_recalc_size(Recalc.load_from_str(data["size"]))
+            # polygon.resize(data["size"])
 
         if data.get("styleID") is not None:
             polygon.set_style(Styler.get_styler(data["styleID"]))
@@ -266,9 +313,9 @@ class Polygon(Resizer):
 
 
 class DoterPolygon(Polygon):
-    def __init__(self, main_polygon):
+    def __init__(self, main_polygon: Polygon):
         self.main_polygon = main_polygon
-        super().__init__(main_polygon.position, main_polygon.size)
+        super().__init__(main_polygon.recalc_position, main_polygon.recalc_size)
         self.id = main_polygon.id
         self.percent_position = None
         self.percent_size = None
@@ -286,28 +333,28 @@ class DoterPolygon(Polygon):
 
 
 class ManyPolygonizer(Resizer):
-    def __init__(self, size):
-        super().__init__([0,0], size)
+    def __init__(self, size: Size2):
+        super().__init__(Recalc(), Recalc(Vector2(1,1)))
         self.polygons: list[Polygon] = []
-        self.surface = pg.Surface(self.size)
+        self.surface = pg.Surface(size.tuple)
         self.status = None
         self.last_status = None
         self.main_png = None
         self.main_text = None
 
     def _redraw(self):
-        self.surface = pg.Surface(self.size, pg.SRCALPHA, 32)
+        self.surface = pg.Surface(self.size.tuple, pg.SRCALPHA, 32)
         for polygon in self.polygons:
             polygon.draw(self.surface, self.status)
 
     def reset_status(self, status):
         self.status = status
 
-    def set_surface_size(self, size):
-        super().set_surface_size(size)
-        super().resize(size)
+    def set_surface_size(self, surface_size: Size2):
+        super().set_surface_size(surface_size)
+        # super().resize(size)
         for polygon in self.polygons:
-            polygon.set_surface_size(size)
+            polygon.set_surface_size(surface_size)
 
         self._redraw()
 
@@ -347,21 +394,21 @@ class ManyPolygonizer(Resizer):
         :param data:
         :return:
         """
-        # loger.log(data)
-        many_polygon = cls(data['size'])
-        loger.log(many_polygon.__dict__)
+        # loger.log(data['size'])
+        many_polygon = cls(Size2())
+        many_polygon.set_surface_size(Size2(data["size"]))
+        # loger.log(many_polygon.__dict__)
         for i in data["polygons"]:
             polygon = Polygon.load_json(i)
             many_polygon.add_polygon(polygon)
-        loger.log(many_polygon.__dict__)
-
+        # loger.log(many_polygon.__dict__)
         return many_polygon
 
 
 class DoterPolygons(ManyPolygonizer):
     def __init__(self, main_polygonizer):
         self.main_polygonizer = main_polygonizer
-        super().__init__([10, 10])
+        super().__init__(Size2(10, 10))
         self.polygons = []
         for polygon in self.main_polygonizer.polygons:
             pl = polygon.__copy__()

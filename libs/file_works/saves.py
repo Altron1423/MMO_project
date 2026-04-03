@@ -95,6 +95,12 @@ class SavesWF:
             dim = self.__load_dimension__(iPath, blocks)
             dimensions.append(dim)
 
+        with open(self.path.joinpath("data.json"), "r", encoding="utf-8") as file:
+            data = json.load(file)
+
+        save.spawn_position = Position2(data["spawn_position"])
+        save.spawn_map_block = blocks[data["spawn_map_block"]]
+
         save.dimensions = dimensions
 
     @staticmethod
@@ -161,6 +167,15 @@ class SavesWF:
                 file
             )
 
+        with open(self.path.joinpath("data.json"), "w", encoding="utf-8") as file:
+            json.dump(
+                {
+                    "spawn_map_block": str(save_full.spawn_map_block),
+                    "spawn_position": str(save_full.spawn_position)
+                },
+                file
+            )
+
         for i_dimension in save_full.dimensions:
             self.__saving_dimension__(
                 DimensionSaveMapper.dim_to_dto(i_dimension)
@@ -218,13 +233,20 @@ class SavesWF:
                 file
             )
 
-    @staticmethod
-    def __create_save_files__(path: Path) -> None:
-        SavesWF.__create_file__(
+    @classmethod
+    def __create_save_files__(cls, path: Path) -> None:
+        cls.__create_file__(
             path.joinpath("players.json"),
             {
                 "type": "player_saves",
                 "players": []
+            }
+        )
+        cls.__create_file__(
+            path.joinpath("data.json"),
+            {
+                "spawn_map_block": "<MapBlock_0>",
+                "spawn_position": "<Position:0,0>"
             }
         )
         path_map = path.joinpath("maps")

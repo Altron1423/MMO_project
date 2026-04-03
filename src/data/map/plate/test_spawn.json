@@ -1,0 +1,10 @@
+{
+  "type": "map_plate",
+  "data": {
+    "name": "test_spawn",
+    "type": "spawn",
+    "changeable": true,
+    "color": [0, 0, 255],
+    "texture": null
+  }
+}

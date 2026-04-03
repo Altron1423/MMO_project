@@ -21,5 +21,7 @@ class Core:
                 self.__dict__[i] = path.joinpath(core[i])
             elif i == "version":
                 self.__dict__[i] = Version(core[i])
+            else:
+                self.__dict__[i] = core[i]
 
 CORE = Core()

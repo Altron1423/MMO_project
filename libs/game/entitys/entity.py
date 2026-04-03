@@ -1,24 +1,124 @@
-from libs.game.sub_classes import Attributer, Bar
+from libs import MapBlock, MapPlate
+from libs.game.sub_classes import Attributer, ProgressBar
+from libs.game.sub_classes.progress_bar import TriggersDTO
 from libs.math import Position2, Vector2
 
+def get_sign(x: int | float) -> int:
+    if x > 0:
+        return 1
+    elif x < 0:
+        return -1
+    return 0
 
 class Entity:
+    name: None | str
+    race: None | str
+
     attributes: Attributer
-    name: None | str = None
-    health: Bar
+    health: ProgressBar
+    mana: ProgressBar
+
+    xp: ProgressBar
+    raising_xp: float
+    xp_boost: float
+    lvl: int
+
+    map_block: MapBlock
     position: Position2
     orientation: Vector2
+    speed_control: float
     speed: float
 
+    collision: Vector2
+    step_height: int
+
     def __init__(self):
+        self.name = None
+        self.race = None
         self.attributes = Attributer()
-        self.health = Bar()
+        self.health = ProgressBar()
+        self.mana = ProgressBar()
+
+        self.xp = ProgressBar(unlimit=True)
+        self.xp.set_triggers(TriggersDTO(
+            _limit=self.__lvl_up__
+        ))
+        self.raising_xp = 1.05
+        self.xp_boost = 1
+        self.lvl = 1
+
         self.position = Position2()
-        self.orientation = Vector2(1, 0)
-        self.speed = 1
+        self.orientation = Vector2(0, 0)
+        self.speed_control = 1
+        self.speed = 20
+
+        collision = 46
+        self.collision = Vector2(collision // 2, collision // 2)
+        self.step_height = 20
+
+    def add_xp(self, xp: int) -> None:
+        self.xp += int(xp * self.xp_boost)
+
+    def __move__(self):
+        move_on = self.orientation * self.speed * self.speed_control
+        start_plate, start_heigh = self.__get_info_positon__(self.position)
+        for i in (Vector2(1, 0), Vector2(0, 1)):
+            move_on_1d = move_on * i
+            if move_on_1d.x != 0 or move_on_1d.z != 0:
+                # print(move_on_1d)
+                if move_on_1d.x != 0:
+                    collision = self.collision * i * get_sign(move_on_1d.x)
+                else:
+                    collision = self.collision * i * get_sign(move_on_1d.z)
+                new_position = self.position + move_on_1d + collision
+                if not new_position in self.map_block.size_coordinate:
+                    continue
+                new_plate, new_heigh = self.__get_info_positon__(new_position)
+                if abs(new_heigh - start_heigh) <= self.step_height:
+                    self.position += move_on_1d
+
+        print(start_plate.name, self.position)
+
+    def __get_info_positon__(self, pos: Position2) -> tuple[MapPlate, int]:
+        chunk_size = 50
+        position_chunk = pos // chunk_size // 16
+        position_plate = pos % chunk_size // 16
+        chunk = self.map_block.get_chunk(position_chunk)
+        return chunk.get_plate(position_plate), chunk.get_height(position_plate)
 
     def update(self):
         self.attributes.update()
-        self.position += self.orientation * self.speed
+        self.__move__()
 
+    def __lvl_up__(self) -> None:
+        quantity, max_xp = self.xp.get_full(True)
+        quantity -= max_xp
+        max_xp = int(max_xp * self.raising_xp)
+        self.xp.update(quantity, max_xp)
+        self.lvl += 1
 
+    @classmethod
+    def load_from_config(cls, dto) -> "Entity":
+        entity = cls()
+        entity.race = dto.race
+        entity.attributes.load(dto.attributes)
+        entity.xp.set_limit(dto.to_first_lvlup)
+        entity.raising_xp = dto.raising_xp
+        entity.xp_boost = dto.xp_boost
+        return entity
+
+    def __copy__(self):
+        to = self.__class__()
+        to.name = self.name
+        to.race = self.race
+        to.attributes = self.attributes
+        to.health = self.health.__copy__()
+        to.mana = self.mana.__copy__()
+        to.xp = self.xp.__copy__()
+        to.raising_xp = self.raising_xp
+        to.lvl = self.lvl
+        to.position = self.position
+        to.orientation = self.orientation
+        to.speed = self.speed
+
+        return to

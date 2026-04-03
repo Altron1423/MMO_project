@@ -6,6 +6,7 @@ from pathlib import Path
 from libs.Core import CORE
 from libs.Loger import loger
 import src.modules.screen as screen
+from libs.math import Size2
 from libs.ticker import Ticker
 
 
@@ -24,6 +25,7 @@ class Application:
         self._set_start_parameters()
 
         self.main_screen = screen.MainScreen(self)
+        self.window_manager = self.main_screen.window_manager
 
         self._create_functions_dict()
 
@@ -42,12 +44,12 @@ class Application:
                     if event.type == pg.QUIT:
                         self.exit(None)
                     elif event.type == pg.KEYDOWN or event.type == pg.KEYUP:
-                        self.main_screen.window_manager.keyPress(event.key, event.type)
+                        self.main_screen.window_manager.key_press(event.key, event.type)
                         self.key_press(event.key, event.type == pg.KEYDOWN)
                     elif event.type == pg.MOUSEBUTTONDOWN or event.type == pg.MOUSEBUTTONUP:
                         self.main_screen.window_manager.select(event)
                     elif event.type == pg.VIDEORESIZE:
-                        self.main_screen.resize_main_screen(event.size)
+                        self.main_screen.resize_main_screen(Size2(event.size))
 
                 self.main_screen.draw()
                 self.run_more()

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class AttributeEntityDTO:
+class AttributeLayerEntityDTO:
     constitution: int = 0
     agility: int = 0
     defense: int = 0
@@ -12,8 +12,8 @@ class AttributeEntityDTO:
     health_reg: int = 0
     max_mana: int = 0
 
-    def __add__(self, other: "AttributeEntityDTO"):
-        return AttributeEntityDTO(
+    def __add__(self, other: "AttributeLayerEntityDTO"):
+        return AttributeLayerEntityDTO(
             constitution=   self.constitution + other.constitution,
             agility=        self.agility + other.agility,
             defense=        self.defense + other.defense,
@@ -24,8 +24,8 @@ class AttributeEntityDTO:
             max_mana=       self.max_mana + other.max_mana
         )
 
-    def __mul__(self, other: "AttributeEntityDTO"):
-        return AttributeEntityDTO(
+    def __mul__(self, other: "AttributeLayerEntityDTO"):
+        return AttributeLayerEntityDTO(
             constitution=   int(self.constitution * other.constitution),
             agility=        int(self.agility * other.agility),
             defense=        int(self.defense * other.defense),

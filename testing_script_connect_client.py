@@ -26,14 +26,14 @@ if __name__ == '__main__':
     server.join_game()
 
 
-    dto = GameDataToServerDTO(
-        move=(0.0, 0.0),
-        speed=1.0,
-        target_position=Position2(0, 0),
-        action="22"
-    )
+    # dto = GameDataToServerDTO(
+    #     move=(0.0, 0.0),
+    #     speed=1.0,
+    #     target_position=Position2(0, 0),
+    #     action="22"
+    # )
     time.sleep(0.1)
-    server.send_game_data(dto)
+    # server.send_game_data(dto)
 
     tf = True
     try:
