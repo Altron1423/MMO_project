@@ -1,7 +1,7 @@
 import pygame as pg
 
 from libs.graphics.Bars import Bars
-from libs.math import Size2, Position2
+from libs.math import Size2, Position2, Recalc
 from libs.window.Mouse import Mouse
 from libs.graphics.TriggerGen import TriggerGen
 from libs.graphics.interface_elements.buttons_element import Button
@@ -53,24 +53,24 @@ class ButtonManager:
         self.dynamic_position_Y.setLimit(lim)
 
 
-    def add_button(self, text, position, triggers):
+    def add_button(self, text, position: Recalc, size: Recalc, triggers):
         button = self._create_button("button")
         button.set_text(text)
-        button.set_button_position_size(position)
+        button.set_button_position_size(position, size)
         button.set_triggers(triggers)
         return button
 
-    def add_text(self, text, position):
+    def add_text(self, text, position: Recalc, size: Recalc):
         button: Button | PngElement | TextElement = self._create_button()
         button.set_type("txt")
         # log(text)
         button.set_text(text)
-        button.set_button_position_size(position)
+        button.set_button_position_size(position, size)
         # button.move_to(position[:2])
         # button.resize(position[2:])
         return button
 
-    def add_png(self, position, png):
+    def add_png(self, position: Recalc, size: Recalc, png):
         button = self._create_button()
         button.set_type("png")
         # button.move_to(position[:2])
@@ -78,34 +78,34 @@ class ButtonManager:
         #     button.resize(png.get_size())
         # else:
         #     button.resize(position[2:])
-        if len(position) == 2:
+        if len(position) == 1:
             position = [*position, *png.get_size()]
-        button.set_button_position_size(position)
+        button.set_button_position_size(position, size)
         button.set_png(png)
 
 
         return button
 
-    def add_png_but(self, position, triggers, png):
+    def add_png_but(self, position: Recalc, size: Recalc, triggers, png):
         button = self._create_button("png_but")
         # button.move_to(position[:2])
         # if len(position) == 2:
         #     button.resize([*png.get_size()])
         # else:
         #     button.resize(position[2:])
-        if len(position) == 2:
-            position = [*position, *png.get_size()]
+        # if len(position) == 1:
+        #     position = [*position, *png.get_size()]
 
-        button.set_button_position_size(position)
+        button.set_button_position_size(position, size)
         button.set_png(png)
         button.set_triggers(triggers)
 
         return button
 
-    def add_mower(self, position, moveX: None|Bars = None, moveY: None|Bars = None):
+    def add_mower(self, position: Recalc, size: Recalc, moveX: None|Bars = None, moveY: None|Bars = None):
         button = self._create_button()
         button.set_type("mower")
-        button.set_button_position_size(position)
+        button.set_button_position_size(position, size)
         trigers = TriggerGen()
 
         if moveX is not None:

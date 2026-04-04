@@ -36,7 +36,10 @@ class Vector2:
             if tp != self._vector_type_:
                 print(data)
                 raise TypeError(f"This string not {self._vector_type_}")
-            self.set(*list(map(float, data.split(','))))
+            try:
+                self.set(*list(map(int, data.split(','))))
+            except:
+                self.set(*list(map(float, data.split(','))))
         else:
             raise TypeError(f"{raw_data} only accepts strings for {self._vector_type_}")
 

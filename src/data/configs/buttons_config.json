@@ -4,26 +4,24 @@
     "main_menu": {
       "data": {
         "window_background": [230, 230, 230],
-        "cord_new_but": [0.03, 0.01, 0.04, 0.02, 0.45, 0.3],
         "default_polygonizer": "pet_feed"
       },
       "buttons": [
-        ["button", "Одиночная игра", "run_function:window/open_single_player",["<Recalc:<Vector2:0.5,0.5>/<Vector2:-200,-122>>", "<Recalc:<Vector2:0,0>/<Vector2:400,75>>"], "interface", null],
-        ["button", "Многопользовательская игра", "move_window:online_servers", ["<Recalc:<Vector2:0.5,0.5>/<Vector2:-200,-37>>", "<Recalc:<Vector2:0,0>/<Vector2:400,75>>"], "interface", null],
-        ["button", "Настройки", "move_window:settings", ["<Recalc:<Vector2:0.5,0.5>/<Vector2:-200,48>>", "<Recalc:<Vector2:0,0>/<Vector2:195,75>>"], "interface", null],
-        ["button", "Выход", "run_function:sistem/exit", ["<Recalc:<Vector2:0.5,0.5>/<Vector2:5,48>>", "<Recalc:<Vector2:0,0>/<Vector2:195,75>>"], "interface", null]
+        {"type": "button_png", "text": "Одиночная игра", "function": "run_function:window/open_single_player", "position": "<Recalc:<Vector2:0.5,0.5>/<Vector2:-200,-122>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:400,75>>", "polygons_name": "interface", "png_name": null},
+        {"type": "button", "text": "Многопользовательская игра", "function": "move_window:online_servers", "position": "<Recalc:<Vector2:0.5,0.5>/<Vector2:-200,-37>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:400,75>>", "polygons_name": "interface", "png_name": null},
+        {"type": "button", "text": "Настройки", "function": "move_window:settings", "position": "<Recalc:<Vector2:0.5,0.5>/<Vector2:-200,48>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:195,75>>", "polygons_name": "interface", "png_name": null},
+        {"type": "button", "text": "Выход", "function": "run_function:sistem/exit", "position": "<Recalc:<Vector2:0.5,0.5>/<Vector2:5,48>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:195,75>>", "polygons_name": "interface", "png_name": null}
       ]
     },
     "game_select": {
       "data": {
         "window_background": [230, 230, 230],
-        "cord_new_but": [0.03, 0.01, 0.04, 0.02, 0.45, 0.3],
         "default_polygonizer": "pet_feed"
       },
       "buttons": [
-        ["button", "Назад", "run_function:window/open_game_menu", ["<Recalc:<Vector2:0,0>/<Vector2:20,20>>", "<Recalc:<Vector2:0,0>/<Vector2:100,60>>"], "interface", null, null],
-        ["button", "Создать", "move_window:main_menu", ["<Recalc:<Vector2:0,1>/<Vector2:40,-80>>", "<Recalc:<Vector2:0,0>/<Vector2:100,60>>"], "interface", null, null],
-        ["button", "Играть", "run_function:game/start_game", ["<Recalc:<Vector2:1,1>/<Vector2:-240,-80>>", "<Recalc:<Vector2:0,0>/<Vector2:100,60>>"], "interface", null, null]
+        {"type": "button", "text": "Назад", "function": "run_function:window/open_game_menu", "position": "<Recalc:<Vector2:0,0>/<Vector2:20,20>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:100,60>>", "polygons_name": "interface", "png_name": null},
+        {"type": "button", "text": "Создать", "function": "move_window:main_menu", "position": "<Recalc:<Vector2:0,1>/<Vector2:40,-80>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:100,60>>", "polygons_name": "interface", "png_name": null},
+        {"type": "button", "text": "Играть", "function": "run_function:game/start_game", "position": "<Recalc:<Vector2:1,1>/<Vector2:-240,-80>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:100,60>>", "polygons_name": "interface", "png_name": null}
       ]
     },
     "single_saves": {
@@ -35,17 +33,16 @@
         "default_polygonizer": "pet_feed"
       },
       "buttons": [
-        ["button", "Назад", "move_window:main_menu", ["<Recalc:<Vector2:0,0>/<Vector2:40,40>>", "<Recalc:<Vector2:0,0>/<Vector2:100,60>>"], "interface", null, null]
+        {"type": "button", "text": "Назад", "function": "move_window:main_menu", "position": "<Recalc:<Vector2:0,0>/<Vector2:40,40>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:100,60>>", "polygons_name": "interface", "png_name": null}
       ]
     },
     "online_servers": {
       "data": {
         "window_background": [230, 230, 230],
-        "cord_new_but": [0.03, 0.01, 0.04, 0.02, 0.45, 0.3],
         "default_polygonizer": "pet_feed"
       },
       "buttons": [
-        ["button", "Назад", "move_window:main_menu", ["<Recalc:<Vector2:0,0>/<Vector2:40,40>>", "<Recalc:<Vector2:0,0>/<Vector2:100,60>>"], "interface", null, null]
+        {"type": "button", "text": "Назад", "function": "move_window:main_menu", "position": "<Recalc:<Vector2:0,0>/<Vector2:40,40>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:100,60>>", "polygons_name": "interface", "png_name": null}
       ]
     },
     "settings": {
@@ -55,7 +52,7 @@
         "default_polygonizer": "base_polygonizer"
       },
       "buttons": [
-        ["button", "Назад", "move_window:main_menu", ["<Recalc:<Vector2:0,0>/<Vector2:40,40>>", "<Recalc:<Vector2:0,0>/<Vector2:100,60>>"], "interface", null, null]
+        {"type": "button", "text": "Назад", "function": "move_window:main_menu", "position": "<Recalc:<Vector2:0,0>/<Vector2:40,40>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:100,60>>", "polygons_name": "interface", "png_name": null}
       ]
     },
     "main_game_screen": {
@@ -65,7 +62,7 @@
         "default_polygonizer": "base_polygonizer"
       },
       "buttons": [
-        ["button", "Выйти", "run_function:game/leave_game", ["<Recalc:<Vector2:0,0>/<Vector2:40,40>>", "<Recalc:<Vector2:0,0>/<Vector2:100,60>>"], "interface", null, null]
+        {"type": "button", "text": "Назад", "function": "move_window:main_menu", "position": "<Recalc:<Vector2:0,0>/<Vector2:40,40>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:100,60>>", "polygons_name": "interface", "png_name": null}
       ]
     }
   }

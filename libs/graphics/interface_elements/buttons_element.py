@@ -105,10 +105,6 @@ class Button(Resizer):
     def set_dynamic_position(self):
         ...
 
-    # def set_percent_size(self, percent_size_x: float | None = None, percent_size_y: float | None = None):
-    #     super().set_percent_size(percent_size_x, percent_size_y)
-    #     self.polygons.set_surface_size(self.size)
-
     def resize(self, size):
         super().resize(size)
         self.polygons.set_surface_size(size)
@@ -117,9 +113,9 @@ class Button(Resizer):
         super().set_surface_size(surface_size)
         self.polygons.set_surface_size(self.size)
 
-    def set_button_position_size(self, position_size: list[str]):
-        self.set_recalc_position(Recalc.load_from_str(position_size[0]))
-        self.set_recalc_size(Recalc.load_from_str(position_size[1]))
+    def set_button_position_size(self, position: Recalc, size: Recalc):
+        self.set_recalc_position(position)
+        self.set_recalc_size(size)
 
     def _active_rect(self, mouse_position: Position2):
         return mouse_position in self.size

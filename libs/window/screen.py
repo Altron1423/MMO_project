@@ -1,14 +1,14 @@
 from pathlib import Path
 
 import libs.graphics.interface_elements.buttons_element as buttons
-from libs import CORE
-# from libs import Application
+from libs import CORE, WindowDTO, ButtonDTO
 from libs.graphics.ButtonManager import ButtonManager
 from libs.graphics.polygons import Resizer, Recalc
 import pygame as pg
 import json
 
 from libs.Loger import loger
+from libs.mappers.screen import WindowMapper
 from libs.math import Size2, Vector2, Position2
 from libs.window.Mouse import Mouse
 from libs.loaders import StylerLoader, ImageLoader, ManyPolygonizerLoader
@@ -82,7 +82,7 @@ class MainScreen:
             # self.mouse.update_screen_data(*self.shift_main_screen, self.K_Mushtub)
         else:
             self.screen_size = new_size
-            # self.screenOSN = pg.display.set_mode(self.screen_size.tuple, pg.RESIZABLE, pg.FULLSCREEN)
+            # loger.log(new_size)
             self.center_screen = self.screen_size // 2
             self.screen_main = pg.Surface(self.screen_size.tuple)
             self.window_manager.resize(self.screen_size)
@@ -102,19 +102,18 @@ class Window(Resizer):
     first_draw_task: list[tuple[pg.Surface, tuple[int, int]]]
     second_draw_task: list[tuple[pg.Surface, tuple[int, int]]]
 
-    def __init__(self, manager:"WindowManager", name, config, main_surface):
+    def __init__(self, manager:"WindowManager", config: WindowDTO, main_surface):
 
         surface_size = Size2(main_surface.get_size())
-        super().__init__(*self._load_surface(config))
+        # super().__init__(*self._load_surface(config))
+        window_data = config.data
+        super().__init__(window_data.recalc_position, window_data.recalc_size)
+        self.cord_new_but = window_data.cord_new_button
+        self.background = window_data.background
+        self.name = config.name
+
         self.surface = None
-        self.background = None
-        self.name = name
         self.mowing = False
-        self.cord_new_but = [0] * 6
-
-        self.cord_new_but = config["data"]["cord_new_but"]
-        self.background = config["data"].get("window_background")
-
 
         self.manager = manager
         self.button_manager = ButtonManager(manager.main_screen.mouse)
@@ -123,13 +122,13 @@ class Window(Resizer):
         self.surface = pg.Surface(self.size.tuple, pg.SRCALPHA, 32)
         self.button_manager.set_surface(self.surface)
 
-        self._menu_load(config)
+        self._menu_load(config.buttons)
 
         self.gen_but = []
         self.first_draw_task = []
         self.second_draw_task = []
 
-        loger.status(f"Window '{name}' init complete whis {len(self.button_manager._buttons)}")
+        loger.status(f"Window '{config.name}' init complete whis {len(self.button_manager._buttons)}")
 
     @staticmethod
     def _load_surface(config:dict) -> tuple[Recalc, Recalc]:
@@ -147,13 +146,13 @@ class Window(Resizer):
 
         return position, size
 
-    def _menu_load(self, config):
+    def _menu_load(self, config: list[ButtonDTO]):
         self.button_manager.set_address(self.name)
         data = {"shift": self.position, "scale": 1, "scaling": False}
         self.button_manager.mouse.add_address(self.name, data)
 
 
-        for i_button in config["buttons"]:
+        for i_button in config:
             self.add_button(i_button)
 
     def add_task_draw(self, group: int, task: tuple[pg.Surface, tuple[int, int]]):
@@ -179,42 +178,42 @@ class Window(Resizer):
 
         return x0 + (dx + sx) * n, y0 + (dy + sy) * n, sx, sy
 
-    def add_button(self, button_data, last_polygons:list[str] = None) -> None:
+    def add_button(self, button_data: ButtonDTO, last_polygons:list[str] = None) -> None:
         if last_polygons is None:
             last_polygons = [""]
-        if button_data[2] != last_polygons[0]:
-            polygons = ManyPolygonizerLoader.get_polygonizer(button_data[4])
+        if button_data.polygons_name != last_polygons[0]:
+            polygons = ManyPolygonizerLoader.get_polygonizer(button_data.polygons_name)
             self.button_manager.set_polygonizer(polygons)
             # last_polygons[0] = button_data[2]
 
-        if button_data[0] == "button":
-            button = self.button_manager.add_button(button_data[1], button_data[3], None)
-            trigger = self.manager.generate_function(button_data[2], button)
+        if button_data.type == "button":
+            button = self.button_manager.add_button(button_data.text, button_data.position, button_data.size, None)
+            trigger = self.manager.generate_function(button_data.function, button)
             button.set_triggers(trigger)
-        elif button_data[0] == "button_png":
-            button = self.button_manager.add_png_but(button_data[3], None, button_data[6])
-            trigger = self.manager.generate_function(button_data[2], button)
+        elif button_data.type == "button_png":
+            button = self.button_manager.add_png_but(button_data.position, button_data.size, None, button_data.png_name)
+            trigger = self.manager.generate_function(button_data.function, button)
             button.set_triggers(trigger)
-            button.set_text(button_data[1])
-        elif button_data[0] == "png":
-            button = self.button_manager.add_png(button_data[3], button_data[6])
-            button.set_text(button_data[1])
-        elif button_data[0] == "txt":
-            button = self.button_manager.add_text(button_data[1], button_data[3])
+            button.set_text(button_data.text)
+        elif button_data.type == "png":
+            button = self.button_manager.add_png(button_data.position, button_data.size, button_data.png)
+            button.set_text(button_data.text)
+        elif button_data.type == "txt":
+            button = self.button_manager.add_text(button_data.text, button_data.position, button_data.size)
         else:
             return
 
         # loger.log(button_data)
 
-        if button_data[5] is not None:
-            for key, value in button_data[5].items():
-                button.set_parameters(key, value)
+        # if button_data[5] is not None:
+        #     for key, value in button_data[5].items():
+        #         button.set_parameters(key, value)
 
         # loger.log(button)
 
-        if button_data[5] is not None:
-            for key, value in button_data[5].items():
-                button.set_parameters(key, value)
+        # if button_data[5] is not None:
+        #     for key, value in button_data[5].items():
+        #         button.set_parameters(key, value)
 
     def draw(self, screen):
         if self.background is not None:
@@ -280,9 +279,12 @@ class WindowManager:
 
         if buttons_config["type"] == "interface_elements":
             buttons_config = buttons_config["windows"]
-            for window in buttons_config:
-                self.windows.append(Window(self, window, buttons_config[window], self.main_screen.screen_main))
-                self.windows_keys[window] = len(self.windows) - 1
+            for i_window in buttons_config:
+                w = buttons_config[i_window]
+                w["name"] = i_window
+                window = WindowMapper.dict_to_dto(w)
+                self.windows.append(Window(self, window, self.main_screen.screen_main))
+                self.windows_keys[i_window] = len(self.windows) - 1
 
 
         loger.status(f"Load {len(self.windows)} windows")
@@ -346,11 +348,15 @@ class WindowManager:
     def _append_buttons(self, buttons: list[str], screen:str):
         window = self.get_window(screen)
         for i_button in range(len(buttons)):
-            window.add_button([
-                "button", buttons[i_button], "run_function:window/save_select",
-                [f"<Recalc:<Vector2:0,0>/<Vector2:{100},{25 + i_button * 100}>>", f"<Recalc:<Vector2:0,0>/<Vector2:{400},{75}>>"],
-                "interface", None, None
-            ])
+            dto = ButtonDTO(
+                type="button",
+                text=buttons[i_button],
+                function="run_function:window/save_select",
+                position=Recalc(None, Vector2(100,25 + i_button * 100)),
+                size=Recalc(None, Vector2(400, 75)),
+                polygons_name="interface",
+            )
+            window.add_button(dto)
         window.set_surface_size(self.size)
 
 
