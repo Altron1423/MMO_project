@@ -1,3 +1,5 @@
+
+
 class Vector2:
     x: int
     z: int
@@ -99,6 +101,8 @@ class Vector2:
             v.set(self.x % other, self.z % other)
         elif isinstance(other, self.__class__):
             v.set(self.x % other.x, self.z % other.z)
+        elif isinstance(other, Vector2):
+            v.set(self.x % other.x, self.z % other.z)
 
         v.__re_len__()
         return v
@@ -110,6 +114,17 @@ class Vector2:
             v.set(self.x // other, self.z // other)
         elif isinstance(other, self.__class__):
             v.set(self.x // other.x, self.z // other.z)
+
+        v.__re_len__()
+        return v
+
+    def __truediv__(self, other):
+        v = self.__class__()
+
+        if isinstance(other, (int, float)):
+            v.set(self.x / other, self.z / other)
+        elif isinstance(other, self.__class__):
+            v.set(self.x / other.x, self.z / other.z)
 
         v.__re_len__()
         return v

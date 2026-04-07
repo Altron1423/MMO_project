@@ -11,9 +11,6 @@ from libs.math import Size2
 class DimensionLoader(Loader):
     elements: dict[str, Dimension]
 
-    def __init__(self):
-        self.elements = {}
-
     def load(self, path: Path) -> None:
         with Path(path).open("r", encoding="utf-8") as file:
             json_data = json.load(file)
@@ -33,16 +30,11 @@ class DimensionLoader(Loader):
             loger.log(f"Loading {iPath}")
             self.load(iPath)
 
-    def add(self, element: Dimension, name: str) -> None:
-        self.elements[name] = element
-
     def get(self, name: str) -> Dimension | None:
-        element = self.elements.get(name)
-        return element
+        return super().get(name)
 
     def get_new(self, name: str) -> Dimension | None:
-        element = self.elements.get(name)
-        return element.__copy__() if element else None
+        return super().get_new(name)
 
 
 dimension_loader = DimensionLoader()

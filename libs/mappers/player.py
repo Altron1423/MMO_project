@@ -46,6 +46,7 @@ class ClientPlayerMapper:
             "xp": str(dto.xp),
             "lvl": dto.lvl,
             "inventory": str(dto.inventory),
+            "map_block": dto.map_block
         }
 
     @staticmethod
@@ -60,4 +61,5 @@ class ClientPlayerMapper:
             xp=ProgressBar.init_from_str(data["xp"]),
             lvl=data["lvl"],
             inventory=data["inventory"],
+            map_block=data["map_block"],
         )

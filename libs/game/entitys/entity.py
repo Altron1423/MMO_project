@@ -23,7 +23,7 @@ class Entity:
     xp_boost: float
     lvl: int
 
-    map_block: MapBlock
+    map_block: MapBlock | None = None
     position: Position2
     orientation: Vector2
     speed_control: float
@@ -50,14 +50,18 @@ class Entity:
         self.position = Position2()
         self.orientation = Vector2(0, 0)
         self.speed_control = 1
-        self.speed = 20
+        self.speed = 8
 
         collision = 46
         self.collision = Vector2(collision // 2, collision // 2)
-        self.step_height = 20
+        self.step_height = 10
 
     def add_xp(self, xp: int) -> None:
         self.xp += int(xp * self.xp_boost)
+
+    def update(self):
+        self.attributes.update()
+        self.__move__()
 
     def __move__(self):
         move_on = self.orientation * self.speed * self.speed_control
@@ -65,7 +69,6 @@ class Entity:
         for i in (Vector2(1, 0), Vector2(0, 1)):
             move_on_1d = move_on * i
             if move_on_1d.x != 0 or move_on_1d.z != 0:
-                # print(move_on_1d)
                 if move_on_1d.x != 0:
                     collision = self.collision * i * get_sign(move_on_1d.x)
                 else:
@@ -77,18 +80,16 @@ class Entity:
                 if abs(new_heigh - start_heigh) <= self.step_height:
                     self.position += move_on_1d
 
-        print(start_plate.name, self.position)
+        # print(self.map_block.name, start_plate.name, self.position)
 
-    def __get_info_positon__(self, pos: Position2) -> tuple[MapPlate, int]:
+    def __get_info_positon__(self, pos: Position2 = None) -> tuple[MapPlate, int]:
+        if pos is None:
+            pos = self.position
         chunk_size = 50
         position_chunk = pos // chunk_size // 16
-        position_plate = pos % chunk_size // 16
+        position_plate = pos // chunk_size % 16
         chunk = self.map_block.get_chunk(position_chunk)
         return chunk.get_plate(position_plate), chunk.get_height(position_plate)
-
-    def update(self):
-        self.attributes.update()
-        self.__move__()
 
     def __lvl_up__(self) -> None:
         quantity, max_xp = self.xp.get_full(True)

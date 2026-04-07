@@ -9,3 +9,5 @@ from .map_chunk_loader import map_chunk_loader
 from .map_block_loader import map_block_loader
 from .dimension_loader import dimension_loader
 from .map_loader import map_loader
+
+from .entity_animator_loader import entity_animator_loader

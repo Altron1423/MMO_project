@@ -182,7 +182,7 @@ class Window(Resizer):
         if last_polygons is None:
             last_polygons = [""]
         if button_data.polygons_name != last_polygons[0]:
-            polygons = ManyPolygonizerLoader.get_polygonizer(button_data.polygons_name)
+            polygons = ManyPolygonizerLoader.get(button_data.polygons_name)
             self.button_manager.set_polygonizer(polygons)
             # last_polygons[0] = button_data[2]
 
@@ -264,11 +264,11 @@ class WindowManager:
 
         loger.log(path)
 
-        StylerLoader.load_styles(path.joinpath("styles_config.json"))
+        StylerLoader.load(path.joinpath("styles_config.json"))
 
-        ImageLoader.load_images(path.joinpath("images_config.json"))
+        ImageLoader.load(path.joinpath("images_config.json"))
 
-        ManyPolygonizerLoader.load_manyPolygonizers(path.joinpath("many_polygon_config.json"))
+        ManyPolygonizerLoader.load(path.joinpath("many_polygon_config.json"))
 
 
 

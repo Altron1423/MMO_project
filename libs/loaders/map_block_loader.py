@@ -11,11 +11,8 @@ from libs.math import Size2
 class MapBlockLoader(Loader):
     elements: dict[str, MapBlock]
 
-    def __init__(self):
-        self.elements = {}
-
     def load(self, path: Path) -> None:
-        with Path(path).open("r", encoding="utf-8") as file:
+        with path.open("r", encoding="utf-8") as file:
             json_data = json.load(file)
             if json_data["type"] == "map_block":
                 data = MapBlockConfigMapper.dict_to_dto(json_data["data"])
@@ -36,19 +33,11 @@ class MapBlockLoader(Loader):
                         )
                 self.add(map_block, data.name)
 
-    def load_from_dir(self, path: Path) -> None:
-        for iPath in path.iterdir():
-            self.load(iPath)
-
-    def add(self, element: MapBlock, name: str) -> None:
-        self.elements[name] = element
-
     def get(self, name: str) -> MapBlock | None:
-        element = self.elements.get(name)
-        return element
+        return super().get(name)
 
     def get_new(self, name: str) -> MapBlock | None:
-        return self.get(name).__copy__()
+        return super().get_new(name)
 
 
 map_block_loader = MapBlockLoader()

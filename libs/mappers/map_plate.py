@@ -66,4 +66,5 @@ class MapPlateConfigMapper:
             color=data["color"],
             texture=data["texture"],
             changeable=data["changeable"],
+            layer=data["layer"]
         )

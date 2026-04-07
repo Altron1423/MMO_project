@@ -10,25 +10,21 @@ if __name__ == '__main__':
     pg.init()
 
 class ManyPolygonizerLoader(Loader):
-    def __init__(self):
-        self.many_polygonizers = {}
+    elements: dict[str, ManyPolygonizer]
 
-    def load_manyPolygonizers(self, path):
-        with Path(path).open("r", encoding="utf-8") as file:
+    def load(self, path: Path):
+        with path.open("r", encoding="utf-8") as file:
             json_data = json.load(file)
             if json_data["type"] == "ManyPolygonizer":
                 json_data = json_data["many_polygonizers"]
                 for name in json_data:
                     many_polygon = ManyPolygonizer.load_json(json_data[name])
-                    self.add_polygonizer(many_polygon, name)
+                    self.add(many_polygon, name)
             else:
                 loger.log(f"Uncorrected Type {json_data["type"]}. Need type: \"ManyPolygonizer\"")
 
-    def add_polygonizer(self, style, name):
-        self.many_polygonizers[name] = style
-
-    def get_polygonizer(self, name):
-        return self.many_polygonizers[name]
+    def get(self, name:str) -> ManyPolygonizer | None:
+        return super().get(name)
 
 
 

@@ -23,30 +23,4 @@ class MapLoader(Loader):
         map_block_loader.load_from_dir(path_map.joinpath("block"))
         dimension_loader.load_from_dir(path_map.joinpath("dimension"))
 
-    # def load(self, path: Path) -> None:
-    #     with Path(path).open("r", encoding="utf-8") as file:
-    #         json_data = json.load(file)
-    #         if json_data["type"] == "map_block":
-    #             json_data = json_data["data"]
-    #             size = Size2(json_data["size"])
-    #             map_block = MapBlock(size)
-    #             form = json_data["form"]
-    #             for position in size:
-    #                 if form[position.z][position.x] is not None:
-    #                     map_block.set_chunk_on(
-    #                         map_chunk_loader.get(
-    #                             form[position.z][position.x],
-    #                         ),
-    #                         position
-    #                     )
-    #             self.add(map_block, json_data["name"])
-    #
-    # def add(self, element: MapBlock, name: str) -> None:
-    #     self.elements[name] = element
-    #
-    # def get(self, name: str) -> MapBlock | None:
-    #     element = self.elements.get(name)
-    #     return element
-
-
 map_loader = MapLoader()

@@ -109,8 +109,9 @@ class Ticker:
         for tick_name in self.custom_ticks:
             self.custom_ticks[tick_name].tick()
 
-    def add_tick(self, tick_name: str):
+    def add_tick(self, tick_name: str) -> Tick:
         self.custom_ticks[tick_name] = Tick()
+        return self.custom_ticks[tick_name]
 
     def get(self, tick_name: str | None = None) -> Tick | None:
         if tick_name is None:
@@ -129,7 +130,7 @@ class Ticker:
         return self._tick_ % other
 
 
-
+MainTicker = Ticker()
 
 if __name__ == "__main__":
     ticker = Ticker()

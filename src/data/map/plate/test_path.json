@@ -5,6 +5,7 @@
     "type": "path",
     "changeable": true,
     "color": [0, 223, 0],
-    "texture": null
+    "texture": null,
+    "layer": 1
   }
 }

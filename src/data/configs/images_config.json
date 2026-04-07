@@ -1,6 +1,8 @@
 {
   "type": "image",
   "images": {
-    "test_name1": "src\\data\\images\\paw.png"
+    "test_name1": "src\\data\\images\\paw.png",
+    "walk_player": "src\\data\\images\\player_walk.png",
+    "idle_player": "src\\data\\images\\player_idle.png"
   }
 }

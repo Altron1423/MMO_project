@@ -252,16 +252,14 @@ class Polygon(Resizer):
             polygon.set_recalc_position(Recalc.load_from_str(data["position"]))
         if data.get("size") is not None:
             polygon.set_recalc_size(Recalc.load_from_str(data["size"]))
-            # polygon.resize(data["size"])
 
         if data.get("styleID") is not None:
-            polygon.set_style(Styler.get_styler(data["styleID"]))
+            polygon.set_style(Styler.get(data["styleID"]))
         elif data.get("styleName") is not None:
             from libs.loaders.styler_loader import styler_loader
-            polygon.set_style(styler_loader.get_styler(data["styleName"]))
+            polygon.set_style(styler_loader.get(data["styleName"]))
         if data.get("border") is not None:
            polygon.border = data["border"]
-
 
         return polygon
 

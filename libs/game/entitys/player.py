@@ -13,7 +13,7 @@ class Player(Entity):
 
 
     def set_changes_from_client(self, dto: GameDataToServerDTO):
-        if abs(dto.move.x) + abs(dto.move.z) <= 1:
+        if abs(dto.move.x) + abs(dto.move.z) <= 2.2:
             self.orientation = dto.move
         self.speed_control = dto.speed
 
@@ -45,6 +45,7 @@ class Player(Entity):
             xp=self.xp,
             lvl=self.lvl,
             inventory=str(self.inventory),
+            map_block=self.map_block.name
         )
 
     def __copy__(self) -> "Player":

@@ -5,6 +5,7 @@
     "type": "spawn",
     "changeable": true,
     "color": [0, 0, 255],
-    "texture": null
+    "texture": null,
+    "layer": 1
   }
 }

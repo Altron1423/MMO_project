@@ -21,3 +21,4 @@ class ClientPlayerDTO:
     xp: "ProgressBar"
     lvl: int
     inventory: str
+    map_block: str

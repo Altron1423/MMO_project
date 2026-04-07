@@ -11,11 +11,8 @@ from libs.math import Size2
 class MapChunkLoader(Loader):
     elements: dict[str, MapChunk]
 
-    def __init__(self):
-        self.elements = {}
-
     def load(self, path: Path) -> None:
-        with Path(path).open("r", encoding="utf-8") as file:
+        with path.open("r", encoding="utf-8") as file:
             json_data = json.load(file)
             if json_data["type"] == "map_chunk":
                 data = MapChunkConfigMapper.dict_to_dto(json_data["data"])
@@ -35,13 +32,6 @@ class MapChunkLoader(Loader):
                     )
 
                 self.add(map_chunk, data.name)
-
-    def load_from_dir(self, path: Path) -> None:
-        for iPath in path.iterdir():
-            self.load(iPath)
-
-    def add(self, element: MapChunk, name: str) -> None:
-        self.elements[name] = element
 
     def get(self, name: str) -> MapChunk | None:
         element = self.elements.get(name)

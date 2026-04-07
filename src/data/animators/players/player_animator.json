@@ -1,0 +1,57 @@
+{
+  "type": "entity_animator",
+  "data": {
+    "name": "player_animator",
+    "size": "<Size:80,80>",
+    "animation_pack": {
+      "walk_down": {
+        "texture": "walk_player",
+        "length": 8,
+        "speed": 3,
+        "line": 0
+      },
+      "walk_left": {
+        "texture": "walk_player",
+        "length": 8,
+        "speed": 3,
+        "line": 1
+      },
+      "walk_up": {
+        "texture": "walk_player",
+        "length": 8,
+        "speed": 3,
+        "line": 2
+      },
+      "walk_right": {
+        "texture": "walk_player",
+        "length": 8,
+        "speed": 3,
+        "line": 3
+      },
+      "idle_down": {
+        "texture": "idle_player",
+        "length": 6,
+        "speed": 3,
+        "line": 0
+      },
+      "idle_left": {
+        "texture": "idle_player",
+        "length": 6,
+        "speed": 3,
+        "line": 1
+      },
+      "idle_up": {
+        "texture": "idle_player",
+        "length": 6,
+        "speed": 3,
+        "line": 2
+      },
+      "idle_right": {
+        "texture": "idle_player",
+        "length": 6,
+        "speed": 3,
+        "line": 3
+      }
+    }
+  }
+}

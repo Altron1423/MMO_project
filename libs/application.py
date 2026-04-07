@@ -7,7 +7,7 @@ from libs.Core import CORE
 from libs.Loger import loger
 import src.modules.screen as screen
 from libs.math import Size2
-from libs.ticker import Ticker
+from libs.ticker import Ticker, MainTicker
 
 
 class Application:
@@ -69,7 +69,7 @@ class Application:
     def _set_start_parameters(self):
         self.clock = pg.time.Clock()
         self.TPS = 20
-        self.tick = Ticker()
+        self.tick = MainTicker
         self.path = Path.cwd()
         self.WORK = True
 

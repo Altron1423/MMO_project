@@ -8,6 +8,8 @@ from .screen import (
     ButtonDTO, WindowDataDTO, WindowDTO
 )
 
+from .animation import AnimationPackDataDTO, AnimatorDataDTO
+
 from .entity import AttributeLayerEntityDTO
 from .player import PlayerLoadDTO, ClientPlayerDTO
 

@@ -15,4 +15,5 @@ class MapPlateConfigDTO:
     type: str
     color: list[int]
     texture: str
+    layer: int
     changeable: bool

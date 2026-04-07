@@ -5,6 +5,7 @@
     "type": "plate",
     "changeable": false,
     "color": [123, 123, 123],
-    "texture": null
+    "texture": null,
+    "layer": 1
   }
 }

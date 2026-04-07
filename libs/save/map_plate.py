@@ -9,6 +9,7 @@ class MapPlate:
     position: Position2
     color: list[int]
     texture: None | str
+    layer: int
     changeable: bool
 
     def __init__(self, name_plate: str):
@@ -37,5 +38,6 @@ class MapPlate:
         map_plate.changeable = self.changeable
         map_plate.color = self.color.copy()
         map_plate.texture = self.texture
+        map_plate.layer = self.layer
 
         return map_plate

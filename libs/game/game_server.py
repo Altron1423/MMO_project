@@ -9,7 +9,6 @@ from .. import GameDataToClientDTO, GameDataToServerDTO, MapBlock
 from ..Loger import loger
 from ..loaders import map_loader
 from ..loaders.entity_loader import player_loader
-from ..math import Position2
 
 
 class GameServer:
