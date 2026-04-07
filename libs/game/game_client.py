@@ -4,12 +4,11 @@ import pygame as pg
 
 from typing import Callable, Generator, Any
 
-from libs.animator_controller.animation_pack import AnimationPack
-from libs.animator_controller.entity_animator import EntityAnimator
 from .entitys import ClientPlayer
 from .. import GameDataToClientDTO, GameDataToServerDTO, loger
 from ..ticker import Ticker, MainTicker
 from ..loaders.animator_loader import animator_loader, entity_animator_loader
+from ..loaders import map_loader
 from ..math import Vector2
 from ..window.screen import Window
 from ..window.camera import Camera
@@ -33,9 +32,11 @@ class GameClient:
         self.ticker = MainTicker
 
         path = Path.cwd()
+        path_map = path.joinpath("src/data/map")
         path_animator = path.joinpath("src/data/animators")
 
         animator_loader.load_from_dir(path_animator)
+        map_loader.load_from_dir(path_map)
         loger.status("GameMain loaded complete")
 
     def set_game_data(
@@ -109,10 +110,11 @@ class GameClient:
             self.window.add_task_draw(1, (self.camera.get_surface(), (0, 0)))
 
     def main(self):
-        for act in self.get_data_from_server():
-            self.player.get_data_from_server(act.player)
+        if self.ticker % 2:
+            dto = self.player.data_to_server()
+            self.send_game_data(dto)
+
+            for act in self.get_data_from_server():
+                self.player.get_data_from_server(act.player)
 
         self.draw()
-
-        dto = self.player.data_to_server()
-        self.send_game_data(dto)

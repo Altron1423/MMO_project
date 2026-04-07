@@ -24,12 +24,14 @@ class App(Application):
         super().__init__()
 
         config = {
-            "open_single_player": [self.open_single_player, None],
+            "open_single_game": [self.open_single_game, None],
+            "open_multiplayer_game": [self.open_multiplayer_game, None],
             "open_game_menu": [self.open_game_menu, None],
             "save_select": [self.select_save, None],
         }
         game = {
-            "start_game": [self.start_server_game, None],
+            "start_server_game": [self.start_server_game, None],
+            "start_client_game": [self.start_client_game, None],
             "leave_game": [self.leave_game, None]
         }
         test = {
@@ -55,18 +57,27 @@ class App(Application):
     def run_more(self):
         if self.run_game:
             self.server.main(self.tick)
-            self.server_game.main()
+            if self.server_game is not None:
+                self.server_game.main()
             self.client_game.main()
 
-    def open_single_player(self, bat: Button=None):
+    def open_single_game(self, bat: Button=None):
         self.save_manager.load_from_dir()
         self.main_screen.append_single_saves(self.save_manager.get_saves_name())
-        self.window_manager.set_main_window("game_select")
-        self.window_manager.open_window("single_saves")
+        self.window_manager.set_main_window("single_saves")
+        self.window_manager.open_window("game_select")
+
+    def open_multiplayer_game(self, bat: Button=None):
+        self.server = ClientConnector(self.user_data)
+        self.servers = self.server.find_servers()
+        self.main_screen.append_single_saves([f"{self.servers[i].ip}_{i}" for i in range(len(self.servers))])
+        self.window_manager.set_main_window("online_servers")
+        self.window_manager.open_window("game_select")
+
 
     def open_game_menu(self, bat: Button=None):
         self.window_manager.set_main_window("main_menu")
-        self.window_manager.close_window("single_saves")
+        self.window_manager.close_window("game_select")
 
     def select_save(self, bat: Button=None):
         self.save_selected = bat.text_polygon._text
@@ -77,6 +88,13 @@ class App(Application):
 
         self.server = ServerConnector(self.user_data)
         self.server.start_server()
+
+        self.client_game = GameClient(self.user_data.name)
+        self.client_game.set_game_data(
+            self.server.get_data_from_server,
+            self.server.send_game_data,
+            self.window_manager.get_window("main_game_screen")
+        )
 
         self.server_game = GameServer()
         self.server_game.set_game_data(
@@ -91,20 +109,12 @@ class App(Application):
             self.server_game.summon_new_player,
         )
 
-        self.client_game = GameClient(self.user_data.name)
-        self.client_game.set_game_data(
-            self.server.get_data_from_server,
-            self.server.send_game_data,
-            self.window_manager.get_window("main_game_screen")
-        )
-
         self.server_game.start()
         self.client_game.start()
         self.run_game = True
         self.open_game_screen()
 
     def start_client_game(self, bat: Button=None):
-        self.server = ClientConnector(self.user_data)
         self.server.start_client()
 
         self.client_game = GameClient(self.user_data.name)
@@ -115,12 +125,15 @@ class App(Application):
         )
 
         self.client_game.start()
+        id = int(self.save_selected.split("_")[1])
+        self.server.connect(self.servers[id])
+        self.server.join_game()
         self.run_game = True
         self.open_game_screen()
 
     def open_game_screen(self):
         self.window_manager.set_main_window("main_game_screen")
-        self.window_manager.close_window("single_saves")
+        self.window_manager.close_window("game_select")
 
     def leave_game(self, bat: Button=None):
         self.run_game = False
@@ -130,7 +143,7 @@ class App(Application):
             self.server_game = None
         self.server.close()
         self.server = None
-        self.open_single_player()
+        self.open_single_game()
 
     def exit(self, _=None):
         if self.server:

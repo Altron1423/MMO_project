@@ -5,9 +5,8 @@ from . import GameStartException
 from libs.save import SaveFull
 from libs.generators import SaveCreateTest
 from .entitys.player import Player
-from .. import GameDataToClientDTO, GameDataToServerDTO, MapBlock
+from .. import GameDataToClientDTO, GameDataToServerDTO
 from ..Loger import loger
-from ..loaders import map_loader
 from ..loaders.entity_loader import player_loader
 
 
@@ -25,10 +24,8 @@ class GameServer:
 
     def __init__(self):
         path = Path.cwd()
-        path_map = path.joinpath("src/data/map")
         path_player = path.joinpath("src/data/entities")
 
-        map_loader.load_from_dir(path_map)
         player_loader.load_from_dir(path_player)
 
         loger.status("GameMain loaded complete")
@@ -72,7 +69,7 @@ class GameServer:
     def main(self):
         for act, user_name in self.get_user_action():
             player = self.players_in_game[user_name]
-            # loger.log(f"Server {user_name=} {act.move=}")
+            # loger.log(f"Server {user_name=} act.move={act.move}")
 
             player.set_changes_from_client(act)
             player.update()

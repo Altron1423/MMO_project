@@ -7,11 +7,11 @@ class MainScreen(_MainScreen):
         super().__init__(application)
 
     def append_single_saves(self, save_names:list[str]):
-        self.window_manager.get_window("single_saves").cleen_buttons()
-        self.window_manager._append_buttons(save_names, "single_saves")
+        self.window_manager.get_window("game_select").cleen_buttons()
+        self.window_manager._append_buttons(save_names, "game_select")
 
     def append_online_saves(self, buttons:list[str]):
-        self.window_manager.get_window("online_saves").cleen_buttons()
-        self.window_manager._append_buttons(buttons, "online_saves")
+        self.window_manager.get_window("game_select").cleen_buttons()
+        self.window_manager._append_buttons(buttons, "game_select")
 
 

@@ -113,12 +113,12 @@ class ServerConnector(SocConnector):
             try:
                 if type(connect) == socket:
                     d = connect.recv(1024)
+                    # loger.log(f"Raw message in <current_users>: {d}")
                 else:
                     d = self.local_send_to_server_message
                     self.local_send_to_server_message = b""
                 if len(d) == 0:
                     raise BlockingIOError
-                # loger.log(f"Raw message in <current_users>: {d}")
                 data = self.decode_message(d, True)
                 if data is None:
                     pass
@@ -130,9 +130,11 @@ class ServerConnector(SocConnector):
                     if status_dict is not None:
                         dto = GameDataToServerMapper.dict_to_dto(status_dict)
                         user.add_message(dto)
-            except BlockingIOError:
-                pass
-            except ConnectionAbortedError or ConnectionResetError:
+            except BlockingIOError as e:
+                ...
+            except ConnectionAbortedError:
+                self.__drop_connect__(connect)
+            except ConnectionResetError:
                 self.__drop_connect__(connect)
 
             for data in user.get_data_from_server:

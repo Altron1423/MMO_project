@@ -90,6 +90,8 @@ class SocConnector:
 
     def __send__(self, message: str | dict) -> None:
         # print(message)
+        if self.main_socket is None:
+            return
         if type(message) == dict:
             message = json.dumps(message)
         self.main_socket.send(f"<{message}>".encode())

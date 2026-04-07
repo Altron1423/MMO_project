@@ -18,25 +18,6 @@ class ClientPlayer(Player):
         self.last_direction_view = 'down'
 
     def preferential_orientation(self) -> str:
-        # if self.orientation.x > 0:
-        #     self.type_orientation = 'walk_right'
-        # elif self.orientation.x < 0:
-        #     self.type_orientation = 'walk_left'
-        # elif self.orientation.z > 0:
-        #     self.type_orientation = 'walk_down'
-        # elif self.orientation.z < 0:
-        #     self.type_orientation = 'walk_up'
-        # else:
-        #     if self.type_orientation == 'walk_right':
-        #         self.type_orientation = 'idle_right'
-        #     elif self.type_orientation == 'walk_left':
-        #         self.type_orientation = 'idle_left'
-        #     elif self.type_orientation == 'walk_down':
-        #         self.type_orientation = 'idle_down'
-        #     elif self.type_orientation == 'walk_up':
-        #         self.type_orientation = 'idle_up'
-
-        # return self.type_orientation
         return f"{self.type_action}_{self.direction_view}"
 
     def get_data_from_server(self, dto: ClientPlayerDTO):

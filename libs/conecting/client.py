@@ -36,6 +36,7 @@ class ClientConnector(SocConnector):
             raw_server_message: dict = self.decode_message(
                 self.__receive__()
             )
+            # loger.log(f"Server message: {raw_server_message}")
             if raw_server_message is not None:
                 server_answer = raw_server_message.get(self.game_status_message)
                 if server_answer is not None:
@@ -54,7 +55,10 @@ class ClientConnector(SocConnector):
         self.__send__(self.drop_connect)
 
     def close(self):
-        self.disconnect()
+        try:
+            self.disconnect()
+        except OSError:
+            pass
         super().close()
 
 
@@ -76,6 +80,7 @@ class ClientConnector(SocConnector):
                 self.join_in_game_message: ConnectClientMapper.dto_to_dict(self.connect_data)
             })
             print(self.__receive__())
+            self.main_socket.setblocking(False)
 
     def find_servers(self) -> list[AddressConnectDTO]:
         address_list = self.ad_checker.start()
