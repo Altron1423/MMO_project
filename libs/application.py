@@ -68,7 +68,7 @@ class Application:
 
     def _set_start_parameters(self):
         self.clock = pg.time.Clock()
-        self.TPS = 20
+        self.TPS = 30
         self.tick = MainTicker
         self.path = Path.cwd()
         self.WORK = True

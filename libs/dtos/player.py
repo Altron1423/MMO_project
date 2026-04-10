@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from libs.math import Position2
+from libs.math import Position2, Vector2
 
 
 @dataclass

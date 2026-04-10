@@ -10,7 +10,7 @@ from .screen import (
 
 from .animation import AnimationPackDataDTO, AnimatorDataDTO
 
-from .entity import AttributeLayerEntityDTO
+from .entity import AttributeLayerEntityDTO, EntityToClientDTO
 from .player import PlayerLoadDTO, ClientPlayerDTO
 
 from .dimension import DimensionSaveDTO

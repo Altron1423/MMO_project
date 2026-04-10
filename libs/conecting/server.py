@@ -126,10 +126,13 @@ class ServerConnector(SocConnector):
                     self.__drop_connect__(connect)
                     loger.log(f"drop connect")
                 else:
-                    status_dict = data.get(self.game_status_message)
-                    if status_dict is not None:
-                        dto = GameDataToServerMapper.dict_to_dto(status_dict)
-                        user.add_message(dto)
+                    try:
+                        status_dict = data.get(self.game_status_message)
+                        if status_dict is not None:
+                            dto = GameDataToServerMapper.dict_to_dto(status_dict)
+                            user.add_message(dto)
+                    except AttributeError:
+                        loger.error(f"Game status message: {self.game_status_message}")
             except BlockingIOError as e:
                 ...
             except ConnectionAbortedError:
@@ -139,7 +142,10 @@ class ServerConnector(SocConnector):
 
             for data in user.get_data_from_server:
                 game_data = GameDataToClientMapper.dto_to_dict(data)
-                self.__send_to__(connect, {self.game_status_message: game_data})
+                try:
+                    self.__send_to__(connect, {self.game_status_message: game_data})
+                except OSError:
+                    ...
 
     def open_connection(self, connect_player: Callable[[str], Any]):
         self.access_external_connections = True

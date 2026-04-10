@@ -1,6 +1,32 @@
 from dataclasses import dataclass
 
-from libs.dtos import AttributeLayerEntityDTO
+from libs.dtos import AttributeLayerEntityDTO, EntityToClientDTO
+from libs.math import Position2, Vector2
+
+
+@dataclass(frozen=True, slots=True)
+class EntityToClientMapper:
+
+    @staticmethod
+    def dto_to_dict(dto: EntityToClientDTO) -> dict[str, str]:
+        return {
+            "name": dto.name,
+            "position": str(dto.position),
+            "health": str(dto.health),
+            "orientation": str(dto.orientation),
+            "visual_action": dto.visual_action
+        }
+
+    @staticmethod
+    def dict_to_dto(data: dict) -> EntityToClientDTO:
+        from libs import ProgressBar
+        return EntityToClientDTO(
+            name=data["name"],
+            position=Position2(data["position"]),
+            health=ProgressBar.init_from_str(data["health"]),
+            orientation=Vector2(data["orientation"]),
+            visual_action=data["visual_action"]
+        )
 
 
 @dataclass(frozen=True, slots=True)

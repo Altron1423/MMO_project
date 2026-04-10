@@ -28,7 +28,7 @@ class DefaultAnimator:
     def add_animation_pack(self, name: str, animator_pack: AnimationPack):
         self.default_surface[name] = animator_pack
         animator_pack = animator_pack.copy()
-        animator_pack.set_scale(self.second_scale)
+        animator_pack.set_scale(self.first_scale * self.second_scale)
         self.scale_surface[name] = animator_pack
 
     def set_type(self, type_d: str):
@@ -39,8 +39,6 @@ class DefaultAnimator:
         if self.second_scale != scale:
             self.second_scale = scale
             self.__rescale__()
-        else:
-            self.second_scale = scale
 
     def set_default_size(self, size: Size2):
         self.default_size = size
@@ -52,3 +50,12 @@ class DefaultAnimator:
         for name in self.default_surface:
             self.scale_surface[name] = self.default_surface[name].copy().set_scale(self.first_scale * self.second_scale)
 
+    def __copy__(self):
+        anim = self.__class__(self.tick)
+        anim.set_default_size(self.default_size)
+        anim.first_scale = self.first_scale
+        anim.set_scale(self.second_scale)
+        anim.set_type(self.type)
+        for i in self.default_surface:
+            anim.add_animation_pack(i, self.default_surface[i])
+        return anim

@@ -49,5 +49,8 @@ class EntityAnimatorLoader(Loader):
     def get(self, name: str) -> EntityAnimator | None:
         return super().get(name)
 
+    def get_new(self, name: str) -> EntityAnimator | None:
+        return super().get_new(name)
+
 
 entity_animator_loader = EntityAnimatorLoader()

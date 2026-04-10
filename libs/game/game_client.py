@@ -4,7 +4,7 @@ import pygame as pg
 
 from typing import Callable, Generator, Any
 
-from .entitys import ClientPlayer
+from .entitys import ClientPlayer, ClientEntity
 from .. import GameDataToClientDTO, GameDataToServerDTO, loger
 from ..ticker import Ticker, MainTicker
 from ..loaders.animator_loader import animator_loader, entity_animator_loader
@@ -26,6 +26,7 @@ class GameClient:
     window: Window
 
     player: ClientPlayer
+    entities: dict[str, ClientEntity]
 
     def __init__(self, player_name:str):
         self.player = ClientPlayer(player_name)
@@ -37,6 +38,9 @@ class GameClient:
 
         animator_loader.load_from_dir(path_animator)
         map_loader.load_from_dir(path_map)
+
+        self.entities = {}
+
         loger.status("GameMain loaded complete")
 
     def set_game_data(
@@ -68,6 +72,7 @@ class GameClient:
         default_player_animator.set_size(self.player.collision * 4)
 
         self.camera = Camera(window, self.player, default_player_animator)
+        self.camera.entities = self.entities
 
     def key_press(self, key: str, key_down: bool):
         if pg.K_w == key:
@@ -109,6 +114,23 @@ class GameClient:
             self.camera.update()
             self.window.add_task_draw(1, (self.camera.get_surface(), (0, 0)))
 
+    def update_entities(self, entities):
+        names = list(self.entities.keys())
+        for entity in entities:
+            if entity.name == self.player.name:
+                continue
+            ent = self.entities.get(entity.name)
+            if ent is None:
+                ent = ClientEntity(entity.name)
+                self.entities[entity.name] = ent
+                self.camera.was_new = True
+            else:
+                names.remove(entity.name)
+            ent.update_from_server(entity)
+        for name in names:
+            self.entities.pop(name)
+
+
     def main(self):
         if self.ticker % 2:
             dto = self.player.data_to_server()
@@ -116,5 +138,9 @@ class GameClient:
 
             for act in self.get_data_from_server():
                 self.player.get_data_from_server(act.player)
+                self.update_entities(act.entities)
+                # self.camera.entities = act.entities
+                # if len(act.entities) > 1:
+                #     print(act.entities[1:])
 
         self.draw()

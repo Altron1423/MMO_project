@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from libs.math import Position2, Vector2
+
 
 @dataclass
 class AttributeLayerEntityDTO:
@@ -35,3 +37,12 @@ class AttributeLayerEntityDTO:
             health_reg=     int(self.health_reg * other.health_reg),
             max_mana=       int(self.max_mana * other.max_mana)
         )
+
+
+@dataclass
+class EntityToClientDTO:
+    name: str
+    position: Position2
+    health: "ProgressBar"
+    orientation: Vector2
+    visual_action: str

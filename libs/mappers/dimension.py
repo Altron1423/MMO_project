@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
-from libs import DimensionSaveDTO, Dimension, DimensionConfigDTO
+from libs.dtos import DimensionSaveDTO, DimensionConfigDTO
+from libs.save.dimension import Dimension
 
 
 @dataclass(frozen=True, slots=True)

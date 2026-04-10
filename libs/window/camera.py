@@ -2,6 +2,7 @@ import pygame as pg
 
 from .screen import Window
 from .. import MapPlate
+from ..game import ClientEntity
 from libs.animator_controller.entity_animator import EntityAnimator
 from ..math import Size2, Position2, Vector2
 
@@ -50,6 +51,8 @@ class Camera:
     position: Position2
     player: "Player"
     player_animator: EntityAnimator
+    entities: dict[str, ClientEntity]
+    was_new: bool = False
 
     first_plate: Position2
     end_plate: Position2
@@ -65,6 +68,7 @@ class Camera:
     def __init__(self, window: Window, player: "Player", player_animator: EntityAnimator):
         self.window = window
         self.player = player
+        self.entities = {}
         self.player_animator = player_animator
         self.player_animator.set_default_size(player.collision*4)
         self.target_position = self.position = player.position
@@ -104,7 +108,21 @@ class Camera:
                 )
                 pg.draw.rect(self.surface, (255, 0, 0), pos_plate_draw, 2)
 
-    def draw_entity(self):
+    def draw_entity(self, entity: ClientEntity):
+        self.player_animator.set_type(
+            self.player.preferential_orientation()
+        )
+        position = self.plate_size * self.center_pos + (entity.position - self.position) * self.scale
+        surf = entity.animator.get_surface()
+        if surf is not None:
+            self.surface.blit(surf, (position - entity.scaled_collision*2).tuple)
+        pg.draw.rect(self.surface, (0, 255, 0), rect(position - entity.scaled_collision, entity.scaled_collision *2), 5)
+
+    def draw_entities(self):
+        for name, entity in self.entities.items():
+            if name != self.player.name:
+                self.draw_entity(entity)
+
         self.player_animator.set_type(
             self.player.preferential_orientation()
         )
@@ -167,9 +185,11 @@ class Camera:
             self.set_surface_size()
         self.surface.fill((0, 0, 0))
 
+        if self.was_new:
+            self.__update_entities__()
         self.update_map()
         self.draw()
-        self.draw_entity()
+        self.draw_entities()
 
     def add_tile(self, position: Position2, map_plate: tuple):
         position += 1
@@ -208,4 +228,9 @@ class Camera:
         # self.plate_size = Size2(50, 50)
 
         self.player_animator.set_scale(self.scale)
+        self.__update_entities__()
         self.scaled_collision = self.player.collision * self.scale
+
+    def __update_entities__(self):
+        for _, entity in self.entities.items():
+            entity.set_scale(self.scale)

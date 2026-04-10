@@ -1,7 +1,7 @@
 from libs.dtos import ClientPlayerDTO, GameDataToServerDTO, GameDataToClientDTO, PlayerLoadDTO
 from libs.game.sub_classes import Inventory
-from libs.game.entitys.entity import Entity
 from libs.math import Position2
+from .entity import Entity
 
 
 class Player(Entity):
@@ -11,6 +11,9 @@ class Player(Entity):
         super().__init__()
         self.inventory = Inventory()
 
+    def set_default(self, name: str, spawn_position: Position2):
+        self.name = name
+        self.position = spawn_position
 
     def set_changes_from_client(self, dto: GameDataToServerDTO):
         if abs(dto.move.x) + abs(dto.move.z) <= 2.2:
@@ -20,6 +23,7 @@ class Player(Entity):
     def get_data_for_client(self) -> GameDataToClientDTO:
         dto = GameDataToClientDTO(
             map_block="",
+            entities=self.map_block.get_entity_dto(),
             player=self.__player_data__,
             chunk_position=Position2(0, 0),
             position=self.position

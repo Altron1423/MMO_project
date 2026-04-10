@@ -53,4 +53,5 @@ class AnimationPack:
         animator_pack.surfaces = self.surfaces.copy()
         animator_pack.count = self.count
         animator_pack.time_to_surface = self.time_to_surface
+        animator_pack._animation_seed = randint(0, self.count)
         return animator_pack

@@ -37,5 +37,9 @@ class SaveFull(SaveLight):
         s_wf = self.saves_wf(self.path_save)
         s_wf.saving(self)
 
+    def update(self):
+        for i_dimension in self.dimensions:
+            i_dimension.update()
+
     def __load__(self):
         ...

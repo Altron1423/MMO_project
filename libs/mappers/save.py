@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from libs import DataSaveDTO, MapChunk, MapChunkConfigDTO
+from libs import DataSaveDTO
 
 
 @dataclass(frozen=True, slots=True)

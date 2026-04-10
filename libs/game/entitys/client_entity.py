@@ -1,41 +1,36 @@
-from libs import GameDataToServerDTO, map_block_loader
-from libs.dtos.player import ClientPlayerDTO
 from libs.math import Position2, Vector2
-from .player import Player
+from ... import EntityToClientDTO, entity_animator_loader
+from .entity import Entity
+from ...animator_controller import EntityAnimator
 
 
-class ClientPlayer(Player):
-    raw_orientation: Vector2
+class ClientEntity(Entity):
     map_block_name: str
     target_position: Position2
+    scaled_collision: Vector2
     last_direction_view: str
+    animator: EntityAnimator
 
     def __init__(self, player_name: str):
         super().__init__()
-        self.raw_orientation = Vector2(0, 0)
         self.player_name = player_name
-        self.target_position = Position2()
+        self.animator = entity_animator_loader.get_new("player_animator")
         self.last_direction_view = 'down'
+        self.scaled_collision = self.collision * 1
 
+    def update_from_server(self, data: EntityToClientDTO):
+        self.position = data.position
+        self.health = data.health
+        self.orientation = data.orientation
+        self.animator.set_type(self.preferential_orientation)
+
+    def set_scale(self, scale: float):
+        self.animator.set_scale(scale)
+        self.scaled_collision = self.collision * scale
+
+    @property
     def preferential_orientation(self) -> str:
         return f"{self.type_action}_{self.direction_view}"
-
-    def get_data_from_server(self, dto: ClientPlayerDTO):
-        self.name = dto.name
-        self.position = dto.position
-        self.health = dto.health
-        self.mana = dto.mana
-        self.xp = dto.xp
-        self.lvl = dto.lvl
-        self.map_block = map_block_loader.get(dto.map_block)
-
-    def data_to_server(self) -> GameDataToServerDTO:
-        return GameDataToServerDTO(
-            move=self.orientation,
-            speed=1.0,
-            target_position=self.target_position,
-            action="22"
-        )
 
     @property
     def direction_view(self) -> str:

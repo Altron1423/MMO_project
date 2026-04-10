@@ -69,8 +69,9 @@ class SocConnector:
         return ip_l
 
     def close(self):
-        self.main_socket.close()
-        self.main_socket = None
+        if self.main_socket is not None:
+            self.main_socket.close()
+            self.main_socket = None
 
     @staticmethod
     def decode_message(raw_message: bytes | str, string=False):

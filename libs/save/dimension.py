@@ -56,13 +56,17 @@ class Dimension:
                 return False
         return True
 
-    @property
-    def Name(self):
-        return self.name
-
     def get_chunk(self, position: Position2) -> MapChunk:
         if position in self.size:
             return self.map_matrix[position.z][position.x]
+
+    def update(self):
+        for i_blocks in self.blocks:
+            i_blocks.update()
+
+    @property
+    def Name(self):
+        return self.name
 
     def __set_block__(
             self,

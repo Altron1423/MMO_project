@@ -1,4 +1,4 @@
-from libs import MapBlock, MapPlate
+from libs import MapBlock, MapPlate, EntityToClientDTO
 from libs.game.sub_classes import Attributer, ProgressBar
 from libs.game.sub_classes.progress_bar import TriggersDTO
 from libs.math import Position2, Vector2
@@ -62,6 +62,25 @@ class Entity:
     def update(self):
         self.attributes.update()
         self.__move__()
+
+    def transition_to(self, map_block: MapBlock):
+        if self.map_block is not None:
+            self.transition_from()
+        self.map_block = map_block
+        map_block.players.append(self)
+        self.position = Position2(150, 150)
+
+    def transition_from(self):
+        self.map_block.players.remove(self)
+
+    def get_light_data(self) -> EntityToClientDTO:
+        return EntityToClientDTO(
+            self.name,
+            self.position,
+            self.health,
+            self.orientation,
+            "idle"
+        )
 
     def __move__(self):
         move_on = self.orientation * self.speed * self.speed_control

@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from libs import Version
+from .entity import EntityToClientDTO
 from libs.dtos.player import ClientPlayerDTO
 from libs.math import Position2, Vector2
 
@@ -33,6 +34,7 @@ class GameDataToServerDTO:
 @dataclass
 class GameDataToClientDTO:
     map_block: str
+    entities: list[EntityToClientDTO]
     player: ClientPlayerDTO
     chunk_position: Position2
     position: Position2

@@ -56,10 +56,15 @@ class App(Application):
 
     def run_more(self):
         if self.run_game:
-            self.server.main(self.tick)
-            if self.server_game is not None:
-                self.server_game.main()
-            self.client_game.main()
+            try:
+                self.server.main(self.tick)
+                if self.server_game is not None:
+                    self.server_game.main()
+                self.client_game.main()
+            except AttributeError:
+                self.leave_game()
+            except ConnectionResetError:
+                self.leave_game()
 
     def open_single_game(self, bat: Button=None):
         self.save_manager.load_from_dir()
@@ -115,6 +120,9 @@ class App(Application):
         self.open_game_screen()
 
     def start_client_game(self, bat: Button=None):
+        if self.save_selected is None:
+            return
+
         self.server.start_client()
 
         self.client_game = GameClient(self.user_data.name)
@@ -143,7 +151,7 @@ class App(Application):
             self.server_game = None
         self.server.close()
         self.server = None
-        self.open_single_game()
+        self.open_game_menu()
 
     def exit(self, _=None):
         if self.server:

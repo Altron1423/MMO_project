@@ -19,7 +19,7 @@ class GameServer:
         ]
     ]
     send_to_user: Callable[[GameDataToClientDTO, str], None]
-    players: list[Player]
+    load_players: dict[str, Player]
     players_in_game: dict[str, Player]
 
     def __init__(self):
@@ -30,7 +30,7 @@ class GameServer:
 
         loger.status("GameMain loaded complete")
 
-        self.players = []
+        self.load_players = {}
         self.players_in_game = {}
 
 
@@ -54,10 +54,12 @@ class GameServer:
         self.summon_new_player(player_name)
 
     def summon_new_player(self, name: str) -> Player:
-        player = player_loader.get_new("human")
-        player.position = self.save.spawn_position+0
-        player.map_block = self.save.spawn_map_block
-        self.players.append(player)
+        player = self.load_players.get(name)
+        if player is None:
+            player = player_loader.get_new("human")
+            player.transition_to(self.save.spawn_map_block)
+            player.set_default(name, self.save.spawn_position)
+            self.load_players[name] = player
         self.players_in_game[name] = player
         return player
 
@@ -78,6 +80,7 @@ class GameServer:
                 player.get_data_for_client(),
                 user_name
             )
+        self.save.update()
 
     def saving(self):
         self.save.saving()
