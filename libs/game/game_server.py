@@ -51,17 +51,29 @@ class GameServer:
             SaveCreateTest.create(self.save)
         self.get_user_action = get_user_action
         self.send_to_user = send_to_user
-        self.summon_new_player(player_name)
+        player =  self.summon_new_player(player_name)
+        self.players_in_game[player_name] = player
 
     def summon_new_player(self, name: str) -> Player:
+        player = player_loader.get_new("human")
+        player.transition_to(self.save.spawn_map_block)
+        player.set_default(name, self.save.spawn_position)
+        self.load_players[name] = player
+        return player
+
+    def player_connect(self, name: str) -> Player:
         player = self.load_players.get(name)
         if player is None:
-            player = player_loader.get_new("human")
-            player.transition_to(self.save.spawn_map_block)
-            player.set_default(name, self.save.spawn_position)
-            self.load_players[name] = player
+            player = self.summon_new_player(name)
+        else:
+            player.connect()
         self.players_in_game[name] = player
         return player
+
+    def player_disconnect(self, name: str):
+        player = self.load_players.get(name)
+        player.disconnect()
+        self.players_in_game.pop(name)
 
     def start(self):
         if not self.save:

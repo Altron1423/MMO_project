@@ -67,11 +67,19 @@ class Entity:
         if self.map_block is not None:
             self.transition_from()
         self.map_block = map_block
-        map_block.players.append(self)
+        map_block.players_in_game.append(self)
+        self.map_block.players[self.name] = self
         self.position = Position2(150, 150)
 
     def transition_from(self):
-        self.map_block.players.remove(self)
+        self.map_block.players_in_game.remove(self)
+        self.map_block.players.pop(self.name)
+
+    def disconnect(self):
+        self.map_block.players_in_game.remove(self)
+
+    def connect(self):
+        self.map_block.players_in_game.append(self)
 
     def get_light_data(self) -> EntityToClientDTO:
         return EntityToClientDTO(

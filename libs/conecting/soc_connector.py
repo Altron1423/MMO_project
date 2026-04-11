@@ -57,6 +57,7 @@ class SocConnector:
     true_join_game: str = "JOIN_TRUE"
     false_join_game: str = "JOIN_FALSE"
     game_status_message: str = "GAME_STATUS"
+    server_close: str = "CLOSE"
 
     def __init__(self, version: Version):
         self.game_version = version
@@ -78,8 +79,10 @@ class SocConnector:
         if type(raw_message) == bytes:
             raw_message = raw_message.decode()
         # loger.log(f"{raw_message=}")
-        if len(raw_message) and raw_message[0] == '<' and raw_message[-1] == '>':
-            message = raw_message[1:-1]
+        # last = raw_message.find(">")
+        last = -1
+        if len(raw_message) and raw_message[0] == '<' and raw_message[last] == '>':
+            message = raw_message[1:last]
             try:
                 return json.loads(message)
             except json.decoder.JSONDecodeError as e:
@@ -90,7 +93,6 @@ class SocConnector:
             return None
 
     def __send__(self, message: str | dict) -> None:
-        # print(message)
         if self.main_socket is None:
             return
         if type(message) == dict:

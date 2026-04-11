@@ -11,7 +11,8 @@ from . import SocConnector
 
 from socket import (
     socket,
-    AF_INET, SOCK_STREAM, IPPROTO_TCP, TCP_NODELAY
+    AF_INET, SOCK_STREAM, IPPROTO_TCP, TCP_NODELAY,
+    # setdefaulttimeout
 )
 
 
@@ -34,21 +35,25 @@ class ClientConnector(SocConnector):
     def main(self, tick: int=None):
         try:
             raw_server_message: dict = self.decode_message(
-                self.__receive__()
+                self.__receive__(), True
             )
             # loger.log(f"Server message: {raw_server_message}")
             if raw_server_message is not None:
-                server_answer = raw_server_message.get(self.game_status_message)
-                if server_answer is not None:
-                    dto = GameDataToClientMapper.dict_to_dto(server_answer)
-                    self.data_from_server = dto
+                if type(raw_server_message) is str:
+                    if raw_server_message == self.server_close:
+                        self.close()
+                else:
+                    server_answer = raw_server_message.get(self.game_status_message)
+                    if server_answer is not None:
+                        dto = GameDataToClientMapper.dict_to_dto(server_answer)
+                        self.data_from_server = dto
 
         except BlockingIOError:
             pass
 
 
     def connect(self, address: AddressConnectDTO) -> None:
-        loger.log(f"Connect to {(address.ip, self.server_port)}")
+        # loger.log(f"Connect to {(address.ip, self.server_port)}")
         self.main_socket.connect((address.ip, self.server_port))
 
     def disconnect(self):
@@ -74,24 +79,26 @@ class ClientConnector(SocConnector):
         })
 
 
-    def join_game(self):
+    def join_game(self) -> bool:
         if self.connect_data is not None:
             self.__send__({
                 self.join_in_game_message: ConnectClientMapper.dto_to_dict(self.connect_data)
             })
-            print(self.__receive__())
-            self.main_socket.setblocking(False)
+            connection = self.__receive__()
+            if self.decode_message(connection, True) == self.true_join_game:
+                self.main_socket.setblocking(False)
+                return True
+        return False
 
-    def find_servers(self) -> list[AddressConnectDTO]:
+    def find_servers(self) -> list[ConnectServerDTO]:
         address_list = self.ad_checker.start()
-        servers_list = []
+        servers_list: list[ConnectServerDTO] = []
         if len(address_list) > 0:
             self.start_client()
             for address in address_list:
-                if self.__testing_is_server__(address):
-                    servers_list.append(address)
-                    # print("stop")
-                    time.sleep(0.5)
+                if connect_data := self.__testing_is_server__(address):
+                    servers_list.append(connect_data)
+                time.sleep(0.5)
             self.close()
         return servers_list
 
@@ -99,26 +106,27 @@ class ClientConnector(SocConnector):
     def __testing_is_server__(self, address:AddressConnectDTO) -> ConnectServerDTO | None:
         answer = None
         try:
+            # self.main_socket.settimeout(0.4)
             self.connect(address)
             self.__send__(self.testing_server_message)
 
             raw_server_answer:dict = self.decode_message(
                 self.__receive__()
             )
-            # print(raw_server_answer)
             server_answer = raw_server_answer.get(self.true_server_testing)
             if server_answer is not None:
                 dto = ConnectServerMapper.dict_to_dto(server_answer)
+                dto.address = address
                 if dto.version != self.game_version:
                     pass
                 else:
                     answer = dto
             self.disconnect()
         except ConnectionRefusedError:
-            pass
+            loger.error("ConnectionRefusedError")
         except PermissionError:
-            pass
+            loger.error("PermissionError")
         except OSError:
-            pass
+            loger.error("OSError")
 
         return answer

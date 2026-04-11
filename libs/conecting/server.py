@@ -29,6 +29,7 @@ class ServerConnector(SocConnector):
     current_users: list[tuple[str | socket, User]]
 
     connect_player: Callable[[str], Any]
+    disconnect_player: Callable[[str], Any]
 
     local_send_to_server_message: bytes
     local_send_to_client_message: bytes
@@ -43,7 +44,8 @@ class ServerConnector(SocConnector):
         self.local_send_to_client_message = b""
 
     def start_server(self):
-        loger.status(f"Server starting on {self.LOCALHOST}")
+        # loger.status(f"Server starting on {self.LOCALHOST}")
+        loger.status(f"Server starting")
         try:
             self.main_socket = socket(AF_INET, SOCK_STREAM)
             self.main_socket.setsockopt(IPPROTO_TCP, TCP_NODELAY, 1)
@@ -77,7 +79,7 @@ class ServerConnector(SocConnector):
                 elif data == self.testing_server_message:
                     dto = ConnectServerDTO(
                         version=self.game_version,
-                        name="qwerty"
+                        name=self.local_user.name
                     )
                     self.__send_to__(
                         connect,
@@ -108,6 +110,8 @@ class ServerConnector(SocConnector):
                             self.__send_to__(connect, self.false_join_game)
             except BlockingIOError:
                 pass
+            except ConnectionAbortedError:
+                pass
 
         for connect, user in self.current_users:
             try:
@@ -124,6 +128,7 @@ class ServerConnector(SocConnector):
                     pass
                 elif data == self.drop_connect:
                     self.__drop_connect__(connect)
+                    self.disconnect_player(user.name)
                     loger.log(f"drop connect")
                 else:
                     try:
@@ -131,14 +136,16 @@ class ServerConnector(SocConnector):
                         if status_dict is not None:
                             dto = GameDataToServerMapper.dict_to_dto(status_dict)
                             user.add_message(dto)
-                    except AttributeError:
-                        loger.error(f"Game status message: {self.game_status_message}")
+                    except AttributeError as e:
+                        loger.error(f"Game status message {self.game_status_message=}. Data={data} Error: {e}")
             except BlockingIOError as e:
                 ...
             except ConnectionAbortedError:
                 self.__drop_connect__(connect)
+                self.disconnect_player(user.name)
             except ConnectionResetError:
                 self.__drop_connect__(connect)
+                self.disconnect_player(user.name)
 
             for data in user.get_data_from_server:
                 game_data = GameDataToClientMapper.dto_to_dict(data)
@@ -147,9 +154,14 @@ class ServerConnector(SocConnector):
                 except OSError:
                     ...
 
-    def open_connection(self, connect_player: Callable[[str], Any]):
+    def open_connection(
+            self,
+            connect_player: Callable[[str], Any],
+            disconnect_player: Callable[[str], Any]
+    ):
         self.access_external_connections = True
         self.connect_player = connect_player
+        self.disconnect_player = disconnect_player
 
 
     def get_user_action(self) -> Generator[tuple[GameDataToServerDTO, str], Any, None]:
@@ -175,6 +187,13 @@ class ServerConnector(SocConnector):
             self.game_status_message: GameDataToServerMapper.dto_to_dict(dto)
         })
 
+    def close(self):
+        for connect in self.external_connections:
+            self.__send_to__(connect, self.server_close)
+        for connect, _ in self.current_users:
+            self.__send_to__(connect, self.server_close)
+
+        super().close()
 
     def __send_to__(self, connect: socket | str, message: str | dict):
         if type(message) == dict:

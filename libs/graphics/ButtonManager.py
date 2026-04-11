@@ -61,9 +61,7 @@ class ButtonManager:
         return button
 
     def add_text(self, text, position: Recalc, size: Recalc):
-        button: Button | PngElement | TextElement = self._create_button()
-        button.set_type("txt")
-        # log(text)
+        button: Button | PngElement | TextElement = self._create_button("txt")
         button.set_text(text)
         button.set_button_position_size(position, size)
         # button.move_to(position[:2])

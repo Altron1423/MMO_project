@@ -15,7 +15,8 @@ class MapBlock:
             MapChunk | None
         ]
     ]
-    players: list["Player"]
+    players_in_game: list["Player"]
+    players: dict[str, "Player"]
     entities: list["Entity"]
     entities_dto: list[EntityToClientDTO]
 
@@ -28,7 +29,8 @@ class MapBlock:
         self.form = []
         for z in range(size.z):
             self.form.append([None] * size.x)
-        self.players = []
+        self.players_in_game = []
+        self.players = {}
         self.entities = []
         self.entities_dto = []
 
@@ -54,11 +56,11 @@ class MapBlock:
         raise f"{position} not in {self.size}"
 
     def update(self):
-        if len(self.players) == 0:
+        if len(self.players_in_game) == 0:
             return
 
         self.entities_dto = []
-        for player in self.players:
+        for player in self.players_in_game:
             self.entities_dto.append(
                 player.get_light_data()
             )

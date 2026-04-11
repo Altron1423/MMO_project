@@ -1,6 +1,7 @@
 import pygame as pg
 
-from libs import GameServer, GameClient, ConnectClientDTO
+from libs import GameServer, GameClient, loger
+from libs.dtos import ConnectClientDTO, ConnectServerDTO
 from libs.Core import CORE
 from libs.conecting import ServerConnector, ClientConnector
 
@@ -19,6 +20,7 @@ class App(Application):
     server: ServerConnector | ClientConnector | None = None
     save_selected: str | None = None
     user_data: ConnectClientDTO
+    servers: list[ConnectServerDTO]
 
     def __init__(self):
         super().__init__()
@@ -58,13 +60,15 @@ class App(Application):
         if self.run_game:
             try:
                 self.server.main(self.tick)
-                if self.server_game is not None:
-                    self.server_game.main()
-                self.client_game.main()
             except AttributeError:
                 self.leave_game()
+                return
             except ConnectionResetError:
                 self.leave_game()
+                return
+            if self.server_game is not None:
+                self.server_game.main()
+            self.client_game.main()
 
     def open_single_game(self, bat: Button=None):
         self.save_manager.load_from_dir()
@@ -75,7 +79,7 @@ class App(Application):
     def open_multiplayer_game(self, bat: Button=None):
         self.server = ClientConnector(self.user_data)
         self.servers = self.server.find_servers()
-        self.main_screen.append_single_saves([f"{self.servers[i].ip}_{i}" for i in range(len(self.servers))])
+        self.main_screen.append_single_saves([f"{self.servers[i].name}" for i in range(len(self.servers))])
         self.window_manager.set_main_window("online_servers")
         self.window_manager.open_window("game_select")
 
@@ -111,7 +115,8 @@ class App(Application):
             self.user_data.name
         )
         self.server.open_connection(
-            self.server_game.summon_new_player,
+            self.server_game.player_connect,
+            self.server_game.player_disconnect
         )
 
         self.server_game.start()
@@ -125,19 +130,26 @@ class App(Application):
 
         self.server.start_client()
 
-        self.client_game = GameClient(self.user_data.name)
-        self.client_game.set_game_data(
-            self.server.get_data_from_server,
-            self.server.send_game_data,
-            self.window_manager.get_window("main_game_screen")
-        )
 
-        self.client_game.start()
-        id = int(self.save_selected.split("_")[1])
-        self.server.connect(self.servers[id])
-        self.server.join_game()
-        self.run_game = True
-        self.open_game_screen()
+        for i_server in self.servers:
+            if i_server.name == self.save_selected:
+                address = i_server.address
+                break
+        self.server.connect(address)
+        connection = self.server.join_game()
+        loger.log(connection)
+        if connection:
+            self.client_game = GameClient(self.user_data.name)
+            self.client_game.set_game_data(
+                self.server.get_data_from_server,
+                self.server.send_game_data,
+                self.window_manager.get_window("main_game_screen")
+            )
+            self.client_game.start()
+            self.run_game = True
+            self.open_game_screen()
+        else:
+            self.open_game_menu()
 
     def open_game_screen(self):
         self.window_manager.set_main_window("main_game_screen")
