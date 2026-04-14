@@ -167,7 +167,7 @@ class Camera:
             plate_position = self.position + (i_pos - self.center_pos) * Vector2(50, 50)
 
             try:
-                map_plate, height = self.player.__get_info_positon__(plate_position)
+                _, map_plate, height = self.player.__get_info_positon__(plate_position)
                 if first_plate is None:
                     first_plate = i_pos
                 end_plate = i_pos

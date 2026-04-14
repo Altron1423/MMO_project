@@ -10,6 +10,8 @@ def get_sign(x: int | float) -> int:
         return -1
     return 0
 
+FIX_CORRECT_DOT = 3
+
 class Entity:
     name: None | str
     race: None | str
@@ -61,6 +63,7 @@ class Entity:
 
     def update(self):
         self.attributes.update()
+        self.speed = 6 + self.attributes.agility // 3
         self.__move__()
 
     def transition_to(self, map_block: MapBlock):
@@ -92,31 +95,44 @@ class Entity:
 
     def __move__(self):
         move_on = self.orientation * self.speed * self.speed_control
-        start_plate, start_heigh = self.__get_info_positon__(self.position)
+        _, start_plate, start_heigh = self.__get_info_positon__(self.position)
         for i in (Vector2(1, 0), Vector2(0, 1)):
-            move_on_1d = move_on * i
-            if move_on_1d.x != 0 or move_on_1d.z != 0:
-                if move_on_1d.x != 0:
-                    collision = self.collision * i * get_sign(move_on_1d.x)
-                else:
-                    collision = self.collision * i * get_sign(move_on_1d.z)
-                new_position = self.position + move_on_1d + collision
-                if not new_position in self.map_block.size_coordinate:
-                    continue
-                new_plate, new_heigh = self.__get_info_positon__(new_position)
-                if abs(new_heigh - start_heigh) <= self.step_height:
-                    self.position += move_on_1d
+            move_on_1d: Vector2 = move_on * i
+            if move_on_1d.x != 0:
+                collision = self.collision * i * get_sign(move_on_1d.x)
+                correct_dots = (Vector2(0, self.collision.z-FIX_CORRECT_DOT), Vector2(0, -self.collision.z+FIX_CORRECT_DOT))
+            elif move_on_1d.z != 0:
+                collision = self.collision * i * get_sign(move_on_1d.z)
+                correct_dots = (Vector2(self.collision.x-FIX_CORRECT_DOT, 0), Vector2(-self.collision.x+FIX_CORRECT_DOT, 0))
+            else:
+                continue
+            new_position = self.position + move_on_1d + collision
+            if not new_position in self.map_block.size_coordinate:
+                continue
 
-        # print(self.map_block.name, start_plate.name, self.position)
+            for correct_dot in correct_dots:
+                position_plate, new_plate, new_heigh = self.__get_info_positon__(new_position + correct_dot)
+                position_plate += 1
+                if move_on_1d.x < 0 or move_on_1d.z < 0:
+                    position_plate += 72
 
-    def __get_info_positon__(self, pos: Position2 = None) -> tuple[MapPlate, int]:
+                if abs(new_heigh - start_heigh) > self.step_height:
+                    move_on_1d = (position_plate - self.position)*i
+                    if move_on_1d.x > 0 or move_on_1d.z > 0:
+                        move_on_1d -= collision
+                    break
+            self.position += move_on_1d
+
+
+    def __get_info_positon__(self, pos: Position2 = None) -> tuple[Position2, MapPlate, int]:
         if pos is None:
             pos = self.position
-        chunk_size = 50
-        position_chunk = pos // chunk_size // 16
-        position_plate = pos // chunk_size % 16
+        plate_size = 50
+        position_in_plate = pos // plate_size
+        position_chunk = position_in_plate // 16
+        position_plate = position_in_plate % 16
         chunk = self.map_block.get_chunk(position_chunk)
-        return chunk.get_plate(position_plate), chunk.get_height(position_plate)
+        return position_in_plate * plate_size, chunk.get_plate(position_plate), chunk.get_height(position_plate)
 
     def __lvl_up__(self) -> None:
         quantity, max_xp = self.xp.get_full(True)
