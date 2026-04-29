@@ -14,3 +14,5 @@ from .dimension import DimensionConfigMapper
 from .map_block import MapBlockConfigMapper
 from .map_chunk import MapChunkConfigMapper
 from .map_plate import MapPlateConfigMapper
+
+from .tile_map import TileMapMapper

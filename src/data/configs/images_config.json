@@ -2,6 +2,7 @@
   "type": "image",
   "images": {
     "test_name1": "src\\data\\images\\paw.png",
+    "stone_forest_tile_map": "src\\data\\images\\TileStone.png",
     "walk_player": "src\\data\\images\\player_walk.png",
     "idle_player": "src\\data\\images\\player_idle.png"
   }

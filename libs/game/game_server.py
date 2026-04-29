@@ -87,6 +87,8 @@ class GameServer:
 
             player.set_changes_from_client(act)
             player.update()
+            if act.action == "1":
+                self.summon_wrag()
 
             self.send_to_user(
                 player.get_data_for_client(),

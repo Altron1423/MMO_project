@@ -4,6 +4,7 @@ from .screen import Window
 from .. import MapPlate
 from ..game import ClientEntity
 from libs.animator_controller.entity_animator import EntityAnimator
+from ..loaders.tile_map_loader import tile_map_loader
 from ..math import Size2, Position2, Vector2
 
 
@@ -22,7 +23,7 @@ def set_sign_from(to_sign: int, front_sign: int) -> int:
 
 def get_name(map_plate: tuple[MapPlate, int] | None) -> str | None:
     if map_plate is not None and map_plate[0].layer == 2:
-        return map_plate[0].name
+        return map_plate[0].texture
     return None
 
 def gen_size_plates(start_plate: Position2, end_plate: Position2):
@@ -77,6 +78,7 @@ class Camera:
 
     def draw(self):
         shift = self.position * self.scale % self.plate_size
+        # shift = Position2()
         for i_pos in gen_size_plates(self.first_plate, self.end_plate):
             pos = i_pos * self.plate_size - shift
             data = self.get_plate(i_pos)
@@ -101,12 +103,17 @@ class Camera:
         for i_pos in gen_size_plates(self.first_plate, self.end_plate+1):
             data = self.get_tile(i_pos)
             if data[0][0] or data[0][1] or data[1][0] or data[1][1]:
-                pos = i_pos * self.plate_size - shift
-                pos_plate_draw = rect(
-                    pos - self.plate_size // 2,
-                    self.plate_size
-                )
-                pg.draw.rect(self.surface, (255, 0, 0), pos_plate_draw, 2)
+                surf = tile_map_loader.get(data)
+                pos = i_pos * self.plate_size - shift - self.plate_size // 2
+                if surf is not None:
+                    surf = pg.transform.scale(surf, self.plate_size.tuple)
+                    self.surface.blit(surf, pos.tuple)
+                else:
+                    pos_plate_draw = rect(
+                        pos,
+                        self.plate_size
+                    )
+                    pg.draw.rect(self.surface, (255, 0, 0), pos_plate_draw, 2)
 
     def draw_entity(self, entity: ClientEntity):
         self.player_animator.set_type(
@@ -162,7 +169,7 @@ class Camera:
         first_plate = None
         end_plate = None
 
-        for i_pos in self.window_plate_size_range:
+        for i_pos in Position2(-1, -1) + (self.window_plate_size_range + Vector2(1, 1)):
 
             plate_position = self.position + (i_pos - self.center_pos) * Vector2(50, 50)
 

@@ -1,11 +1,11 @@
 from typing import Any, Generator, Callable
 import json
 
-from libs import loger, GameDataToClientMapper
+from libs import loger, GameDataToClientMapper, GameDataToClientDTO
 
 from libs.dtos import (
     ConnectServerDTO, ConnectClientDTO,
-    GameDataToServerDTO, GameDataToClientDTO
+    GameDataToServerDTO,  
 )
 from libs.mappers import (
     ConnectServerMapper,
@@ -44,8 +44,8 @@ class ServerConnector(SocConnector):
         self.local_send_to_client_message = b""
 
     def start_server(self):
-        # loger.status(f"Server starting on {self.LOCALHOST}")
-        loger.status(f"Server starting")
+        loger.status(f"Server starting on {self.LOCALHOST}")
+        # loger.status(f"Server starting")
         try:
             self.main_socket = socket(AF_INET, SOCK_STREAM)
             self.main_socket.setsockopt(IPPROTO_TCP, TCP_NODELAY, 1)

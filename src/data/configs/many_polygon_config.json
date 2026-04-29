@@ -21,6 +21,12 @@
           "size": "<Recalc:<Vector2:1,1>/<Vector2:0,0>>",
           "styleName": "base_border",
           "border": 5
+        },
+        {
+          "type": 3,
+          "position": "<Recalc:<Vector2:0,0>/<Vector2:0,0>>",
+          "size": "<Recalc:<Vector2:1,1>/<Vector2:0,0>>",
+          "pngName": null
         }
       ],
       "size": [10, 10]

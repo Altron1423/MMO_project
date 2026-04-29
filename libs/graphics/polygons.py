@@ -156,9 +156,9 @@ class Polygon(Resizer):
 
     def _resize_png(self):
         if self._png is not None:
-            print(self._png, self.size.tuple)
-            self._pngTr = pg.transform.scale(self._png, self.size.tuple)
-            self._pngRect = self._png.get_rect(topleft=self.position)
+            print(self._png)
+            self._pngTr = pg.transform.scale(self._png, self._png.get_size())
+            self._pngRect = self._png.get_rect(topleft=(0,0))
         else:
             self._pngTr = None
             self._pngRect = None
@@ -241,7 +241,7 @@ class Polygon(Resizer):
             polygon = Polygon.text(data.get("text"))
         elif data["type"] == 3:
             from libs.loaders.image_loader import image_loader
-            image = image_loader.get_image(data["pngName"])
+            image = image_loader.get(data["pngName"])
             loger.log(image)
             polygon = Polygon.png(image)
         else:

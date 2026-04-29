@@ -53,7 +53,7 @@ class ClientConnector(SocConnector):
 
 
     def connect(self, address: AddressConnectDTO) -> None:
-        # loger.log(f"Connect to {(address.ip, self.server_port)}")
+        loger.log(f"Connect to {(address.ip, self.server_port)}")
         self.main_socket.connect((address.ip, self.server_port))
 
     def disconnect(self):
@@ -92,6 +92,7 @@ class ClientConnector(SocConnector):
 
     def find_servers(self) -> list[ConnectServerDTO]:
         address_list = self.ad_checker.start()
+        print(address_list)
         servers_list: list[ConnectServerDTO] = []
         if len(address_list) > 0:
             self.start_client()

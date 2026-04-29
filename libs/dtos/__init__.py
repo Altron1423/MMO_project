@@ -22,3 +22,5 @@ from .dimension import DimensionConfigDTO
 from .map_block import MapBlockConfigDTO
 from .map_chunk import MapChunkConfigDTO
 from .map_plate import MapPlateConfigDTO
+
+from .tile_map import TileMapDTO
