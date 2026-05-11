@@ -34,10 +34,12 @@ class App(Application):
         game = {
             "start_server_game": [self.start_server_game, None],
             "start_client_game": [self.start_client_game, None],
-            "leave_game": [self.leave_game, None]
+            "leave_game": [self.leave_game, None],
+            "moving_to": [self.moving_to, None]
         }
         test = {
             "test_function": [lambda bat: print(bat), None],
+            "action_1": [self.action_1, None]
         }
         self.add_functions({
             "window": config,
@@ -52,9 +54,9 @@ class App(Application):
         )
         self.save_manager.set_path_save(self.path.joinpath(CORE.saves_directory))
 
-    def key_press(self, key: str, key_down: bool):
-        if self.client_game is not None:
-            self.client_game.key_press(key, key_down)
+    # def key_press(self, key: str, key_down: bool):
+    #     if self.client_game is not None:
+    #         self.client_game.key_press(key, key_down)
 
     def run_more(self):
         if self.run_game:
@@ -164,6 +166,14 @@ class App(Application):
         self.server.close()
         self.server = None
         self.open_game_menu()
+
+    def moving_to(self, bat: Button=None, direction: str = ""):
+        if self.client_game is not None:
+            self.client_game.moving_to(direction)
+
+    def action_1(self, bat: Button=None):
+        if self.client_game is not None:
+            self.client_game.action_1()
 
     def exit(self, _=None):
         if self.server:

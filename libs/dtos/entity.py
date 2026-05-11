@@ -42,6 +42,7 @@ class AttributeLayerEntityDTO:
 @dataclass
 class EntityToClientDTO:
     name: str
+    id: int
     position: Position2
     health: "ProgressBar"
     orientation: Vector2

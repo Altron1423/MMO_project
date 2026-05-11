@@ -11,6 +11,7 @@ class EntityToClientMapper:
     def dto_to_dict(dto: EntityToClientDTO) -> dict[str, str]:
         return {
             "name": dto.name,
+            "id": dto.id,
             "position": str(dto.position),
             "health": str(dto.health),
             "orientation": str(dto.orientation),
@@ -22,6 +23,7 @@ class EntityToClientMapper:
         from libs import ProgressBar
         return EntityToClientDTO(
             name=data["name"],
+            id=data["id"],
             position=Position2(data["position"]),
             health=ProgressBar.init_from_str(data["health"]),
             orientation=Vector2(data["orientation"]),

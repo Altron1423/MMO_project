@@ -39,6 +39,7 @@ class ClientPlayerMapper:
     def dto_to_dict(dto: ClientPlayerDTO) -> dict[str, str]:
         return {
             "name": dto.name,
+            "id": dto.id,
             "attributes": dto.attributes,
             "position": str(dto.position),
             "health": str(dto.health),
@@ -54,6 +55,7 @@ class ClientPlayerMapper:
         from libs import ProgressBar
         return ClientPlayerDTO(
             name=data["name"],
+            id=data["id"],
             attributes=data["attributes"],
             position=Position2(data["position"]),
             health=ProgressBar.init_from_str(data["health"]),

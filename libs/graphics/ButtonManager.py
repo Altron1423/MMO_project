@@ -4,9 +4,7 @@ from libs.graphics.Bars import Bars
 from libs.math import Size2, Position2, Recalc
 from libs.window.Mouse import Mouse
 from libs.graphics.TriggerGen import TriggerGen
-from libs.graphics.interface_elements.buttons_element import Button
-from libs.graphics.interface_elements.png_element import PngElement
-from libs.graphics.interface_elements.text_element import TextElement
+from libs.graphics.interface_elements import Button, PngElement, TextElement
 from libs.graphics.polygons import ManyPolygonizer
 
 
@@ -15,6 +13,7 @@ class ButtonManager:
     polygonizer: ManyPolygonizer
     mouse: Mouse
     last_polygonizer: ManyPolygonizer | None
+    triggers: dict[int, Button]
     address: str
     surface: pg.Surface | None
     surface_size: Size2
@@ -53,11 +52,11 @@ class ButtonManager:
         self.dynamic_position_Y.setLimit(lim)
 
 
-    def add_button(self, text, position: Recalc, size: Recalc, triggers):
+    def add_button(self, text, position: Recalc, size: Recalc, triggers: TriggerGen | None):
         button = self._create_button("button")
         button.set_text(text)
         button.set_button_position_size(position, size)
-        button.set_triggers(triggers)
+        self.set_triggers(button, triggers)
         return button
 
     def add_text(self, text, position: Recalc, size: Recalc):
@@ -71,11 +70,6 @@ class ButtonManager:
     def add_png(self, position: Recalc, size: Recalc, png):
         button = self._create_button()
         button.set_type("png")
-        # button.move_to(position[:2])
-        # if len(position) == 2:
-        #     button.resize(png.get_size())
-        # else:
-        #     button.resize(position[2:])
         if len(position) == 1:
             position = [*position, *png.get_size()]
         button.set_button_position_size(position, size)
@@ -86,17 +80,9 @@ class ButtonManager:
 
     def add_png_but(self, position: Recalc, size: Recalc, triggers, png):
         button = self._create_button("png_but")
-        # button.move_to(position[:2])
-        # if len(position) == 2:
-        #     button.resize([*png.get_size()])
-        # else:
-        #     button.resize(position[2:])
-        # if len(position) == 1:
-        #     position = [*position, *png.get_size()]
-
         button.set_button_position_size(position, size)
         button.set_png(png)
-        button.set_triggers(triggers)
+        self.set_triggers(button, triggers)
 
         return button
 
@@ -123,9 +109,16 @@ class ButtonManager:
         button.set_triggers(trigers)
         button.set_mover(mvX, mvY)
 
-    def key_press(self, key: int, key_type:int):
-        ...
+    def key_interact(self, key: int, is_down: bool):
+        for i_button in self._buttons:
+            called = i_button.triggers[(key, is_down)]
+            if called is not None:
+                called(i_button)
 
+    def set_triggers(self, button: Button, triggers: TriggerGen):
+        button.set_triggers(triggers)
+        # if triggers is not None and button.text_polygon._text == "Призыв":
+        #     triggers.key_down('p', print)
 
     def get_button(self, index):
         if index is not None:

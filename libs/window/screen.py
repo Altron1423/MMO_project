@@ -1,3 +1,4 @@
+from operator import truediv
 from pathlib import Path
 
 import libs.graphics.interface_elements.buttons_element as buttons
@@ -188,18 +189,18 @@ class Window(Resizer):
 
         if button_data.type == "button":
             button = self.button_manager.add_button(button_data.text, button_data.position, button_data.size, None)
-            trigger = self.manager.generate_function(button_data.function, button)
-            button.set_triggers(trigger)
+            trigger = self.manager.generate_function(button_data.triggers, button)
+            self.button_manager.set_triggers(button, trigger)
         elif button_data.type == "button_png":
             button = self.button_manager.add_png_but(button_data.position, button_data.size, None, button_data.png_name)
-            trigger = self.manager.generate_function(button_data.function, button)
-            button.set_triggers(trigger)
+            trigger = self.manager.generate_function(button_data.triggers, button)
+            self.button_manager.set_triggers(button, trigger)
             button.set_text(button_data.text)
         elif button_data.type == "png":
             button = self.button_manager.add_png(button_data.position, button_data.size, button_data.png)
-            button.set_text(button_data.text)
         elif button_data.type == "txt":
             button = self.button_manager.add_text(button_data.text, button_data.position, button_data.size)
+            button.set_text(button_data.text)
         else:
             return
 
@@ -300,7 +301,7 @@ class WindowManager:
             window.draw(self.main_screen.screen_main)
 
     def key_press(self, key: int, key_type:int):
-        self.mainWindow.button_manager.key_press(key, key_type)
+        self.mainWindow.button_manager.key_interact(key, key_type == pg.KEYDOWN)
         if key == pg.K_F11 and key_type == pg.KEYUP:
             # print(pg.display.is_fullscreen())
             pg.display.toggle_fullscreen()
@@ -311,27 +312,52 @@ class WindowManager:
         for window in self.visible:
             window.button_manager.select(button)
 
-    def generate_function(self, data, button) -> buttons.TriggerGen:
-        data = data.split(":")
+    def generate_function(self, triggers: str | None, button: buttons.Button) -> buttons.TriggerGen:
         trigger = buttons.TriggerGen()
-        if data[0] == "move_window":
-            trigger.LMU(lambda x: self.set_main_window(data[1]))
-        elif data[0] == "run_function":
-            trigger.LMU(lambda x: self.run_function(data[1], button))
+        for i_trigger in triggers:
+
+            called_path, called = triggers[i_trigger].split(":")
+            if len(i_trigger[0]) == 2:
+                if i_trigger[0] == 'm1':
+                    if called_path == "move_window":
+                        trigger.LMU(lambda x: self.set_main_window(called))
+                    elif called_path == "run_function":
+                        trigger.LMU(self.run_called(called, button))
+            else:
+                if i_trigger[1]:
+                    if called_path == "move_window":
+                        ...
+                    elif called_path == "run_function":
+                        trigger.key_down(i_trigger[0], self.run_called(called, button))
+                else:
+                    if called_path == "move_window":
+                        ...
+                    elif called_path == "run_function":
+                        trigger.key_up(i_trigger[0], self.run_called(called, button))
+
         return trigger
 
     def set_main_window(self, window):
-        # print(window)
         self.mainWindow = self.windows[self.windows_keys[window]]
         loger.log(f"Move to '{window}' window")
 
-    def run_function(self, data, button):
-        data = data.split("/")
-        result = self.main_screen._application.give_function(data)
-        if result["result"]:
-            result["function"](button)
-        else:
-            print(result["error"])
+    def run_called(self, called_path, button):
+        def get_called(called_path):
+            # loger.log("run_called", data)
+            result = self.main_screen._application.give_function(called_path)
+            if result["result"]:
+                return result["function"]
+            else:
+                print(result["error"])
+
+        data = {}
+        if called_path[-1] == ")" and "(" in called_path:
+            called_path, raw_data = called_path.split("(")
+            for i_data in raw_data[:-1].split(","):
+                x = i_data.strip().split("=")
+                data[x[0]] = x[1]
+        called_path = called_path.split("/")
+        return lambda _: get_called(called_path)(button, **data)
 
     def close_window(self, window=None):
         if window is None:
@@ -351,7 +377,7 @@ class WindowManager:
             dto = ButtonDTO(
                 type="button",
                 text=buttons[i_button],
-                function="run_function:window/save_select",
+                triggers={("m1", True): "run_function:window/save_select"},
                 position=Recalc(None, Vector2(100,25 + i_button * 100)),
                 size=Recalc(None, Vector2(400, 75)),
                 polygons_name="interface",

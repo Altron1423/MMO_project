@@ -4,7 +4,7 @@ from typing import Callable, Generator, Any
 from . import GameStartException
 from libs.save import SaveFull
 from libs.generators import SaveCreateTest
-from .entitys.player import Player
+from .entitys import Player, Enemy
 from .. import GameDataToClientDTO, GameDataToServerDTO
 from ..Loger import loger
 from ..loaders.entity_loader import player_loader
@@ -87,8 +87,10 @@ class GameServer:
 
             player.set_changes_from_client(act)
             player.update()
+            # if player.name != "test_client":
+            #     print(player.get_near_entity(100))
             if act.action == "1":
-                self.summon_wrag()
+                self.summon_enemyTESTING(player)
 
             self.send_to_user(
                 player.get_data_for_client(),
@@ -99,3 +101,9 @@ class GameServer:
     def saving(self):
         self.save.saving()
         loger.status("GameMain saving")
+
+    def summon_enemyTESTING(self, player: Player) -> None:
+        enemy = Enemy()
+        enemy.position = player.position + 0
+        player.map_block.add_enemy(enemy)
+

@@ -14,6 +14,8 @@ FIX_CORRECT_DOT = 3
 
 class Entity:
     name: None | str
+    id: int
+    id_was_created: int = 0
     race: None | str
 
     attributes: Attributer
@@ -36,6 +38,8 @@ class Entity:
 
     def __init__(self):
         self.name = None
+        self.id = Entity.id_was_created
+        Entity.id_was_created += 1
         self.race = None
         self.attributes = Attributer()
         self.health = ProgressBar()
@@ -78,20 +82,26 @@ class Entity:
         self.map_block.players_in_game.remove(self)
         self.map_block.players.pop(self.name)
 
-    def disconnect(self):
-        self.map_block.players_in_game.remove(self)
-
-    def connect(self):
-        self.map_block.players_in_game.append(self)
-
     def get_light_data(self) -> EntityToClientDTO:
         return EntityToClientDTO(
             self.name,
+            self.id,
             self.position,
             self.health,
             self.orientation,
             "idle"
         )
+
+    @classmethod
+    def load_from_config(cls, dto) -> "Entity":
+        entity = cls()
+        entity.race = dto.race
+        entity.attributes.load(dto.attributes)
+        entity.xp.set_limit(dto.to_first_lvlup)
+        entity.raising_xp = dto.raising_xp
+        entity.xp_boost = dto.xp_boost
+        return entity
+
 
     def __move__(self):
         move_on = self.orientation * self.speed * self.speed_control
@@ -123,7 +133,6 @@ class Entity:
                     break
             self.position += move_on_1d
 
-
     def __get_info_positon__(self, pos: Position2 = None) -> tuple[Position2, MapPlate, int]:
         if pos is None:
             pos = self.position
@@ -140,16 +149,6 @@ class Entity:
         max_xp = int(max_xp * self.raising_xp)
         self.xp.update(quantity, max_xp)
         self.lvl += 1
-
-    @classmethod
-    def load_from_config(cls, dto) -> "Entity":
-        entity = cls()
-        entity.race = dto.race
-        entity.attributes.load(dto.attributes)
-        entity.xp.set_limit(dto.to_first_lvlup)
-        entity.raising_xp = dto.raising_xp
-        entity.xp_boost = dto.xp_boost
-        return entity
 
     def __copy__(self):
         to = self.__class__()

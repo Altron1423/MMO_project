@@ -6,10 +6,10 @@ from libs.math import Recalc, Vector2
 class ButtonDTO:
     type: str
     polygons_name: str
-    position: Recalc = Recalc()
-    size: Recalc = Recalc(Vector2(1,1))
+    position: Recalc | None = None
+    size: Recalc | None = None
     text: str | None = None
-    function: str | None = None
+    triggers: dict[tuple[str, bool], str] | None = None
     png_name: str | None = None
 
 @dataclass

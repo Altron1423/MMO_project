@@ -9,8 +9,8 @@ from libs.math import Recalc, Size2, Position2, Vector2
 class Resizer:
     position: Position2
     size: Size2
-    recalc_position: Recalc
-    recalc_size: Recalc
+    recalc_position: Recalc | None
+    recalc_size: Recalc | None
     surface_size: Size2 | None
 
     def __init__(self, recalc_position: Recalc, recalc_size: Recalc):
@@ -35,16 +35,24 @@ class Resizer:
         self._recalculation_size()
         self._recalculation_positions()
 
-    def set_recalc_position(self, recalc_position: Recalc):
-        self.recalc_position = recalc_position
-        self._recalculation_positions()
+    def set_recalc_position(self, recalc_position: Recalc | None):
+        if isinstance(recalc_position, Recalc):
+            self.recalc_position = recalc_position
+            self._recalculation_positions()
+        elif recalc_position is None:
+            pass
+        else:
+            raise TypeError(f"{recalc_position} not {Recalc._type_}")
 
-    def set_recalc_size(self, recalc_size: Recalc):
+
+    def set_recalc_size(self, recalc_size: Recalc | None):
         if isinstance(recalc_size, Recalc):
             self.recalc_size = recalc_size
+            self._recalculation_positions()
+        elif recalc_size is None:
+            pass
         else:
             raise TypeError(f"{recalc_size} not {Recalc._type_}")
-        self._recalculation_positions()
 
 
     def move_to(self, position: Position2):

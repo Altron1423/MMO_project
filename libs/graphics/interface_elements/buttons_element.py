@@ -24,7 +24,7 @@ class Button(Resizer):
     text_polygon: Polygon | None
     png_polygon: Polygon | None
 
-    visible: bool
+    visible: bool = None
     on: bool
     hold: bool
     holding: bool
@@ -51,7 +51,7 @@ class Button(Resizer):
         self.triggers = None
         self.png_polygon = None
 
-        self.visible = True
+        # self.visible = False
         self.on = True
         self.hold = False
         self.holding = False
@@ -165,8 +165,6 @@ class Button(Resizer):
         self.polygons += polygons
 
     def draw(self, surface, activ):
-        # loger.log(self.surface_size)
-
         pg.draw.rect(surface, (0,255,0), (*self.position.tuple, *self.size.tuple))
         if self.visible:
             if not self.on:
@@ -185,6 +183,9 @@ class Button(Resizer):
             self.polygons.reset_status(status)
             self.polygons._redraw()
             surface.blit(self.polygons.get_surf(), self.position.tuple)
+        elif self.visible is None:
+            if self.recalc_position is not None or self.recalc_size is not None:
+                self.visible = True
 
 
         if self.on:

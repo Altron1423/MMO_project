@@ -30,6 +30,15 @@ class Player(Entity):
         )
         return dto
 
+    def disconnect(self):
+        self.map_block.players_in_game.remove(self)
+
+    def connect(self):
+        self.map_block.players_in_game.append(self)
+
+    def get_near_entity(self, max_range: int) -> dict[str, int]:
+        return self.map_block.get_near_entity(self.name, max_range)
+
     @classmethod
     def load_from_config(cls, dto: PlayerLoadDTO) -> "Player":
 
@@ -42,6 +51,7 @@ class Player(Entity):
     def __player_data__(self) -> ClientPlayerDTO:
         return ClientPlayerDTO(
             name=self.name,
+            id=self.id,
             attributes=self.attributes.__dict__(),
             position=self.position,
             health=self.health,

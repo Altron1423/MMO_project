@@ -12,6 +12,10 @@ KeysTransf = {
     pg.K_SPACE: " ", pg.K_COMMA: ",", pg.K_PERIOD: ".", pg.K_SLASH: "/", pg.K_MINUS: "-"
 }
 
+KeysTransfRevers = {}
+for k, v in KeysTransf.items():
+    KeysTransfRevers[v] = k
+
 class TriggerGen:
     triggers: dict[tuple[str, bool] | tuple[int, bool], Callable[["Button"], Any]]
 
@@ -51,12 +55,18 @@ class TriggerGen:
         self.triggers[('hold', False)] = function
         return self
 
-    def key_down(self, key, function: Callable[["Button"], Any]):
-        self.triggers[(key, True)] = function
+    def key_down(self, key: int | str, function: Callable[["Button"], Any]):
+        if type(key) == str:
+            key = KeysTransfRevers.get(key)
+        if key in KeysTransf:
+            self.triggers[(key, True)] = function
         return self
 
-    def key_up(self, key, function: Callable[["Button"], Any]):
-        self.triggers[(key, False)] = function
+    def key_up(self, key: int | str, function: Callable[["Button"], Any]):
+        if type(key) == str:
+            key = KeysTransfRevers.get(key)
+        if key in KeysTransf:
+            self.triggers[(key, False)] = function
         return self
 
     def __iadd__(self, other):

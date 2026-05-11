@@ -22,6 +22,7 @@ class ClientPlayer(Player):
 
     def get_data_from_server(self, dto: ClientPlayerDTO):
         self.name = dto.name
+        self.id = dto.id
         self.position = dto.position
         self.health = dto.health
         self.mana = dto.mana
@@ -34,7 +35,7 @@ class ClientPlayer(Player):
             move=self.orientation,
             speed=1.0,
             target_position=self.target_position,
-            action="22"
+            action=None
         )
 
     @property

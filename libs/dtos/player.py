@@ -14,6 +14,7 @@ class PlayerLoadDTO:
 @dataclass
 class ClientPlayerDTO:
     name: str
+    id: int
     attributes: dict[str, list[int | float]] | None
     position: Position2
     health: "ProgressBar"

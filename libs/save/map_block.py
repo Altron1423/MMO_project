@@ -17,8 +17,9 @@ class MapBlock:
     ]
     players_in_game: list["Player"]
     players: dict[str, "Player"]
-    entities: list["Entity"]
+    enemies: list["Enemy"]
     entities_dto: list[EntityToClientDTO]
+    entities_ranges: dict[tuple[str, str], int]
 
     def __init__(self, size: Size2, name: str):
         self.size = size
@@ -31,8 +32,9 @@ class MapBlock:
             self.form.append([None] * size.x)
         self.players_in_game = []
         self.players = {}
-        self.entities = []
+        self.enemies = []
         self.entities_dto = []
+        self.entities_ranges = {}
 
     def set_form(self, form: list[list[MapChunk | None]]):
         for z in range(self.size.z):
@@ -60,17 +62,47 @@ class MapBlock:
             return
 
         self.entities_dto = []
+        self.entities_ranges = {}
         for player in self.players_in_game:
             self.entities_dto.append(
                 player.get_light_data()
             )
-        for player in self.entities:
+        for enemy in self.enemies:
             self.entities_dto.append(
-                player.get_light_data()
+                enemy.get_light_data()
             )
+
+        for entity_1 in self.entities_dto:
+            for entity_2 in self.entities_dto:
+                if entity_1 == entity_2:
+                    continue
+                elif (entity_2.name, entity_1.name) in self.entities_ranges:
+                    continue
+                x1, z1 = entity_1.position
+                x2, z2 = entity_2.position
+                self.entities_ranges[(entity_1.name, entity_2.name)] = abs(x1 - x2) + abs(z1 - z2)
+
+    def get_near_entity(
+            self, name: str, max_range: int
+    ) -> dict[str, int]:
+        entities_ranges = {}
+        # max_range *= max_range
+        for pair in self.entities_ranges:
+            if name in pair:
+                if self.entities_ranges[pair] <= max_range:
+                    if pair[0] == name:
+                        second_name = pair[1]
+                    else:
+                        second_name = pair[0]
+                    entities_ranges[second_name] = self.entities_ranges[pair]
+        return entities_ranges
 
     def get_entity_dto(self):
         return self.entities_dto
+
+    def add_enemy(self, enemy: "Enemy"):
+        enemy.map_block = self
+        self.enemies.append(enemy)
 
     @property
     def Size(self):

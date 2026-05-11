@@ -18,19 +18,36 @@ class ButtonMapper:
             "size": str(dto.size),
             "polygons_name": dto.polygons_name,
             "text": dto.text,
-            "function": dto.function,
             "png_name": dto.png_name
         }
 
     @staticmethod
     def dict_to_dto(data: dict) -> ButtonDTO:
+        triggers: dict[tuple[str, bool], str] = {}
+        for i, command in data.get("triggers", {}).items():
+            dt = i.split("/")
+            if len(dt) == 1:
+                triggers[(dt[0], False)] = command
+                triggers[(dt[0], True)] = command
+            elif len(dt) == 2:
+                triggers[(dt[0], dt[1] == 'd')] = command
+        position = data.get("position")
+        if position is not None:
+            position = Recalc.load_from_str(position)
+        # else:
+        #     position = Recalc(Vector2(0,0), Vector2(0,0))
+        size = data.get("size")
+        if size is not None:
+            size = Recalc.load_from_str(size)
+        # else:
+        #     size = Recalc(Vector2(0,0), Vector2(0,0))
         return ButtonDTO(
             type=data["type"],
-            position=Recalc.load_from_str(data["position"]),
-            size=Recalc.load_from_str(data["size"]),
+            position=position,
+            size=size,
             polygons_name=data["polygons_name"],
             text=data.get("text"),
-            function=data.get("function"),
+            triggers=triggers,
             png_name=data.get("png_name")
         )
 
