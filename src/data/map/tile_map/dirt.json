@@ -1,8 +1,8 @@
 {
   "type": "tile_map",
   "data": {
-    "name": "stone",
-    "texture": "stone",
+    "name": "dirt",
+    "texture": "dirt",
     "format": "standard",
     "size": "<Size:25,25>",
     "tiles": {
