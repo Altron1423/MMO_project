@@ -1,0 +1,11 @@
+{
+  "type": "map_plate",
+  "data": {
+    "name": "bush",
+    "type": "plate",
+    "changeable": false,
+    "color": [60, 130, 70],
+    "texture": null,
+    "layer": 2
+  }
+}

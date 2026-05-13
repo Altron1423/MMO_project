@@ -1,0 +1,11 @@
+{
+  "type": "map_block",
+  "data": {
+    "name": "level_8_block",
+    "size": "<Size:2,2>",
+    "form": [
+      ["level_8_l_t", "level_8_r_t"],
+      ["level_8_l_b", "level_8_r_b"]
+    ]
+  }
+}
