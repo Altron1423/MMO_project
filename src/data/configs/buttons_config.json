@@ -9,16 +9,16 @@
       "buttons": [
         {"type": "button_png", "text": "Одиночная игра", "triggers": {
           "m1/u": "run_function:window/open_single_game"
-        }, "position": "<Recalc:<Vector2:0.5,0.5>/<Vector2:-200,-122>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:400,75>>", "polygons_name": "interface", "png_name": null},
-        {"type": "button", "text": "Многопользовательская игра", "triggers": {
+        }, "position": "<Recalc:<Vector2:0.5,0.5>/<Vector2:-200,-122>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:400,75>>", "polygons_name": "interface_png", "png_name": "button_texture_1"},
+        {"type": "button_png", "text": "Многопользовательская игра", "triggers": {
           "m1/u": "run_function:window/open_multiplayer_game"
-        }, "position": "<Recalc:<Vector2:0.5,0.5>/<Vector2:-200,-37>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:400,75>>", "polygons_name": "interface"},
-        {"type": "button", "text": "Настройки", "triggers": {
+        }, "position": "<Recalc:<Vector2:0.5,0.5>/<Vector2:-200,-37>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:400,75>>", "polygons_name": "interface_png", "png_name": "button_texture_2"},
+        {"type": "button_png", "text": "Настройки", "triggers": {
           "m1/u": "move_window:settings"
-        }, "position": "<Recalc:<Vector2:0.5,0.5>/<Vector2:-200,48>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:195,75>>", "polygons_name": "interface", "png_name": null},
-        {"type": "button", "text": "Выход", "triggers": {
+        }, "position": "<Recalc:<Vector2:0.5,0.5>/<Vector2:-200,48>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:195,75>>", "polygons_name": "interface_png", "png_name": "button_texture_4"},
+        {"type": "button_png", "text": "Выход", "triggers": {
           "m1/u": "run_function:sistem/exit"
-        }, "position": "<Recalc:<Vector2:0.5,0.5>/<Vector2:5,48>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:195,75>>", "polygons_name": "interface", "png_name": null}
+        }, "position": "<Recalc:<Vector2:0.5,0.5>/<Vector2:5,48>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:195,75>>", "polygons_name": "interface_png", "png_name": "button_texture_3"}
       ]
     },
     "game_select": {
@@ -37,15 +37,15 @@
         "default_polygonizer": "pet_feed"
       },
       "buttons": [
-        {"type": "button", "text": "Назад","triggers": {
+        {"type": "button_png", "text": "Назад","triggers": {
           "m1/u": "run_function:window/open_game_menu"
-        }, "position": "<Recalc:<Vector2:0,0>/<Vector2:20,20>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:100,60>>", "polygons_name": "interface", "png_name": null},
-        {"type": "button", "text": "Создать", "triggers": {
+        }, "position": "<Recalc:<Vector2:0,0>/<Vector2:20,20>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:200,60>>", "polygons_name": "interface_png", "png_name": "button_texture_4"},
+        {"type": "button_png", "text": "Создать", "triggers": {
           "m1/u": "move_window:main_menu"
-        }, "position": "<Recalc:<Vector2:0,1>/<Vector2:40,-80>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:100,60>>", "polygons_name": "interface", "png_name": null},
-        {"type": "button", "text": "Играть", "triggers": {
+        }, "position": "<Recalc:<Vector2:0,1>/<Vector2:40,-80>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:200,60>>", "polygons_name": "interface_png", "png_name": "button_texture_4"},
+        {"type": "button_png", "text": "Играть", "triggers": {
           "m1/u": "run_function:game/start_server_game"
-        }, "position": "<Recalc:<Vector2:1,1>/<Vector2:-240,-80>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:100,60>>", "polygons_name": "interface", "png_name": null}
+        }, "position": "<Recalc:<Vector2:1,1>/<Vector2:-240,-80>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:200,60>>", "polygons_name": "interface_png", "png_name": "button_texture_3"}
       ]
     },
     "online_servers": {
@@ -54,12 +54,12 @@
         "default_polygonizer": "pet_feed"
       },
       "buttons": [
-        {"type": "button", "text": "Назад", "triggers": {
+        {"type": "button_png", "text": "Назад", "triggers": {
           "m1/u": "run_function:window/open_game_menu"
-        }, "position": "<Recalc:<Vector2:0,0>/<Vector2:40,40>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:100,60>>", "polygons_name": "interface", "png_name": null},
-        {"type": "button", "text": "Играть", "triggers": {
+        }, "position": "<Recalc:<Vector2:0,0>/<Vector2:40,40>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:200,60>>", "polygons_name": "interface_png", "png_name": "button_texture_4"},
+        {"type": "button_png", "text": "Играть", "triggers": {
           "m1/u": "run_function:game/start_client_game"
-        }, "position": "<Recalc:<Vector2:1,1>/<Vector2:-240,-80>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:100,60>>", "polygons_name": "interface", "png_name": null}
+        }, "position": "<Recalc:<Vector2:1,1>/<Vector2:-240,-80>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:200,60>>", "polygons_name": "interface_png", "png_name": "button_texture_3"}
 
       ]
     },
@@ -70,9 +70,9 @@
         "default_polygonizer": "base_polygonizer"
       },
       "buttons": [
-        {"type": "button", "text": "Назад", "triggers": {
+        {"type": "button_png", "text": "Назад", "triggers": {
           "m1/u": "move_window:main_menu"
-        }, "position": "<Recalc:<Vector2:0,0>/<Vector2:40,40>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:100,60>>", "polygons_name": "interface", "png_name": null}
+        }, "position": "<Recalc:<Vector2:0,0>/<Vector2:40,40>>", "size": "<Recalc:<Vector2:0,0>/<Vector2:200,60>>", "polygons_name": "interface_png", "png_name": "button_texture_4"}
       ]
     },
     "main_game_screen": {

@@ -1,6 +1,36 @@
 {
   "type": "ManyPolygonizer",
   "many_polygonizers": {
+    "interface_png": {
+      "polygons": [
+        {
+          "type": 3,
+          "position": "<Recalc:<Vector2:0,0>/<Vector2:0,0>>",
+          "size": "<Recalc:<Vector2:1,1>/<Vector2:0,0>>",
+          "pngName": null
+        },
+        {
+          "type": 1,
+          "position": "<Recalc:<Vector2:0,0>/<Vector2:0,0>>",
+          "size": "<Recalc:<Vector2:1,1>/<Vector2:0,0>>",
+          "styleName": "base_border_png",
+          "border": 3
+        },
+        {
+          "type": 2,
+          "position": "<Recalc:<Vector2:0,0>/<Vector2:30,10>>",
+          "size": "<Recalc:<Vector2:1,1>/<Vector2:0,0>>",
+          "styleName": "base_border_png"
+        },
+        {
+          "type": 1,
+          "position": "<Recalc:<Vector2:0,0>/<Vector2:0,0>>",
+          "size": "<Recalc:<Vector2:1,1>/<Vector2:0,0>>",
+          "styleName": "base_back_ground_png"
+        }
+      ],
+      "size": [10, 10]
+    },
     "interface": {
       "polygons": [
         {

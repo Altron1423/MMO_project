@@ -4,6 +4,7 @@ from .screen import Window
 from .. import MapPlate
 from ..game import ClientEntity
 from libs.animator_controller.entity_animator import EntityAnimator
+from ..loaders.image_loader import image_loader
 from ..loaders.tile_map_loader import tile_map_loader
 from ..math import Size2, Position2, Vector2
 
@@ -90,7 +91,10 @@ class Camera:
                 )
                 if map_plate.layer:
                     if map_plate.texture is not None:
-                        pass
+                        surf = image_loader.get(map_plate.texture)
+                        # if surf is not None:
+                        #     surf = pg.transform.scale(surf, self.plate_size.tuple)
+                        #     self.surface.blit(surf, pos.tuple)
                     else:
                         pg.draw.rect(self.surface, map_plate.color, pos_plate_draw)
 

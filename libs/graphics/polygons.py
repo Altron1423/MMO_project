@@ -105,7 +105,7 @@ class Polygon(Resizer):
                 sr = pg.Surface(self.size.tuple)
                 sr.fill(color[:3])
                 sr.set_alpha(color[3])
-                surface.blit(sr, self.position)
+                surface.blit(sr, self.position.tuple)
 
         elif self.type == 2:
             if self._text is not None:
@@ -115,10 +115,10 @@ class Polygon(Resizer):
             if self._png is not None:
                 surface.blit(self._pngTr, option_rect)
 
+
     def set_style(self, style):
         self.styler = style
         self.option_surfaces = self.styler.text_render(self._text)
-
 
     def set_text(self, text:str):
         self._text = text
@@ -128,6 +128,7 @@ class Polygon(Resizer):
     def set_png(self, png):
         self._png = png
         self._resize_png()
+
 
     def resize(self, new_size):
         super().resize(new_size)
@@ -143,6 +144,7 @@ class Polygon(Resizer):
         super().set_surface_size(surface_size)
         self._resize_png()
         self.blit_text()
+
 
     def __copy__(self):
         dp = DoterPolygon(self)
@@ -164,8 +166,8 @@ class Polygon(Resizer):
 
     def _resize_png(self):
         if self._png is not None:
-            print(self._png)
-            self._pngTr = pg.transform.scale(self._png, self._png.get_size())
+            # loger.log(self._png)
+            self._pngTr = pg.transform.scale(self._png, self.size.tuple)
             self._pngRect = self._png.get_rect(topleft=(0,0))
         else:
             self._pngTr = None

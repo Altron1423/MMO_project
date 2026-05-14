@@ -20,6 +20,9 @@ class DimensionGeneratorTest:
             st_block,
             Position2(2, 3)
         )
+
+
+
         if spawn_position is not None:
             return spawn_position, st_block
         return None
