@@ -1,0 +1,11 @@
+{
+  "type": "map_plate",
+  "data": {
+    "name": "water",
+    "type": "plate",
+    "changeable": false,
+    "color": [60, 110, 200],
+    "texture": null,
+    "layer": 2
+  }
+}

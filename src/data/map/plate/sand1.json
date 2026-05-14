@@ -1,0 +1,11 @@
+{
+  "type": "map_plate",
+  "data": {
+    "name": "sand1",
+    "type": "plate",
+    "changeable": false,
+    "color": [220, 200, 140],
+    "texture": null,
+    "layer": 1
+  }
+}
