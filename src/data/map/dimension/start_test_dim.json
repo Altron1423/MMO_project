@@ -1,0 +1,10 @@
+{
+  "type": "dimension",
+  "data": {
+    "name": "start_test_dim",
+    "size": "<Size:10,10>",
+    "blocks": [
+      "start_test_block", "tr2_2"
+    ]
+  }
+}

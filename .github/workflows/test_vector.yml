@@ -1,0 +1,38 @@
+name: test_vector CI
+
+on:
+  push:
+    # При пуше в ветку dev
+    branches: [ "dev" ]
+    # При создании или обновлении Pull Request'а в ветку main
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    # Запускать на последней версии Ubuntu
+    runs-on: ubuntu-latest
+
+    # Исполняемые шаги состоит задачи
+    steps:
+      # Шаг 1: клонирование кода репозитория
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Шаг 2: установка нужной версии Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13.9'
+
+      # Шаг 3: установка зависимостей из requirements.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # pip install pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      # Шаг 4: запуск тестов
+      - name: Run tests with pytest
+        run: |
+          pytest -v

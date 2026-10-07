@@ -1,0 +1,68 @@
+from libs.dtos import ClientPlayerDTO, GameDataToServerDTO, GameDataToClientDTO, PlayerLoadDTO
+from libs.game.sub_classes import Inventory
+from libs.math import Position2
+from .entity import Entity
+
+
+class Player(Entity):
+    inventory: Inventory
+
+    def __init__(self):
+        super().__init__()
+        self.inventory = Inventory()
+
+    def set_default(self, name: str, spawn_position: Position2):
+        self.name = name
+        self.position = spawn_position
+
+    def set_changes_from_client(self, dto: GameDataToServerDTO):
+        if abs(dto.move.x) + abs(dto.move.z) <= 2.2:
+            self.orientation = dto.move
+        self.speed_control = dto.speed
+
+    def get_data_for_client(self) -> GameDataToClientDTO:
+        dto = GameDataToClientDTO(
+            map_block="",
+            entities=self.map_block.get_entity_dto(),
+            player=self.__player_data__,
+            chunk_position=Position2(0, 0),
+            position=self.position
+        )
+        return dto
+
+    def disconnect(self):
+        self.map_block.players_in_game.remove(self)
+
+    def connect(self):
+        self.map_block.players_in_game.append(self)
+
+    def get_near_entity(self, max_range: int) -> dict[str, int]:
+        return self.map_block.get_near_entity(self.name, max_range)
+
+    @classmethod
+    def load_from_config(cls, dto: PlayerLoadDTO) -> "Player":
+
+        player = super().load_from_config(dto)
+
+        return player
+
+
+    @property
+    def __player_data__(self) -> ClientPlayerDTO:
+        return ClientPlayerDTO(
+            name=self.name,
+            id=self.id,
+            attributes=self.attributes.__dict__(),
+            position=self.position,
+            health=self.health,
+            mana=self.mana,
+            xp=self.xp,
+            lvl=self.lvl,
+            inventory=str(self.inventory),
+            map_block=self.map_block.name
+        )
+
+    def __copy__(self) -> "Player":
+        player = super().__copy__()
+        player.inventory = self.inventory
+        return player

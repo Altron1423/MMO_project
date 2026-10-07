@@ -1,0 +1,11 @@
+{
+  "type": "map_block",
+  "data": {
+    "name": "tr2_2",
+    "size": "<Size:2,2>",
+    "form": [
+      [null, "test_chunk"],
+      ["test_chunk", "test_chunk"]
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "entity",
+  "data": {
+    "race": "human",
+    "attributes": {
+      "basic": [10, 10, 10, 10, 10, 10, 10, 10],
+      "ratio": [1, 1, 1, 1, 1, 1, 1, 1]
+    },
+    "attributes_names": [
+      "Не используется. Ниже перечислены характеристики, которые настраиваются выше. Только для ознакомления",
+      "constitution",
+      "agility",
+      "defense",
+      "strength",
+      "intellect",
+      "spirit",
+      "health_reg",
+      "max_mana"
+    ],
+    "to_first_lvlup": 100,
+    "raising_xp": 1.05,
+    "xp_boost": 1.0
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "image",
+  "images": {
+    "grass1": "src\\data\\images\\grass1.png",
+    "grass2": "src\\data\\images\\grass2.png",
+    "dirt": "src\\data\\images\\dirt.png",
+    "sand": "src\\data\\images\\sand.png",
+    "water": "src\\data\\images\\water.png",
+    "stone": "src\\data\\images\\stone.png",
+    "test_name1": "src\\data\\images\\paw.png",
+    "stone_forest_tile_map": "src\\data\\images\\TileStone.png",
+    "walk_player": "src\\data\\images\\player_walk.png",
+    "idle_player": "src\\data\\images\\player_idle.png",
+
+    "button_texture_1": "src\\data\\images\\button_texture_1.png",
+    "button_texture_2": "src\\data\\images\\button_texture_2.png",
+    "button_texture_3": "src\\data\\images\\button_texture_3.png",
+    "button_texture_4": "src\\data\\images\\button_texture_4.png"
+  }
+}

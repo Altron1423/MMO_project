@@ -1,0 +1,11 @@
+{
+  "type": "map_block",
+  "data": {
+    "name": "level_5_block",
+    "size": "<Size:2,2>",
+    "form": [
+      ["level_5_l_t", "level_5_r_t"],
+      ["level_5_l_b", "level_5_r_b"]
+    ]
+  }
+}
